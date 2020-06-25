@@ -1,0 +1,59 @@
+plugins {
+    id 'org.jetbrains.intellij' version '0.4.17'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id "de.undercouch.download" version "3.4.3"
+}
+
+group 'com.qalens.corr'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+sourceSets {
+    main{
+        java {
+            srcDirs("src/main/gen")
+        }
+    }
+}
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '2020.1'
+
+
+}
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+patchPluginXml {
+    changeNotes """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
+task downloadPsiViewerPlugin() {
+    download {
+        src 'https://plugins.jetbrains.com/plugin/download?updateId=31087'
+        dest new File("${buildDir}/tmp/plugins/", 'PsiViewer.jar')
+        onlyIfNewer true
+    }
+}
+
+task copyPsiViewerPluginToSandBox(type: Copy) {
+    from "${buildDir}/tmp/plugins/PsiViewer.jar"
+    into "${buildDir}/idea-sandbox/plugins/"
+}
+runIde {
+    jvmArgs '-Xmx1G'
+}
+
+copyPsiViewerPluginToSandBox.dependsOn downloadPsiViewerPlugin
+copyPsiViewerPluginToSandBox.mustRunAfter prepareSandbox
+runIde.dependsOn copyPsiViewerPluginToSandBox,check

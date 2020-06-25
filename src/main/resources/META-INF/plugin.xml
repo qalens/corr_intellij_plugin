@@ -1,0 +1,35 @@
+<idea-plugin>
+    <id>com.qalens.corr</id>
+    <name>Journey Prgramming</name>
+    <vendor email="support@atmnk.org" url="http://www.atmnk.org">Atmaram Naik</vendor>
+
+    <description><![CDATA[
+    Enables Journey Processing<br>
+    <em>Journey Programming Language</em>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Journey"
+                  language="Journey"
+                  implementationClass="com.qalens.corr.lang.JrnFileType"
+                  extensions="journey"
+                  fieldName="INSTANCE"/>
+        <lang.parserDefinition language="Journey"
+                               implementationClass="com.qalens.corr.lang.core.parser.JourneyParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Journey"
+                                       implementationClass="com.qalens.corr.ide.JourneySyntaxHighlighterFactory"
+
+        />
+        <completion.contributor language="Journey"
+                                implementationClass="com.qalens.corr.ide.JourneyCompletionContributor"/>
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>

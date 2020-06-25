@@ -1,0 +1,81 @@
+{
+  parserClass="com.qalens.corr.lang.core.parser.JourneyParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Jrn"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.qalens.corr.lang.core.psi"
+  psiImplPackage="com.qalens.corr.lang.core.psi.impl"
+
+  elementTypeHolderClass="com.qalens.corr.lang.core.psi.JrnElementTypes"
+  elementTypeClass="com.qalens.corr.lang.core.psi.JrnElementType"
+  tokenTypeClass="com.qalens.corr.lang.core.psi.JrnTokenType"
+
+  psiImplUtilClass="com.qalens.corr.lang.core.psi.impl.JourneyPsiImplUtil"
+  tokens = [
+          SCRIPLET_START = '{{'
+          SCRIPLET_END = '}}'
+          FOR_SCRIPLET_START = '<%'
+          FOR_SCRIPLET_END = '%>'
+          LBRACE      = '{'
+          RBRACE      = '}'
+          LBRACK      =  '['
+          RBRACK      =  ']'
+          LPAREN      =  '('
+          RPAREN      =  ')'
+          COLON       =  ':'
+          SEMICOLON   =  ';'
+          COMMA       =  ','
+          BACKTICK    =  '`'
+          UNDERSCORE  =  '_'
+          QUOTE      =  '"'
+          FOR         =  'for'
+          IN          = 'in'
+          STRING      = 'String'
+          LONG      = 'Long'
+          LIST      = 'List'
+          OBJECT      = 'Object'
+          TIMES       = 'times'
+          NILVALUE      = '@nil'
+      ]
+}
+
+journeyFile ::= RootFn
+RootFn ::= Label '{' Statement* '}'
+Label ::= identifier | NAME
+Statement ::= DefinedFnCall | TimesCall | ForCall;
+TimesCall ::= TIMES '(' LongValue ',' identifier ',' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
+ForCall ::= FOR '(' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
+DefinedFnCall ::= DefinedMethod '(' (Argument ',')* Argument? ')'';'
+DefinedMethod::= RestMethod | SystemMethod
+Argument ::= identifier ':' Value
+Value ::= TextTemplateValue | JsonTemplateValue | EJsonTemplateValue | Nil | MapValue
+Nil ::= NILVALUE
+TextTemplateValue ::= TextStart QUOTE TextTemplate QUOTE
+JsonTemplateValue ::= JsonStart JsonTemplate
+MapValue ::= MapStart MapObject
+EJsonTemplateValue ::= EjsonStart EJsonTemplate
+TextTemplate ::= TextBlock*
+TextBlock ::= ForBlock| Scriplet | TEXT_LITERAL
+EJsonTemplate ::= EScriplet | EJsonArray | EJsonObject
+JsonTemplate ::= Scriplet | JsonArray | JsonObject | STRING_LITERAL
+Scriplet ::= SCRIPLET_START (Expression) SCRIPLET_END
+FOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (FOR_LOOP | FOR_VALUE_SCRIPTLET) RBRACE
+FOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END JsonTemplate FOR_SCRIPLET_START
+EFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (EFOR_LOOP | EFOR_VALUE_SCRIPTLET) RBRACE
+EFOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END EJsonTemplate FOR_SCRIPLET_START
+TFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (TFOR_LOOP | TFOR_VALUE_SCRIPTLET) RBRACE
+TFOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END TextTemplate FOR_SCRIPLET_START
+JsonArray ::= '[' ((FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate))?']'
+EJsonArray ::= '[' ((FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTemplate ',')* EJsonTemplate))?']'
+JsonObject ::= '{' (JsonPair ',')* JsonPair? '}'
+MapObject ::= '{' (MapPair ',')* MapPair? '}'
+EJsonObject ::= '{' (EJsonPair ',')* EJsonPair? '}'
+JsonPair ::= STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | LongValue | BooleanValue)
+MapPair ::= STRING_LITERAL ':' (TextTemplateValue | STRING_LITERAL )
+EJsonPair ::= STRING_LITERAL ':' (EScriplet | EJsonArray | EJsonObject)
+Expression ::= identifier ((':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'))?
+EScriplet ::= SCRIPLET_START identifier (':' Type)? SCRIPLET_END
+Type ::= (STRING | LONG | LIST | OBJECT)
+ForBlock ::= (FOR_SCRIPLET_START TFOR_LOOP FOR_SCRIPLET_END)
