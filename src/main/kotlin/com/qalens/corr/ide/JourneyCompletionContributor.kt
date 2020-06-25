@@ -25,6 +25,7 @@ class JourneyCompletionContributor() : CompletionContributor() {
                         result.addElement(LookupElementBuilder.create("delete(url:@text\"\",body:@json{});"));
                         result.addElement(LookupElementBuilder.create("for(object:Object in objects) {};"));
                         result.addElement(LookupElementBuilder.create("times(1,i,object:Object in objects){};"));
+                        result.addElement(LookupElementBuilder.create("print(text:@text\"Hello\");"));
                     }
 
                 }
