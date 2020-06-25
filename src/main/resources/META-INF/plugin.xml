@@ -4,8 +4,11 @@
     <vendor email="support@qalens.com" url="http://www.qalens.com">Atmaram Naik</vendor>
 
     <description><![CDATA[
-    Enables Journey Processing<br>
-    <em>Journey Programming Language</em>
+        <h1>Journey Language Support</h1><br>
+        This plugin is a support plugin that helps writing journeys that are used with a tool called as "corr".<br>
+        You can refer <a href="https://youtu.be/cqjo6Vi7CEw">Introductory Video</a> for corr tool.<br>
+        The tool requires you to write your journeys in specific DSL.<br>
+        This plugin helps with all its parsing and lexing abilities to validate and write journeys with correct syntax.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html

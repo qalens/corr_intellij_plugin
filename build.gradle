@@ -35,8 +35,14 @@ compileTestKotlin {
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+        <h1>IntelliJ CORR Changelog #0.0.1</h1>
+        <h2>Features</h2>
+        <ul>
+            <li>Ability to create journey files</li>
+            <li>Parser and lexer for Journey Files</li>
+            <li>Auto complete for you to get started with new journeys</li>
+        </ul>
+    """
 }
 task downloadPsiViewerPlugin() {
     download {
