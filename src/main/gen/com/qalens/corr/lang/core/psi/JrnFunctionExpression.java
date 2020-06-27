@@ -5,15 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnExpression extends PsiElement {
+public interface JrnFunctionExpression extends PsiElement {
 
   @Nullable
-  JrnConstantExpression getConstantExpression();
+  JrnBinaryFunction getBinaryFunction();
 
   @Nullable
-  JrnFunctionExpression getFunctionExpression();
+  JrnMultiValuedFunction getMultiValuedFunction();
 
   @Nullable
-  JrnVariableExpression getVariableExpression();
+  JrnNoArgFunction getNoArgFunction();
 
 }

@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpression {
+public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements JrnFunctionExpression {
 
-  public JrnExpressionImpl(@NotNull ASTNode node) {
+  public JrnFunctionExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitExpression(this);
+    visitor.visitFunctionExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,20 +28,20 @@ public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpres
 
   @Override
   @Nullable
-  public JrnConstantExpression getConstantExpression() {
-    return findChildByClass(JrnConstantExpression.class);
+  public JrnBinaryFunction getBinaryFunction() {
+    return findChildByClass(JrnBinaryFunction.class);
   }
 
   @Override
   @Nullable
-  public JrnFunctionExpression getFunctionExpression() {
-    return findChildByClass(JrnFunctionExpression.class);
+  public JrnMultiValuedFunction getMultiValuedFunction() {
+    return findChildByClass(JrnMultiValuedFunction.class);
   }
 
   @Override
   @Nullable
-  public JrnVariableExpression getVariableExpression() {
-    return findChildByClass(JrnVariableExpression.class);
+  public JrnNoArgFunction getNoArgFunction() {
+    return findChildByClass(JrnNoArgFunction.class);
   }
 
 }

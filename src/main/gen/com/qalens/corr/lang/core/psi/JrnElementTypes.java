@@ -9,6 +9,8 @@ import com.qalens.corr.lang.core.psi.impl.*;
 public interface JrnElementTypes {
 
   IElementType ARGUMENT = new JrnElementType("ARGUMENT");
+  IElementType BINARY_FUNCTION = new JrnElementType("BINARY_FUNCTION");
+  IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
   IElementType DEFINED_FN_CALL = new JrnElementType("DEFINED_FN_CALL");
   IElementType DEFINED_METHOD = new JrnElementType("DEFINED_METHOD");
   IElementType EFOR_LOOP = new JrnElementType("EFOR_LOOP");
@@ -24,6 +26,7 @@ public interface JrnElementTypes {
   IElementType FOR_CALL = new JrnElementType("FOR_CALL");
   IElementType FOR_LOOP = new JrnElementType("FOR_LOOP");
   IElementType FOR_VALUE_SCRIPTLET = new JrnElementType("FOR_VALUE_SCRIPTLET");
+  IElementType FUNCTION_EXPRESSION = new JrnElementType("FUNCTION_EXPRESSION");
   IElementType JSON_ARRAY = new JrnElementType("JSON_ARRAY");
   IElementType JSON_OBJECT = new JrnElementType("JSON_OBJECT");
   IElementType JSON_PAIR = new JrnElementType("JSON_PAIR");
@@ -33,7 +36,9 @@ public interface JrnElementTypes {
   IElementType MAP_OBJECT = new JrnElementType("MAP_OBJECT");
   IElementType MAP_PAIR = new JrnElementType("MAP_PAIR");
   IElementType MAP_VALUE = new JrnElementType("MAP_VALUE");
+  IElementType MULTI_VALUED_FUNCTION = new JrnElementType("MULTI_VALUED_FUNCTION");
   IElementType NIL = new JrnElementType("NIL");
+  IElementType NO_ARG_FUNCTION = new JrnElementType("NO_ARG_FUNCTION");
   IElementType ROOT_FN = new JrnElementType("ROOT_FN");
   IElementType SCRIPLET = new JrnElementType("SCRIPLET");
   IElementType STATEMENT = new JrnElementType("STATEMENT");
@@ -45,11 +50,15 @@ public interface JrnElementTypes {
   IElementType TIMES_CALL = new JrnElementType("TIMES_CALL");
   IElementType TYPE = new JrnElementType("TYPE");
   IElementType VALUE = new JrnElementType("VALUE");
+  IElementType VARIABLE_EXPRESSION = new JrnElementType("VARIABLE_EXPRESSION");
 
+  IElementType ADD = new JrnTokenType("add");
   IElementType BACKTICK = new JrnTokenType("`");
   IElementType BOOLEANVALUE = new JrnTokenType("BooleanValue");
   IElementType COLON = new JrnTokenType(":");
   IElementType COMMA = new JrnTokenType(",");
+  IElementType CONCAT = new JrnTokenType("concat");
+  IElementType DOUBLEVALUE = new JrnTokenType("DoubleValue");
   IElementType EJSONSTART = new JrnTokenType("EjsonStart");
   IElementType FOR = new JrnTokenType("for");
   IElementType FOR_SCRIPLET_END = new JrnTokenType("%>");
@@ -64,13 +73,16 @@ public interface JrnElementTypes {
   IElementType LONGVALUE = new JrnTokenType("LongValue");
   IElementType LPAREN = new JrnTokenType("(");
   IElementType MAPSTART = new JrnTokenType("MapStart");
+  IElementType MUL = new JrnTokenType("mul");
   IElementType NAME = new JrnTokenType("NAME");
   IElementType NILVALUE = new JrnTokenType("@nil");
   IElementType OBJECT = new JrnTokenType("Object");
   IElementType QUOTE = new JrnTokenType("\"");
+  IElementType RANDOM = new JrnTokenType("random");
   IElementType RBRACE = new JrnTokenType("}");
   IElementType RBRACK = new JrnTokenType("]");
   IElementType RESTMETHOD = new JrnTokenType("RestMethod");
+  IElementType ROUND = new JrnTokenType("round");
   IElementType RPAREN = new JrnTokenType(")");
   IElementType SCRIPLET_END = new JrnTokenType("}}");
   IElementType SCRIPLET_START = new JrnTokenType("{{");
@@ -82,12 +94,19 @@ public interface JrnElementTypes {
   IElementType TEXT_LITERAL = new JrnTokenType("TEXT_LITERAL");
   IElementType TIMES = new JrnTokenType("times");
   IElementType UNDERSCORE = new JrnTokenType("_");
+  IElementType UUID = new JrnTokenType("uuid");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
       if (type == ARGUMENT) {
         return new JrnArgumentImpl(node);
+      }
+      else if (type == BINARY_FUNCTION) {
+        return new JrnBinaryFunctionImpl(node);
+      }
+      else if (type == CONSTANT_EXPRESSION) {
+        return new JrnConstantExpressionImpl(node);
       }
       else if (type == DEFINED_FN_CALL) {
         return new JrnDefinedFnCallImpl(node);
@@ -134,6 +153,9 @@ public interface JrnElementTypes {
       else if (type == FOR_VALUE_SCRIPTLET) {
         return new JrnForValueScriptletImpl(node);
       }
+      else if (type == FUNCTION_EXPRESSION) {
+        return new JrnFunctionExpressionImpl(node);
+      }
       else if (type == JSON_ARRAY) {
         return new JrnJsonArrayImpl(node);
       }
@@ -161,8 +183,14 @@ public interface JrnElementTypes {
       else if (type == MAP_VALUE) {
         return new JrnMapValueImpl(node);
       }
+      else if (type == MULTI_VALUED_FUNCTION) {
+        return new JrnMultiValuedFunctionImpl(node);
+      }
       else if (type == NIL) {
         return new JrnNilImpl(node);
+      }
+      else if (type == NO_ARG_FUNCTION) {
+        return new JrnNoArgFunctionImpl(node);
       }
       else if (type == ROOT_FN) {
         return new JrnRootFnImpl(node);
@@ -196,6 +224,9 @@ public interface JrnElementTypes {
       }
       else if (type == VALUE) {
         return new JrnValueImpl(node);
+      }
+      else if (type == VARIABLE_EXPRESSION) {
+        return new JrnVariableExpressionImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

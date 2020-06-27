@@ -38,6 +38,13 @@
           OBJECT      = 'Object'
           TIMES       = 'times'
           NILVALUE      = '@nil'
+          CONCAT = 'concat'
+          MUL = 'mul'
+          ADD = 'add'
+          UUID = 'uuid'
+          RANDOM = 'random'
+          ROUND = 'round'
+
       ]
 }
 
@@ -72,10 +79,18 @@ EJsonArray ::= '[' ((FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTem
 JsonObject ::= '{' (JsonPair ',')* JsonPair? '}'
 MapObject ::= '{' (MapPair ',')* MapPair? '}'
 EJsonObject ::= '{' (EJsonPair ',')* EJsonPair? '}'
-JsonPair ::= STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | LongValue | BooleanValue)
+JsonPair ::= STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | DoubleValue | LongValue | BooleanValue)
 MapPair ::= STRING_LITERAL ':' (TextTemplateValue | STRING_LITERAL )
 EJsonPair ::= STRING_LITERAL ':' (EScriplet | EJsonArray | EJsonObject)
-Expression ::= identifier ((':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'))?
+Expression ::= ConstantExpression | FunctionExpression | VariableExpression
+FunctionExpression ::= MultiValuedFunction | BinaryFunction | NoArgFunction
+MultiValuedFunction ::= (CONCAT | MUL | ADD) '(' (Expression (',' Expression)*)? ')'
+BinaryFunction ::= (ROUND | RANDOM) '(' (Expression (',' Expression)*)?  ')'
+NoArgFunction ::= UUID '('  ')'
+VariableExpression ::= identifier (':' Type)?
+ConstantExpression ::= STRING_LITERAL | DoubleValue | LongValue | BooleanValue
+
+//Expression ::= identifier ((':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'))?
 EScriplet ::= SCRIPLET_START identifier (':' Type)? SCRIPLET_END
 Type ::= (STRING | LONG | LIST | OBJECT)
 ForBlock ::= (FOR_SCRIPLET_START TFOR_LOOP FOR_SCRIPLET_END)

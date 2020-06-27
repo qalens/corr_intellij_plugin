@@ -26,6 +26,13 @@ class JourneyCompletionContributor() : CompletionContributor() {
                         result.addElement(LookupElementBuilder.create("for(object:Object in objects) {};"));
                         result.addElement(LookupElementBuilder.create("times(1,i,object:Object in objects){};"));
                         result.addElement(LookupElementBuilder.create("print(text:@text\"Hello\");"));
+                    } else if(parameters.position.context.toString().startsWith("JrnVariableExpressionImpl(VARIABLE_EXPRESSION)")){
+                        result.addElement(LookupElementBuilder.create("concat(a,b,c)"));
+                        result.addElement(LookupElementBuilder.create("add(a,b,c)"));
+                        result.addElement(LookupElementBuilder.create("mul(a,b,c)"));
+                        result.addElement(LookupElementBuilder.create("uuid()"));
+                        result.addElement(LookupElementBuilder.create("random(a,b)"));
+                        result.addElement(LookupElementBuilder.create("round(a,b)"));
                     }
 
                 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.qalens.corr'
-version '0.0.1'
+version '0.0.2'
 
 repositories {
     mavenCentral()
@@ -35,12 +35,15 @@ compileTestKotlin {
 }
 patchPluginXml {
     changeNotes """
-        <h1>IntelliJ CORR Changelog #0.0.1</h1>
-        <h2>Features</h2>
+        <h1>IntelliJ CORR Changelog #0.0.2</h1>
+        <h2>Fetures</h2>
         <ul>
-            <li>Ability to create journey files</li>
-            <li>Parser and lexer for Journey Files</li>
-            <li>Auto complete for you to get started with new journeys</li>
+            <li>Compatibility with corr 0.0.17</li>
+            <li>Added Layered lexers for syntaxt highlighting in layers</li>
+        </ul>
+        <h2>Bug Fixes</h2>
+        <ul>
+            <li>Syntax Highlighting for text template fixed</li>
         </ul>
     """
 }

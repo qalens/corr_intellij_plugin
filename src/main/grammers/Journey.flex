@@ -64,6 +64,7 @@ NAME = [`] ([^`] | [\`])* [`]
 ESCAPE_SEQUENCE=\\[^\r\n]
 STRING_LITERAL = \"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
 LONG_LITERAL = ([1-9] [0-9]*)
+DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
 %s IN_TEXT_TEMPLATE,IN_TEXT_SCRIPLET,IN_TEXT_FOR_SCRIPLET,IN_JSON_TEMPLATE,IN_JSON_SCRIPLET,IN_JSON_FOR_SCRIPLET
 %%
 <YYINITIAL> {
@@ -110,7 +111,8 @@ LONG_LITERAL = ([1-9] [0-9]*)
     ")"                             { return RPAREN; }
     ","                             { return COMMA; }
     "%>"                            { return FOR_SCRIPLET_END; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+    {LONG_LITERAL} / [^\.]          { return LONGVALUE;}
+    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {IDENTIFIER}                    { return IDENTIFIER; }
     {NAME}                          { return NAME; }
@@ -143,9 +145,16 @@ LONG_LITERAL = ([1-9] [0-9]*)
     "Long"                          { return LONG;}
     "List"                          { return LIST;}
     "Object"                          { return OBJECT;}
+    "concat"                          { return CONCAT;}
+    "mul"                          { return MUL;}
+    "add"                          { return ADD;}
+    "uuid"                          { return UUID;}
+    "random"                          { return RANDOM;}
+    "round"                          { return ROUND;}
     ","                             { return COMMA; }
     "}}"                            {yybegin(IN_TEXT_TEMPLATE);return SCRIPLET_END; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+   {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
+   {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {IDENTIFIER}                    { return IDENTIFIER; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
@@ -170,7 +179,8 @@ LONG_LITERAL = ([1-9] [0-9]*)
     "for"                             { return FOR; }
     "in"                             { return IN; }
     "%>"                            { yybegin(IN_TEXT_TEMPLATE);return FOR_SCRIPLET_END; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+    {LONG_LITERAL} / [^\.]          { return LONGVALUE;}
+    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {IDENTIFIER}                    { return IDENTIFIER; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
@@ -191,7 +201,8 @@ LONG_LITERAL = ([1-9] [0-9]*)
     ","                             { return COMMA; }
     "<%"                         { pushJson("<%"); yybegin(IN_JSON_FOR_SCRIPLET);return FOR_SCRIPLET_START; }
     ","                             { return COMMA; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
+        {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
 }
@@ -211,8 +222,15 @@ LONG_LITERAL = ([1-9] [0-9]*)
     "List"                          { return LIST;}
     "Object"                          { return OBJECT;}
     ","                             { return COMMA; }
+    "concat"                          { return CONCAT;}
+    "mul"                          { return MUL;}
+    "add"                          { return ADD;}
+    "uuid"                          { return UUID;}
+    "random"                          { return RANDOM;}
+    "round"                          { return ROUND;}
     "}}"                            {if(popJson()) yybegin(YYINITIAL); else yybegin(IN_JSON_TEMPLATE);return SCRIPLET_END; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
+        {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {IDENTIFIER}                    { return IDENTIFIER; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
@@ -237,7 +255,8 @@ LONG_LITERAL = ([1-9] [0-9]*)
     "for"                             { return FOR; }
     "in"                             { return IN; }
     "%>"                            { if(popJson()) yybegin(YYINITIAL); else yybegin(IN_JSON_TEMPLATE);return FOR_SCRIPLET_END; }
-    {LONG_LITERAL}                  { return LONGVALUE;}
+    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
+    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
     {STRING_LITERAL}                { return STRING_LITERAL; }
     {IDENTIFIER}                    { return IDENTIFIER; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }

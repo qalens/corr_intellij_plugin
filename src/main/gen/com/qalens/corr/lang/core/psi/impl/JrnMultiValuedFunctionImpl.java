@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpression {
+public class JrnMultiValuedFunctionImpl extends ASTWrapperPsiElement implements JrnMultiValuedFunction {
 
-  public JrnExpressionImpl(@NotNull ASTNode node) {
+  public JrnMultiValuedFunctionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitExpression(this);
+    visitor.visitMultiValuedFunction(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,21 +27,9 @@ public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpres
   }
 
   @Override
-  @Nullable
-  public JrnConstantExpression getConstantExpression() {
-    return findChildByClass(JrnConstantExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnFunctionExpression getFunctionExpression() {
-    return findChildByClass(JrnFunctionExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnVariableExpression getVariableExpression() {
-    return findChildByClass(JrnVariableExpression.class);
+  @NotNull
+  public List<JrnExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
   }
 
 }

@@ -49,6 +49,84 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // (ROUND | RANDOM) '(' (Expression (',' Expression)*)?  ')'
+  public static boolean BinaryFunction(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction")) return false;
+    if (!nextTokenIs(b, "<binary function>", RANDOM, ROUND)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BINARY_FUNCTION, "<binary function>");
+    r = BinaryFunction_0(b, l + 1);
+    r = r && consumeToken(b, LPAREN);
+    r = r && BinaryFunction_2(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ROUND | RANDOM
+  private static boolean BinaryFunction_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction_0")) return false;
+    boolean r;
+    r = consumeToken(b, ROUND);
+    if (!r) r = consumeToken(b, RANDOM);
+    return r;
+  }
+
+  // (Expression (',' Expression)*)?
+  private static boolean BinaryFunction_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction_2")) return false;
+    BinaryFunction_2_0(b, l + 1);
+    return true;
+  }
+
+  // Expression (',' Expression)*
+  private static boolean BinaryFunction_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Expression(b, l + 1);
+    r = r && BinaryFunction_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (',' Expression)*
+  private static boolean BinaryFunction_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction_2_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!BinaryFunction_2_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "BinaryFunction_2_0_1", c)) break;
+    }
+    return true;
+  }
+
+  // ',' Expression
+  private static boolean BinaryFunction_2_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BinaryFunction_2_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && Expression(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // STRING_LITERAL | DoubleValue | LongValue | BooleanValue
+  public static boolean ConstantExpression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ConstantExpression")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, CONSTANT_EXPRESSION, "<constant expression>");
+    r = consumeToken(b, STRING_LITERAL);
+    if (!r) r = consumeToken(b, DOUBLEVALUE);
+    if (!r) r = consumeToken(b, LONGVALUE);
+    if (!r) r = consumeToken(b, BOOLEANVALUE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // DefinedMethod '(' (Argument ',')* Argument? ')'';'
   public static boolean DefinedFnCall(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "DefinedFnCall")) return false;
@@ -390,101 +468,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier ((':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'))?
+  // ConstantExpression | FunctionExpression | VariableExpression
   public static boolean Expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Expression")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && Expression_1(b, l + 1);
-    exit_section_(b, m, EXPRESSION, r);
-    return r;
-  }
-
-  // ((':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'))?
-  private static boolean Expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1")) return false;
-    Expression_1_0(b, l + 1);
-    return true;
-  }
-
-  // (':' Type) | ('(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')')
-  private static boolean Expression_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = Expression_1_0_0(b, l + 1);
-    if (!r) r = Expression_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean Expression_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // '(' ( STRING_LITERAL | LongValue | BooleanValue| Expression) ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))* ')'
-  private static boolean Expression_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LPAREN);
-    r = r && Expression_1_0_1_1(b, l + 1);
-    r = r && Expression_1_0_1_2(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // STRING_LITERAL | LongValue | BooleanValue| Expression
-  private static boolean Expression_1_0_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_1_1")) return false;
-    boolean r;
-    r = consumeToken(b, STRING_LITERAL);
-    if (!r) r = consumeToken(b, LONGVALUE);
-    if (!r) r = consumeToken(b, BOOLEANVALUE);
-    if (!r) r = Expression(b, l + 1);
-    return r;
-  }
-
-  // ( ',' (STRING_LITERAL | LongValue | BooleanValue | Expression))*
-  private static boolean Expression_1_0_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_1_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Expression_1_0_1_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "Expression_1_0_1_2", c)) break;
-    }
-    return true;
-  }
-
-  // ',' (STRING_LITERAL | LongValue | BooleanValue | Expression)
-  private static boolean Expression_1_0_1_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_1_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && Expression_1_0_1_2_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // STRING_LITERAL | LongValue | BooleanValue | Expression
-  private static boolean Expression_1_0_1_2_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Expression_1_0_1_2_0_1")) return false;
-    boolean r;
-    r = consumeToken(b, STRING_LITERAL);
-    if (!r) r = consumeToken(b, LONGVALUE);
-    if (!r) r = consumeToken(b, BOOLEANVALUE);
-    if (!r) r = Expression(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, EXPRESSION, "<expression>");
+    r = ConstantExpression(b, l + 1);
+    if (!r) r = FunctionExpression(b, l + 1);
+    if (!r) r = VariableExpression(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -653,6 +645,19 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // MultiValuedFunction | BinaryFunction | NoArgFunction
+  public static boolean FunctionExpression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FunctionExpression")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, FUNCTION_EXPRESSION, "<function expression>");
+    r = MultiValuedFunction(b, l + 1);
+    if (!r) r = BinaryFunction(b, l + 1);
+    if (!r) r = NoArgFunction(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // '[' ((FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate))?']'
   public static boolean JsonArray(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "JsonArray")) return false;
@@ -774,7 +779,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | LongValue | BooleanValue)
+  // STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | DoubleValue | LongValue | BooleanValue)
   public static boolean JsonPair(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "JsonPair")) return false;
     if (!nextTokenIs(b, STRING_LITERAL)) return false;
@@ -786,7 +791,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // Scriplet | JsonArray | JsonObject | STRING_LITERAL | LongValue | BooleanValue
+  // Scriplet | JsonArray | JsonObject | STRING_LITERAL | DoubleValue | LongValue | BooleanValue
   private static boolean JsonPair_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "JsonPair_2")) return false;
     boolean r;
@@ -794,6 +799,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = JsonArray(b, l + 1);
     if (!r) r = JsonObject(b, l + 1);
     if (!r) r = consumeToken(b, STRING_LITERAL);
+    if (!r) r = consumeToken(b, DOUBLEVALUE);
     if (!r) r = consumeToken(b, LONGVALUE);
     if (!r) r = consumeToken(b, BOOLEANVALUE);
     return r;
@@ -919,6 +925,70 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // (CONCAT | MUL | ADD) '(' (Expression (',' Expression)*)? ')'
+  public static boolean MultiValuedFunction(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, MULTI_VALUED_FUNCTION, "<multi valued function>");
+    r = MultiValuedFunction_0(b, l + 1);
+    r = r && consumeToken(b, LPAREN);
+    r = r && MultiValuedFunction_2(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // CONCAT | MUL | ADD
+  private static boolean MultiValuedFunction_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction_0")) return false;
+    boolean r;
+    r = consumeToken(b, CONCAT);
+    if (!r) r = consumeToken(b, MUL);
+    if (!r) r = consumeToken(b, ADD);
+    return r;
+  }
+
+  // (Expression (',' Expression)*)?
+  private static boolean MultiValuedFunction_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction_2")) return false;
+    MultiValuedFunction_2_0(b, l + 1);
+    return true;
+  }
+
+  // Expression (',' Expression)*
+  private static boolean MultiValuedFunction_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Expression(b, l + 1);
+    r = r && MultiValuedFunction_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (',' Expression)*
+  private static boolean MultiValuedFunction_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction_2_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!MultiValuedFunction_2_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "MultiValuedFunction_2_0_1", c)) break;
+    }
+    return true;
+  }
+
+  // ',' Expression
+  private static boolean MultiValuedFunction_2_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultiValuedFunction_2_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && Expression(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // NILVALUE
   public static boolean Nil(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Nil")) return false;
@@ -927,6 +997,18 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, NILVALUE);
     exit_section_(b, m, NIL, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // UUID '('  ')'
+  public static boolean NoArgFunction(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NoArgFunction")) return false;
+    if (!nextTokenIs(b, UUID)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, UUID, LPAREN, RPAREN);
+    exit_section_(b, m, NO_ARG_FUNCTION, r);
     return r;
   }
 
@@ -1252,6 +1334,37 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = Nil(b, l + 1);
     if (!r) r = MapValue(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // identifier (':' Type)?
+  public static boolean VariableExpression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableExpression")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    r = r && VariableExpression_1(b, l + 1);
+    exit_section_(b, m, VARIABLE_EXPRESSION, r);
+    return r;
+  }
+
+  // (':' Type)?
+  private static boolean VariableExpression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableExpression_1")) return false;
+    VariableExpression_1_0(b, l + 1);
+    return true;
+  }
+
+  // ':' Type
+  private static boolean VariableExpression_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableExpression_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && Type(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

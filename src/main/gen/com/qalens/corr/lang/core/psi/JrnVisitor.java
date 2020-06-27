@@ -11,6 +11,14 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBinaryFunction(@NotNull JrnBinaryFunction o) {
+    visitPsiElement(o);
+  }
+
+  public void visitConstantExpression(@NotNull JrnConstantExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitDefinedFnCall(@NotNull JrnDefinedFnCall o) {
     visitPsiElement(o);
   }
@@ -71,6 +79,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFunctionExpression(@NotNull JrnFunctionExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitJsonArray(@NotNull JrnJsonArray o) {
     visitPsiElement(o);
   }
@@ -107,7 +119,15 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitMultiValuedFunction(@NotNull JrnMultiValuedFunction o) {
+    visitPsiElement(o);
+  }
+
   public void visitNil(@NotNull JrnNil o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNoArgFunction(@NotNull JrnNoArgFunction o) {
     visitPsiElement(o);
   }
 
@@ -152,6 +172,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitValue(@NotNull JrnValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitVariableExpression(@NotNull JrnVariableExpression o) {
     visitPsiElement(o);
   }
 
