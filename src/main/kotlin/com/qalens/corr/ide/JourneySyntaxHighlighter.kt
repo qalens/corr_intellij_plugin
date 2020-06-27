@@ -8,7 +8,9 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 import com.qalens.corr.lang.core.lexer.JrnLexer
+import com.qalens.corr.lang.core.lexer.JrnSyntaxHighLighterLexer
 import com.qalens.corr.lang.core.psi.JrnElementTypes
 
 object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
@@ -90,6 +92,6 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     }
 
     override fun getHighlightingLexer(): Lexer {
-        return JrnLexer();
+        return JrnSyntaxHighLighterLexer()
     }
 }

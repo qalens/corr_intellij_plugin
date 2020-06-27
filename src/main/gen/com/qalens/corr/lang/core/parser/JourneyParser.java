@@ -1116,18 +1116,60 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TIMES '(' LongValue ',' identifier ',' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
+  // TIMES '(' (LongValue | (identifier (':' Type)?)) ',' identifier ',' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
   public static boolean TimesCall(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "TimesCall")) return false;
     if (!nextTokenIs(b, TIMES)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TIMES, LPAREN, LONGVALUE, COMMA, IDENTIFIER, COMMA);
+    r = consumeTokens(b, 0, TIMES, LPAREN);
+    r = r && TimesCall_2(b, l + 1);
+    r = r && consumeTokens(b, 0, COMMA, IDENTIFIER, COMMA);
     r = r && TimesCall_6(b, l + 1);
     r = r && consumeTokens(b, 0, RPAREN, LBRACE);
     r = r && TimesCall_9(b, l + 1);
     r = r && consumeTokens(b, 0, RBRACE, SEMICOLON);
     exit_section_(b, m, TIMES_CALL, r);
+    return r;
+  }
+
+  // LongValue | (identifier (':' Type)?)
+  private static boolean TimesCall_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TimesCall_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LONGVALUE);
+    if (!r) r = TimesCall_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // identifier (':' Type)?
+  private static boolean TimesCall_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TimesCall_2_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    r = r && TimesCall_2_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (':' Type)?
+  private static boolean TimesCall_2_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TimesCall_2_1_1")) return false;
+    TimesCall_2_1_1_0(b, l + 1);
+    return true;
+  }
+
+  // ':' Type
+  private static boolean TimesCall_2_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TimesCall_2_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && Type(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
