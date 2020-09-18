@@ -8,8 +8,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import com.intellij.psi.tree.TokenSet
-import com.qalens.corr.lang.core.lexer.JrnLexer
 import com.qalens.corr.lang.core.lexer.JrnSyntaxHighLighterLexer
 import com.qalens.corr.lang.core.psi.JrnElementTypes
 
@@ -51,12 +49,16 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val badCharacter = arrayOf(BAD_CHARACTER)
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         if(
-            tokenType.equals(JrnElementTypes.TEXTSTART)
-            || tokenType.equals(JrnElementTypes.JSONSTART)
-            || tokenType.equals(JrnElementTypes.EJSONSTART)
-            || tokenType.equals(JrnElementTypes.FOR)
-            || tokenType.equals(JrnElementTypes.TIMES)
-            || tokenType.equals(JrnElementTypes.IN)
+            tokenType.equals(JrnElementTypes.PRINT)
+            || tokenType.equals(JrnElementTypes.FILLABLE)
+            || tokenType.equals(JrnElementTypes.TEXT)
+            || tokenType.equals(JrnElementTypes.CONCAT)
+            || tokenType.equals(JrnElementTypes.MUL)
+            || tokenType.equals(JrnElementTypes.ADD)
+            || tokenType.equals(JrnElementTypes.UUID)
+            || tokenType.equals(JrnElementTypes.RANDOM)
+            || tokenType.equals(JrnElementTypes.SUB)
+            || tokenType.equals(JrnElementTypes.DIV)
         )
             return Keywords;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(
@@ -69,19 +71,27 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             return Comma
         else if (tokenType.equals(JrnElementTypes.SEMICOLON))
             return Semicolon;
-        else if(tokenType.equals(JrnElementTypes.BOOLEANVALUE) || tokenType.equals(
-                JrnElementTypes.LONGVALUE)){
+        else if(
+            tokenType.equals(JrnElementTypes.BOOLEANVALUE)
+            || tokenType.equals(JrnElementTypes.POSITIVEINTEGERVALUE)
+            || tokenType.equals(JrnElementTypes.INETEGERVALUE)
+            || tokenType.equals(JrnElementTypes.NULLVALUE)
+            || tokenType.equals(JrnElementTypes.DOUBLEVALUE)
+        ) {
             return Constant;
-        } else if (tokenType.equals(JrnElementTypes.STRING_LITERAL)){
+        }
+        else if (tokenType.equals(JrnElementTypes.STRING_LITERAL)
+            || tokenType.equals(JrnElementTypes.NAME)
+            || tokenType.equals(JrnElementTypes.TEXT_LITERAL)
+        ){
             return String;
-        } else if(tokenType.equals(JrnElementTypes.SCRIPLET_START)
+        }
+        else if(tokenType.equals(JrnElementTypes.SCRIPLET_START)
             || tokenType.equals(JrnElementTypes.SCRIPLET_END)
-            || tokenType.equals(JrnElementTypes.FOR_SCRIPLET_START)
-            || tokenType.equals(JrnElementTypes.FOR_SCRIPLET_END)
         )
             return MarkupTag
         else if(tokenType.equals(JrnElementTypes.IDENTIFIER) || tokenType.equals(
-                JrnElementTypes.NAME)){
+                JrnElementTypes.JOURNEY_NAME)){
             return Identifier;
         } else if(tokenType.equals(JrnElementTypes.TYPE)){
             return Type;

@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnTimesCallImpl extends ASTWrapperPsiElement implements JrnTimesCall {
+public class JrnPrintStatementImpl extends ASTWrapperPsiElement implements JrnPrintStatement {
 
-  public JrnTimesCallImpl(@NotNull ASTNode node) {
+  public JrnPrintStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitTimesCall(this);
+    visitor.visitPrintStatement(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,14 +28,8 @@ public class JrnTimesCallImpl extends ASTWrapperPsiElement implements JrnTimesCa
 
   @Override
   @NotNull
-  public List<JrnStatement> getStatementList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnStatement.class);
-  }
-
-  @Override
-  @NotNull
-  public List<JrnType> getTypeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnType.class);
+  public JrnDynamicFillableTextTemplate getDynamicFillableTextTemplate() {
+    return findNotNullChildByClass(JrnDynamicFillableTextTemplate.class);
   }
 
 }

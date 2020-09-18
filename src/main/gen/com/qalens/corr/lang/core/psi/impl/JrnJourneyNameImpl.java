@@ -11,37 +11,19 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnTforLoopImpl extends ASTWrapperPsiElement implements JrnTforLoop {
+public class JrnJourneyNameImpl extends ASTWrapperPsiElement implements JrnJourneyName {
 
-  public JrnTforLoopImpl(@NotNull ASTNode node) {
+  public JrnJourneyNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitTforLoop(this);
+    visitor.visitJourneyName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public JrnTforLoop getTforLoop() {
-    return findChildByClass(JrnTforLoop.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnTforValueScriptlet getTforValueScriptlet() {
-    return findChildByClass(JrnTforValueScriptlet.class);
-  }
-
-  @Override
-  @NotNull
-  public List<JrnType> getTypeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnType.class);
   }
 
 }

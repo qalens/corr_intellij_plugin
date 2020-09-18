@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.qalens.corr.lang.JrnLanguage
-import com.qalens.corr.lang.core.lexer.JrnLexer
+import com.qalens.corr.lang.core.lexer.TopLayer
 import com.qalens.corr.lang.core.psi.JrnFile
 import com.qalens.corr.lang.core.psi.JrnElementTypes
 
@@ -33,7 +33,7 @@ class JourneyParserDefinition :ParserDefinition{
     }
 
     override fun createLexer(project: Project?): Lexer {
-        return JrnLexer();
+        return TopLayer();
     }
 
     override fun createElement(node: ASTNode?): PsiElement {

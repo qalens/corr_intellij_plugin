@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface JrnRootFn extends PsiElement {
 
   @NotNull
-  JrnLabel getLabel();
+  JrnJourneyName getJourneyName();
 
   @NotNull
   List<JrnStatement> getStatementList();

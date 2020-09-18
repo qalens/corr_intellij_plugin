@@ -10,4 +10,7 @@ public interface JrnVariableExpression extends PsiElement {
   @Nullable
   JrnType getType();
 
+  @NotNull
+  JrnVariableReference getVariableReference();
+
 }

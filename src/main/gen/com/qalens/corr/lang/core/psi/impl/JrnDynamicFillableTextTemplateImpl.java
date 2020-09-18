@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnEforValueScriptletImpl extends ASTWrapperPsiElement implements JrnEforValueScriptlet {
+public class JrnDynamicFillableTextTemplateImpl extends ASTWrapperPsiElement implements JrnDynamicFillableTextTemplate {
 
-  public JrnEforValueScriptletImpl(@NotNull ASTNode node) {
+  public JrnDynamicFillableTextTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitEforValueScriptlet(this);
+    visitor.visitDynamicFillableTextTemplate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class JrnEforValueScriptletImpl extends ASTWrapperPsiElement implements J
 
   @Override
   @NotNull
-  public JrnEJsonTemplate getEJsonTemplate() {
-    return findNotNullChildByClass(JrnEJsonTemplate.class);
+  public JrnTextTemplate getTextTemplate() {
+    return findNotNullChildByClass(JrnTextTemplate.class);
   }
 
 }

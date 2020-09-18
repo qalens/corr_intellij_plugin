@@ -27,21 +27,9 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
   }
 
   @Override
-  @Nullable
-  public JrnDefinedFnCall getDefinedFnCall() {
-    return findChildByClass(JrnDefinedFnCall.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnForCall getForCall() {
-    return findChildByClass(JrnForCall.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnTimesCall getTimesCall() {
-    return findChildByClass(JrnTimesCall.class);
+  @NotNull
+  public JrnPrintStatement getPrintStatement() {
+    return findNotNullChildByClass(JrnPrintStatement.class);
   }
 
 }

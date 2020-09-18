@@ -16,18 +16,14 @@ import java.util.*;
   public JourneyLexer() {
     this((java.io.Reader)null);
   }
-  public void pushJson(String type){
-      jsonStack.push(type);
-  }
-  public boolean popJson(){
-        jsonStack.pop();
-        return jsonStack.isEmpty();
-  }
-  public void pushState(){
+
+
+  public void pushState(Integer newState){
       state.push(yystate());
+      yybegin(newState);
   }
-  public Integer popState(){
-        return state.pop();
+  public void popState(){
+        yybegin(state.pop());
   }
 %}
 
@@ -44,7 +40,6 @@ import java.util.*;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Whitespaces
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
 EOL_WS           = \n | \r | \r\n
 LINE_WS          = [\ \t]
 WHITE_SPACE_CHAR = {EOL_WS} | {LINE_WS}
@@ -53,212 +48,80 @@ WHITE_SPACE      = {WHITE_SPACE_CHAR}+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Identifier
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-TEXT_LITERAL = ( [^\\\{\<$\")] | \\[^] )+
-IDENTIFIER = [_\p{xidstart}][\p{xidcontinue}]* ([\.]  [_\p{xidstart}][\p{xidcontinue}]*)*
-NAME = [`] ([^`] | [\`])* [`]
+TEXT_LITERAL = ( [^\\\<\`)] | \\[^] )+
+IDENTIFIER = [_\p{xidstart}][\p{xidcontinue}]*
+NAME = [`] [^`]* [`]
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Literals
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ESCAPE_SEQUENCE=\\[^\r\n]
-STRING_LITERAL = \"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
-LONG_LITERAL = ([1-9] [0-9]*)
+STRING_LITERAL = \"([^\\\"\r\n]|{ESCAPE_SEQUENCE}|{WHITE_SPACE_CHAR})*(\"|\\)?
+POSITIVE_INTEGER_LITERAL = ([1-9] [0-9]*)
+INTEGER_LITERAL = ([-]?[1-9] [0-9]*)
 DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
-%s IN_TEXT_TEMPLATE,IN_TEXT_SCRIPLET,IN_TEXT_FOR_SCRIPLET,IN_JSON_TEMPLATE,IN_JSON_SCRIPLET,IN_JSON_FOR_SCRIPLET
+%s IN_TEXT_TEMPLATE,IN_SCRIPLET,IN_STRING,IN_TEXT
 %%
 <YYINITIAL> {
-
-    "{"                             { return LBRACE; }
-    "}"                             { return RBRACE; }
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    "["                             { return LBRACK; }
-    "]"                             { return RBRACK; }
-    ":"                             { return COLON; }
-    ";"                             { return SEMICOLON; }
-    "post"                          { return RESTMETHOD; }
-    "get"                          { return RESTMETHOD; }
-    "put"                          { return RESTMETHOD; }
-    "patch"                        { return RESTMETHOD; }
-    "delete"                       { return RESTMETHOD; }
-    "print"                       { return SYSTEMMETHOD; }
-    "true"                         { return BOOLEANVALUE;}
-    "false"                        { return BOOLEANVALUE;}
-    "True"                         { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                         { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
-    "String"                        { return STRING;}
-    "Long"                          { return LONG;}
-    "List"                          { return LIST;}
-    "Object"                          { return OBJECT;}
-    "@text"                       { yybegin(IN_TEXT_TEMPLATE);return TEXTSTART;}
-    "@json"                         { yybegin(IN_JSON_TEMPLATE);return JSONSTART; }
-    "@map"                         { return MAPSTART; }
-    "@nil"                         { return NILVALUE; }
-    "@ejson"                        { yybegin(IN_JSON_TEMPLATE);return EJSONSTART; }
-    "times"                         { return TIMES;}
-    "for"                             { return FOR; }
-    "in"                             { return IN; }
-    "{{"                            { return SCRIPLET_START; }
-    ","                             { return COMMA; }
-    "<%"                         { return FOR_SCRIPLET_START; }
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    "}}"                            {return SCRIPLET_END; }
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    ","                             { return COMMA; }
-    "%>"                            { return FOR_SCRIPLET_END; }
-    {LONG_LITERAL} / [^\.]          { return LONGVALUE;}
-    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
-    {IDENTIFIER}                    { return IDENTIFIER; }
+    "print"                         { return PRINT; }
+    "fillable"                      { return FILLABLE; }
+    "text"                           { pushState(IN_TEXT);return TEXT;}
     {NAME}                          { return NAME; }
+
+}
+<IN_TEXT>{
+    "`"                             { pushState(IN_TEXT_TEMPLATE); return BACKTICK;}
     {WHITE_SPACE}                   { return WHITE_SPACE; }
 }
 <IN_TEXT_TEMPLATE>{
-    "\""                             { if(textStarted){
-                                            textStarted = false;
-                                        yybegin(YYINITIAL);
-                                        } else {
-                                            textStarted = true;
-                                        }
-                                        return QUOTE; }
-    "{{"                            { yybegin(IN_TEXT_SCRIPLET);return SCRIPLET_START; }
-    "<%"                            { yybegin(IN_TEXT_FOR_SCRIPLET);return FOR_SCRIPLET_START; }
+    "`"                             { popState();
+                                        popState();
+                                        return BACKTICK; }
+    "<%"                            { pushState(IN_SCRIPLET);return SCRIPLET_START; }
     {TEXT_LITERAL}                  { return TEXT_LITERAL; }
 }
-<IN_TEXT_SCRIPLET>{
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    ":"                             { return COLON; }
-    ","                             { return COMMA; }
-    "true"                        { return BOOLEANVALUE;}
-    "false"                       { return BOOLEANVALUE;}
-    "True"                        { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                        { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
-    "String"                        { return STRING;}
-    "Long"                          { return LONG;}
-    "List"                          { return LIST;}
-    "Object"                          { return OBJECT;}
-    "concat"                          { return CONCAT;}
-    "mul"                          { return MUL;}
-    "add"                          { return ADD;}
-    "uuid"                          { return UUID;}
-    "random"                          { return RANDOM;}
-    "round"                          { return ROUND;}
-    ","                             { return COMMA; }
-    "}}"                            {yybegin(IN_TEXT_TEMPLATE);return SCRIPLET_END; }
-   {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
-   {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
-    {IDENTIFIER}                    { return IDENTIFIER; }
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
-}
-<IN_TEXT_FOR_SCRIPLET>{
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
+
+<YYINITIAL,IN_SCRIPLET> {
+    "."                             {return DOT;}
     "{"                             { return LBRACE; }
     "}"                             { return RBRACE; }
-    ":"                             { return COLON; }
-    ","                             { return COMMA; }
-    "true"                        { return BOOLEANVALUE;}
-    "false"                       { return BOOLEANVALUE;}
-    "True"                        { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                        { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
-    "String"                        { return STRING;}
-    "Long"                          { return LONG;}
-    "List"                          { return LIST;}
-    "Object"                          { return OBJECT;}
-    "for"                             { return FOR; }
-    "in"                             { return IN; }
-    "%>"                            { yybegin(IN_TEXT_TEMPLATE);return FOR_SCRIPLET_END; }
-    {LONG_LITERAL} / [^\.]          { return LONGVALUE;}
-    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
-    {IDENTIFIER}                    { return IDENTIFIER; }
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
-}
-<IN_JSON_TEMPLATE>{
-    "{"                             { pushJson("{"); return LBRACE; }
-    "}"                             { if(popJson()) yybegin(YYINITIAL); return RBRACE; }
-    "["                             { pushJson("[");return LBRACK; }
-    "]"                             { if(popJson()) yybegin(YYINITIAL); return RBRACK; }
-    ":"                             { return COLON; }
-    "true"                        { return BOOLEANVALUE;}
-    "false"                       { return BOOLEANVALUE;}
-    "True"                        { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                        { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
-    "{{"                            { pushJson("{{"); yybegin(IN_JSON_SCRIPLET);return SCRIPLET_START; }
-    ","                             { return COMMA; }
-    "<%"                         { pushJson("<%"); yybegin(IN_JSON_FOR_SCRIPLET);return FOR_SCRIPLET_START; }
-    ","                             { return COMMA; }
-    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
-        {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
-}
-<IN_JSON_SCRIPLET>{
     "("                             { return LPAREN; }
     ")"                             { return RPAREN; }
     ":"                             { return COLON; }
-    ","                             { return COMMA; }
-    "true"                        { return BOOLEANVALUE;}
-    "false"                       { return BOOLEANVALUE;}
-    "True"                        { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                        { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
+    ";"                             { return SEMICOLON; }
+    "null"                          { return NULLVALUE;}
+    "true"                          { return BOOLEANVALUE;}
+    "false"                         { return BOOLEANVALUE;}
+    "True"                          { return BOOLEANVALUE;}
+    "False"                         { return BOOLEANVALUE;}
+    "TRUE"                          { return BOOLEANVALUE;}
+    "FALSE"                         { return BOOLEANVALUE;}
     "String"                        { return STRING;}
-    "Long"                          { return LONG;}
-    "List"                          { return LIST;}
-    "Object"                          { return OBJECT;}
+    "PositiveInteger"               { return POSITIVE_INTEGER;}
+    "Integer"                       { return INTEGER;}
+    "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }
-    "concat"                          { return CONCAT;}
-    "mul"                          { return MUL;}
-    "add"                          { return ADD;}
+    "concat"                        { return CONCAT;}
+    "mul"                           { return MUL;}
+    "add"                           { return ADD;}
+    "sub"                           { return SUB;}
+    "div"                           { return DIV;}
     "uuid"                          { return UUID;}
-    "random"                          { return RANDOM;}
-    "round"                          { return ROUND;}
-    "}}"                            {if(popJson()) yybegin(YYINITIAL); else yybegin(IN_JSON_TEMPLATE);return SCRIPLET_END; }
-    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
-        {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
+    "random"                        { return RANDOM;}
+    "round"                         { return ROUND;}
+    {STRING_LITERAL}                             { return STRING_LITERAL; }
+    {POSITIVE_INTEGER_LITERAL} / [^\.]          { return POSITIVEINTEGERVALUE;}
+    {INTEGER_LITERAL} / [^\.]                   { return INETEGERVALUE;}
+    {DOUBLE_LITERAL}                            { return DOUBLEVALUE ;}
     {IDENTIFIER}                    { return IDENTIFIER; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
+
 }
-<IN_JSON_FOR_SCRIPLET>{
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    "{"                             { return LBRACE; }
-    "}"                             { return RBRACE; }
-    ":"                             { return COLON; }
-    ","                             { return COMMA; }
-    "true"                        { return BOOLEANVALUE;}
-    "false"                       { return BOOLEANVALUE;}
-    "True"                        { return BOOLEANVALUE;}
-    "False"                        { return BOOLEANVALUE;}
-    "TRUE"                        { return BOOLEANVALUE;}
-    "FALSE"                        { return BOOLEANVALUE;}
-    "String"                        { return STRING;}
-    "Long"                          { return LONG;}
-    "List"                          { return LIST;}
-    "Object"                          { return OBJECT;}
-    "for"                             { return FOR; }
-    "in"                             { return IN; }
-    "%>"                            { if(popJson()) yybegin(YYINITIAL); else yybegin(IN_JSON_TEMPLATE);return FOR_SCRIPLET_END; }
-    {LONG_LITERAL} / [^\.]                { return LONGVALUE;}
-    {DOUBLE_LITERAL}                 { return DOUBLEVALUE ;}
-    {STRING_LITERAL}                { return STRING_LITERAL; }
-    {IDENTIFIER}                    { return IDENTIFIER; }
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
+<IN_SCRIPLET>{
+    "%>"                            { popState(); return SCRIPLET_END; }
 }
+
+
+
 [^] { return BAD_CHARACTER; }

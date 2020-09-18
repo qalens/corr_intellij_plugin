@@ -32,4 +32,10 @@ public class JrnVariableExpressionImpl extends ASTWrapperPsiElement implements J
     return findChildByClass(JrnType.class);
   }
 
+  @Override
+  @NotNull
+  public JrnVariableReference getVariableReference() {
+    return findNotNullChildByClass(JrnVariableReference.class);
+  }
+
 }

@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnTforLoop extends PsiElement {
-
-  @Nullable
-  JrnTforLoop getTforLoop();
-
-  @Nullable
-  JrnTforValueScriptlet getTforValueScriptlet();
+public interface JrnDynamicFillableTextTemplate extends PsiElement {
 
   @NotNull
-  List<JrnType> getTypeList();
+  JrnTextTemplate getTextTemplate();
 
 }

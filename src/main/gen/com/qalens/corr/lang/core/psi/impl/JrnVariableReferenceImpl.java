@@ -11,37 +11,19 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnJsonTemplateImpl extends ASTWrapperPsiElement implements JrnJsonTemplate {
+public class JrnVariableReferenceImpl extends ASTWrapperPsiElement implements JrnVariableReference {
 
-  public JrnJsonTemplateImpl(@NotNull ASTNode node) {
+  public JrnVariableReferenceImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitJsonTemplate(this);
+    visitor.visitVariableReference(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public JrnJsonArray getJsonArray() {
-    return findChildByClass(JrnJsonArray.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnJsonObject getJsonObject() {
-    return findChildByClass(JrnJsonObject.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnScriplet getScriplet() {
-    return findChildByClass(JrnScriplet.class);
   }
 
 }

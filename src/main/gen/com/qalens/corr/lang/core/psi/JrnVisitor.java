@@ -7,10 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public class JrnVisitor extends PsiElementVisitor {
 
-  public void visitArgument(@NotNull JrnArgument o) {
-    visitPsiElement(o);
-  }
-
   public void visitBinaryFunction(@NotNull JrnBinaryFunction o) {
     visitPsiElement(o);
   }
@@ -19,43 +15,7 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitDefinedFnCall(@NotNull JrnDefinedFnCall o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDefinedMethod(@NotNull JrnDefinedMethod o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEforLoop(@NotNull JrnEforLoop o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEforValueScriptlet(@NotNull JrnEforValueScriptlet o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEJsonArray(@NotNull JrnEJsonArray o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEJsonObject(@NotNull JrnEJsonObject o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEJsonPair(@NotNull JrnEJsonPair o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEJsonTemplate(@NotNull JrnEJsonTemplate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEJsonTemplateValue(@NotNull JrnEJsonTemplateValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEScriplet(@NotNull JrnEScriplet o) {
+  public void visitDynamicFillableTextTemplate(@NotNull JrnDynamicFillableTextTemplate o) {
     visitPsiElement(o);
   }
 
@@ -63,59 +23,11 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitForLoop(@NotNull JrnForLoop o) {
-    visitPsiElement(o);
-  }
-
-  public void visitForValueScriptlet(@NotNull JrnForValueScriptlet o) {
-    visitPsiElement(o);
-  }
-
-  public void visitForBlock(@NotNull JrnForBlock o) {
-    visitPsiElement(o);
-  }
-
-  public void visitForCall(@NotNull JrnForCall o) {
-    visitPsiElement(o);
-  }
-
   public void visitFunctionExpression(@NotNull JrnFunctionExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitJsonArray(@NotNull JrnJsonArray o) {
-    visitPsiElement(o);
-  }
-
-  public void visitJsonObject(@NotNull JrnJsonObject o) {
-    visitPsiElement(o);
-  }
-
-  public void visitJsonPair(@NotNull JrnJsonPair o) {
-    visitPsiElement(o);
-  }
-
-  public void visitJsonTemplate(@NotNull JrnJsonTemplate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitJsonTemplateValue(@NotNull JrnJsonTemplateValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLabel(@NotNull JrnLabel o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMapObject(@NotNull JrnMapObject o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMapPair(@NotNull JrnMapPair o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMapValue(@NotNull JrnMapValue o) {
+  public void visitJourneyName(@NotNull JrnJourneyName o) {
     visitPsiElement(o);
   }
 
@@ -123,11 +35,11 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitNil(@NotNull JrnNil o) {
+  public void visitNoArgFunction(@NotNull JrnNoArgFunction o) {
     visitPsiElement(o);
   }
 
-  public void visitNoArgFunction(@NotNull JrnNoArgFunction o) {
+  public void visitPrintStatement(@NotNull JrnPrintStatement o) {
     visitPsiElement(o);
   }
 
@@ -143,15 +55,11 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitTforLoop(@NotNull JrnTforLoop o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTforValueScriptlet(@NotNull JrnTforValueScriptlet o) {
-    visitPsiElement(o);
-  }
-
   public void visitTextBlock(@NotNull JrnTextBlock o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTextScript(@NotNull JrnTextScript o) {
     visitPsiElement(o);
   }
 
@@ -159,23 +67,15 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitTextTemplateValue(@NotNull JrnTextTemplateValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTimesCall(@NotNull JrnTimesCall o) {
-    visitPsiElement(o);
-  }
-
   public void visitType(@NotNull JrnType o) {
     visitPsiElement(o);
   }
 
-  public void visitValue(@NotNull JrnValue o) {
+  public void visitVariableExpression(@NotNull JrnVariableExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitVariableExpression(@NotNull JrnVariableExpression o) {
+  public void visitVariableReference(@NotNull JrnVariableReference o) {
     visitPsiElement(o);
   }
 

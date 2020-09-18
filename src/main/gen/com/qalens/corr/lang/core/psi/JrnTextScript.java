@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnTextTemplateValue extends PsiElement {
+public interface JrnTextScript extends PsiElement {
 
   @NotNull
-  JrnTextTemplate getTextTemplate();
+  JrnExpression getExpression();
 
 }

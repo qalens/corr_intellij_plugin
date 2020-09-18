@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface JrnTextBlock extends PsiElement {
 
   @Nullable
-  JrnForBlock getForBlock();
-
-  @Nullable
   JrnScriplet getScriplet();
 
 }

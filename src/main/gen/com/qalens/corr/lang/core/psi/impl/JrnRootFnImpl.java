@@ -28,8 +28,8 @@ public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
 
   @Override
   @NotNull
-  public JrnLabel getLabel() {
-    return findNotNullChildByClass(JrnLabel.class);
+  public JrnJourneyName getJourneyName() {
+    return findNotNullChildByClass(JrnJourneyName.class);
   }
 
   @Override

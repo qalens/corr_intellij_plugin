@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface JrnScriplet extends PsiElement {
 
   @NotNull
-  JrnExpression getExpression();
+  JrnTextScript getTextScript();
 
 }

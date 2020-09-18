@@ -36,23 +36,9 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier ':' Value
-  public static boolean Argument(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Argument")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, IDENTIFIER, COLON);
-    r = r && Value(b, l + 1);
-    exit_section_(b, m, ARGUMENT, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // (ROUND | RANDOM) '(' (Expression (',' Expression)*)?  ')'
+  // (ROUND | RANDOM | SUB | DIV) LPAREN (Expression COMMA Expression)  RPAREN
   public static boolean BinaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction")) return false;
-    if (!nextTokenIs(b, "<binary function>", RANDOM, ROUND)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BINARY_FUNCTION, "<binary function>");
     r = BinaryFunction_0(b, l + 1);
@@ -63,407 +49,55 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ROUND | RANDOM
+  // ROUND | RANDOM | SUB | DIV
   private static boolean BinaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0")) return false;
     boolean r;
     r = consumeToken(b, ROUND);
     if (!r) r = consumeToken(b, RANDOM);
+    if (!r) r = consumeToken(b, SUB);
+    if (!r) r = consumeToken(b, DIV);
     return r;
   }
 
-  // (Expression (',' Expression)*)?
+  // Expression COMMA Expression
   private static boolean BinaryFunction_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_2")) return false;
-    BinaryFunction_2_0(b, l + 1);
-    return true;
-  }
-
-  // Expression (',' Expression)*
-  private static boolean BinaryFunction_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BinaryFunction_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = Expression(b, l + 1);
-    r = r && BinaryFunction_2_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (',' Expression)*
-  private static boolean BinaryFunction_2_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BinaryFunction_2_0_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!BinaryFunction_2_0_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "BinaryFunction_2_0_1", c)) break;
-    }
-    return true;
-  }
-
-  // ',' Expression
-  private static boolean BinaryFunction_2_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BinaryFunction_2_0_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
+    r = r && consumeToken(b, COMMA);
     r = r && Expression(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // STRING_LITERAL | DoubleValue | LongValue | BooleanValue
+  // STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
   public static boolean ConstantExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ConstantExpression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, CONSTANT_EXPRESSION, "<constant expression>");
     r = consumeToken(b, STRING_LITERAL);
     if (!r) r = consumeToken(b, DOUBLEVALUE);
-    if (!r) r = consumeToken(b, LONGVALUE);
+    if (!r) r = consumeToken(b, POSITIVEINTEGERVALUE);
+    if (!r) r = consumeToken(b, INETEGERVALUE);
+    if (!r) r = consumeToken(b, NULLVALUE);
     if (!r) r = consumeToken(b, BOOLEANVALUE);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // DefinedMethod '(' (Argument ',')* Argument? ')'';'
-  public static boolean DefinedFnCall(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DefinedFnCall")) return false;
-    if (!nextTokenIs(b, "<defined fn call>", RESTMETHOD, SYSTEMMETHOD)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DEFINED_FN_CALL, "<defined fn call>");
-    r = DefinedMethod(b, l + 1);
-    r = r && consumeToken(b, LPAREN);
-    r = r && DefinedFnCall_2(b, l + 1);
-    r = r && DefinedFnCall_3(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, SEMICOLON);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // (Argument ',')*
-  private static boolean DefinedFnCall_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DefinedFnCall_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!DefinedFnCall_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "DefinedFnCall_2", c)) break;
-    }
-    return true;
-  }
-
-  // Argument ','
-  private static boolean DefinedFnCall_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DefinedFnCall_2_0")) return false;
+  // FILLABLE TEXT TextTemplate
+  public static boolean DynamicFillableTextTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "DynamicFillableTextTemplate")) return false;
+    if (!nextTokenIs(b, FILLABLE)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = Argument(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // Argument?
-  private static boolean DefinedFnCall_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DefinedFnCall_3")) return false;
-    Argument(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // RestMethod | SystemMethod
-  public static boolean DefinedMethod(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "DefinedMethod")) return false;
-    if (!nextTokenIs(b, "<defined method>", RESTMETHOD, SYSTEMMETHOD)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, DEFINED_METHOD, "<defined method>");
-    r = consumeToken(b, RESTMETHOD);
-    if (!r) r = consumeToken(b, SYSTEMMETHOD);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (EFOR_LOOP | EFOR_VALUE_SCRIPTLET) RBRACE
-  public static boolean EFOR_LOOP(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP")) return false;
-    if (!nextTokenIs(b, FOR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FOR, LPAREN);
-    r = r && EFOR_LOOP_2(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, LBRACE);
-    r = r && EFOR_LOOP_5(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, EFOR_LOOP, r);
-    return r;
-  }
-
-  // identifier (':' Type) IN identifier (':' Type)?
-  private static boolean EFOR_LOOP_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && EFOR_LOOP_2_1(b, l + 1);
-    r = r && consumeTokens(b, 0, IN, IDENTIFIER);
-    r = r && EFOR_LOOP_2_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean EFOR_LOOP_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean EFOR_LOOP_2_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP_2_4")) return false;
-    EFOR_LOOP_2_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean EFOR_LOOP_2_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP_2_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // EFOR_LOOP | EFOR_VALUE_SCRIPTLET
-  private static boolean EFOR_LOOP_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_LOOP_5")) return false;
-    boolean r;
-    r = EFOR_LOOP(b, l + 1);
-    if (!r) r = EFOR_VALUE_SCRIPTLET(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR_SCRIPLET_END EJsonTemplate FOR_SCRIPLET_START
-  public static boolean EFOR_VALUE_SCRIPTLET(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EFOR_VALUE_SCRIPTLET")) return false;
-    if (!nextTokenIs(b, FOR_SCRIPLET_END)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_END);
-    r = r && EJsonTemplate(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_START);
-    exit_section_(b, m, EFOR_VALUE_SCRIPTLET, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // '[' ((FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTemplate ',')* EJsonTemplate))?']'
-  public static boolean EJsonArray(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray")) return false;
-    if (!nextTokenIs(b, LBRACK)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACK);
-    r = r && EJsonArray_1(b, l + 1);
-    r = r && consumeToken(b, RBRACK);
-    exit_section_(b, m, E_JSON_ARRAY, r);
-    return r;
-  }
-
-  // ((FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTemplate ',')* EJsonTemplate))?
-  private static boolean EJsonArray_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1")) return false;
-    EJsonArray_1_0(b, l + 1);
-    return true;
-  }
-
-  // (FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTemplate ',')* EJsonTemplate)
-  private static boolean EJsonArray_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = EJsonArray_1_0_0(b, l + 1);
-    if (!r) r = EJsonArray_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END
-  private static boolean EJsonArray_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_START);
-    r = r && EFOR_LOOP(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_END);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (EJsonTemplate ',')* EJsonTemplate
-  private static boolean EJsonArray_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1_0_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = EJsonArray_1_0_1_0(b, l + 1);
-    r = r && EJsonTemplate(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (EJsonTemplate ',')*
-  private static boolean EJsonArray_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1_0_1_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!EJsonArray_1_0_1_0_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "EJsonArray_1_0_1_0", c)) break;
-    }
-    return true;
-  }
-
-  // EJsonTemplate ','
-  private static boolean EJsonArray_1_0_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonArray_1_0_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = EJsonTemplate(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // '{' (EJsonPair ',')* EJsonPair? '}'
-  public static boolean EJsonObject(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonObject")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACE);
-    r = r && EJsonObject_1(b, l + 1);
-    r = r && EJsonObject_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, E_JSON_OBJECT, r);
-    return r;
-  }
-
-  // (EJsonPair ',')*
-  private static boolean EJsonObject_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonObject_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!EJsonObject_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "EJsonObject_1", c)) break;
-    }
-    return true;
-  }
-
-  // EJsonPair ','
-  private static boolean EJsonObject_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonObject_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = EJsonPair(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // EJsonPair?
-  private static boolean EJsonObject_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonObject_2")) return false;
-    EJsonPair(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // STRING_LITERAL ':' (EScriplet | EJsonArray | EJsonObject)
-  public static boolean EJsonPair(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonPair")) return false;
-    if (!nextTokenIs(b, STRING_LITERAL)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
-    r = r && EJsonPair_2(b, l + 1);
-    exit_section_(b, m, E_JSON_PAIR, r);
-    return r;
-  }
-
-  // EScriplet | EJsonArray | EJsonObject
-  private static boolean EJsonPair_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonPair_2")) return false;
-    boolean r;
-    r = EScriplet(b, l + 1);
-    if (!r) r = EJsonArray(b, l + 1);
-    if (!r) r = EJsonObject(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // EScriplet | EJsonArray | EJsonObject
-  public static boolean EJsonTemplate(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonTemplate")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, E_JSON_TEMPLATE, "<e json template>");
-    r = EScriplet(b, l + 1);
-    if (!r) r = EJsonArray(b, l + 1);
-    if (!r) r = EJsonObject(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // EjsonStart EJsonTemplate
-  public static boolean EJsonTemplateValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EJsonTemplateValue")) return false;
-    if (!nextTokenIs(b, EJSONSTART)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, EJSONSTART);
-    r = r && EJsonTemplate(b, l + 1);
-    exit_section_(b, m, E_JSON_TEMPLATE_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // SCRIPLET_START identifier (':' Type)? SCRIPLET_END
-  public static boolean EScriplet(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EScriplet")) return false;
-    if (!nextTokenIs(b, SCRIPLET_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, SCRIPLET_START, IDENTIFIER);
-    r = r && EScriplet_2(b, l + 1);
-    r = r && consumeToken(b, SCRIPLET_END);
-    exit_section_(b, m, E_SCRIPLET, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean EScriplet_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EScriplet_2")) return false;
-    EScriplet_2_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean EScriplet_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EScriplet_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
+    r = consumeTokens(b, 0, FILLABLE, TEXT);
+    r = r && TextTemplate(b, l + 1);
+    exit_section_(b, m, DYNAMIC_FILLABLE_TEXT_TEMPLATE, r);
     return r;
   }
 
@@ -481,170 +115,6 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (FOR_LOOP | FOR_VALUE_SCRIPTLET) RBRACE
-  public static boolean FOR_LOOP(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP")) return false;
-    if (!nextTokenIs(b, FOR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FOR, LPAREN);
-    r = r && FOR_LOOP_2(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, LBRACE);
-    r = r && FOR_LOOP_5(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, FOR_LOOP, r);
-    return r;
-  }
-
-  // identifier (':' Type) IN identifier (':' Type)?
-  private static boolean FOR_LOOP_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && FOR_LOOP_2_1(b, l + 1);
-    r = r && consumeTokens(b, 0, IN, IDENTIFIER);
-    r = r && FOR_LOOP_2_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean FOR_LOOP_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean FOR_LOOP_2_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP_2_4")) return false;
-    FOR_LOOP_2_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean FOR_LOOP_2_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP_2_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // FOR_LOOP | FOR_VALUE_SCRIPTLET
-  private static boolean FOR_LOOP_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_LOOP_5")) return false;
-    boolean r;
-    r = FOR_LOOP(b, l + 1);
-    if (!r) r = FOR_VALUE_SCRIPTLET(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR_SCRIPLET_END JsonTemplate FOR_SCRIPLET_START
-  public static boolean FOR_VALUE_SCRIPTLET(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FOR_VALUE_SCRIPTLET")) return false;
-    if (!nextTokenIs(b, FOR_SCRIPLET_END)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_END);
-    r = r && JsonTemplate(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_START);
-    exit_section_(b, m, FOR_VALUE_SCRIPTLET, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR_SCRIPLET_START TFOR_LOOP FOR_SCRIPLET_END
-  public static boolean ForBlock(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForBlock")) return false;
-    if (!nextTokenIs(b, FOR_SCRIPLET_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_START);
-    r = r && TFOR_LOOP(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_END);
-    exit_section_(b, m, FOR_BLOCK, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR '(' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
-  public static boolean ForCall(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall")) return false;
-    if (!nextTokenIs(b, FOR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FOR, LPAREN);
-    r = r && ForCall_2(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, LBRACE);
-    r = r && ForCall_5(b, l + 1);
-    r = r && consumeTokens(b, 0, RBRACE, SEMICOLON);
-    exit_section_(b, m, FOR_CALL, r);
-    return r;
-  }
-
-  // identifier (':' Type) IN identifier (':' Type)?
-  private static boolean ForCall_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && ForCall_2_1(b, l + 1);
-    r = r && consumeTokens(b, 0, IN, IDENTIFIER);
-    r = r && ForCall_2_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean ForCall_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean ForCall_2_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall_2_4")) return false;
-    ForCall_2_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean ForCall_2_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall_2_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // Statement *
-  private static boolean ForCall_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForCall_5")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ForCall_5", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // MultiValuedFunction | BinaryFunction | NoArgFunction
   public static boolean FunctionExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FunctionExpression")) return false;
@@ -658,187 +128,12 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '[' ((FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate))?']'
-  public static boolean JsonArray(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray")) return false;
-    if (!nextTokenIs(b, LBRACK)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACK);
-    r = r && JsonArray_1(b, l + 1);
-    r = r && consumeToken(b, RBRACK);
-    exit_section_(b, m, JSON_ARRAY, r);
-    return r;
-  }
-
-  // ((FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate))?
-  private static boolean JsonArray_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1")) return false;
-    JsonArray_1_0(b, l + 1);
-    return true;
-  }
-
-  // (FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate)
-  private static boolean JsonArray_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = JsonArray_1_0_0(b, l + 1);
-    if (!r) r = JsonArray_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END
-  private static boolean JsonArray_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_START);
-    r = r && FOR_LOOP(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_END);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (JsonTemplate ',')* JsonTemplate
-  private static boolean JsonArray_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1_0_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = JsonArray_1_0_1_0(b, l + 1);
-    r = r && JsonTemplate(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (JsonTemplate ',')*
-  private static boolean JsonArray_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1_0_1_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!JsonArray_1_0_1_0_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "JsonArray_1_0_1_0", c)) break;
-    }
-    return true;
-  }
-
-  // JsonTemplate ','
-  private static boolean JsonArray_1_0_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonArray_1_0_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = JsonTemplate(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // '{' (JsonPair ',')* JsonPair? '}'
-  public static boolean JsonObject(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonObject")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACE);
-    r = r && JsonObject_1(b, l + 1);
-    r = r && JsonObject_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, JSON_OBJECT, r);
-    return r;
-  }
-
-  // (JsonPair ',')*
-  private static boolean JsonObject_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonObject_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!JsonObject_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "JsonObject_1", c)) break;
-    }
-    return true;
-  }
-
-  // JsonPair ','
-  private static boolean JsonObject_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonObject_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = JsonPair(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // JsonPair?
-  private static boolean JsonObject_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonObject_2")) return false;
-    JsonPair(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // STRING_LITERAL ':' (Scriplet | JsonArray | JsonObject | STRING_LITERAL | DoubleValue | LongValue | BooleanValue)
-  public static boolean JsonPair(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonPair")) return false;
-    if (!nextTokenIs(b, STRING_LITERAL)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
-    r = r && JsonPair_2(b, l + 1);
-    exit_section_(b, m, JSON_PAIR, r);
-    return r;
-  }
-
-  // Scriplet | JsonArray | JsonObject | STRING_LITERAL | DoubleValue | LongValue | BooleanValue
-  private static boolean JsonPair_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonPair_2")) return false;
-    boolean r;
-    r = Scriplet(b, l + 1);
-    if (!r) r = JsonArray(b, l + 1);
-    if (!r) r = JsonObject(b, l + 1);
-    if (!r) r = consumeToken(b, STRING_LITERAL);
-    if (!r) r = consumeToken(b, DOUBLEVALUE);
-    if (!r) r = consumeToken(b, LONGVALUE);
-    if (!r) r = consumeToken(b, BOOLEANVALUE);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // Scriplet | JsonArray | JsonObject | STRING_LITERAL
-  public static boolean JsonTemplate(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonTemplate")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, JSON_TEMPLATE, "<json template>");
-    r = Scriplet(b, l + 1);
-    if (!r) r = JsonArray(b, l + 1);
-    if (!r) r = JsonObject(b, l + 1);
-    if (!r) r = consumeToken(b, STRING_LITERAL);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // JsonStart JsonTemplate
-  public static boolean JsonTemplateValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JsonTemplateValue")) return false;
-    if (!nextTokenIs(b, JSONSTART)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, JSONSTART);
-    r = r && JsonTemplate(b, l + 1);
-    exit_section_(b, m, JSON_TEMPLATE_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // identifier | NAME
-  public static boolean Label(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Label")) return false;
-    if (!nextTokenIs(b, "<label>", IDENTIFIER, NAME)) return false;
+  public static boolean JourneyName(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyName")) return false;
+    if (!nextTokenIs(b, "<journey name>", IDENTIFIER, NAME)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, LABEL, "<label>");
+    Marker m = enter_section_(b, l, _NONE_, JOURNEY_NAME, "<journey name>");
     r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, NAME);
     exit_section_(b, l, m, r, false, null);
@@ -846,86 +141,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' (MapPair ',')* MapPair? '}'
-  public static boolean MapObject(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapObject")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACE);
-    r = r && MapObject_1(b, l + 1);
-    r = r && MapObject_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, MAP_OBJECT, r);
-    return r;
-  }
-
-  // (MapPair ',')*
-  private static boolean MapObject_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapObject_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!MapObject_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "MapObject_1", c)) break;
-    }
-    return true;
-  }
-
-  // MapPair ','
-  private static boolean MapObject_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapObject_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = MapPair(b, l + 1);
-    r = r && consumeToken(b, COMMA);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // MapPair?
-  private static boolean MapObject_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapObject_2")) return false;
-    MapPair(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // STRING_LITERAL ':' (TextTemplateValue | STRING_LITERAL )
-  public static boolean MapPair(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapPair")) return false;
-    if (!nextTokenIs(b, STRING_LITERAL)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
-    r = r && MapPair_2(b, l + 1);
-    exit_section_(b, m, MAP_PAIR, r);
-    return r;
-  }
-
-  // TextTemplateValue | STRING_LITERAL
-  private static boolean MapPair_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapPair_2")) return false;
-    boolean r;
-    r = TextTemplateValue(b, l + 1);
-    if (!r) r = consumeToken(b, STRING_LITERAL);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // MapStart MapObject
-  public static boolean MapValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MapValue")) return false;
-    if (!nextTokenIs(b, MAPSTART)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, MAPSTART);
-    r = r && MapObject(b, l + 1);
-    exit_section_(b, m, MAP_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // (CONCAT | MUL | ADD) '(' (Expression (',' Expression)*)? ')'
+  // (CONCAT | MUL | ADD) LPAREN (Expression (',' Expression)*)? RPAREN
   public static boolean MultiValuedFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MultiValuedFunction")) return false;
     boolean r;
@@ -989,19 +205,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NILVALUE
-  public static boolean Nil(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Nil")) return false;
-    if (!nextTokenIs(b, NILVALUE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, NILVALUE);
-    exit_section_(b, m, NIL, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // UUID '('  ')'
+  // UUID LPAREN  RPAREN
   public static boolean NoArgFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "NoArgFunction")) return false;
     if (!nextTokenIs(b, UUID)) return false;
@@ -1013,33 +217,47 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // Label '{' Statement* '}'
+  // PRINT DynamicFillableTextTemplate SEMICOLON
+  public static boolean PrintStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PrintStatement")) return false;
+    if (!nextTokenIs(b, PRINT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PRINT);
+    r = r && DynamicFillableTextTemplate(b, l + 1);
+    r = r && consumeToken(b, SEMICOLON);
+    exit_section_(b, m, PRINT_STATEMENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // JourneyName LPAREN RPAREN LBRACE Statement* RBRACE
   public static boolean RootFn(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RootFn")) return false;
     if (!nextTokenIs(b, "<root fn>", IDENTIFIER, NAME)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROOT_FN, "<root fn>");
-    r = Label(b, l + 1);
-    r = r && consumeToken(b, LBRACE);
-    r = r && RootFn_2(b, l + 1);
+    r = JourneyName(b, l + 1);
+    r = r && consumeTokens(b, 0, LPAREN, RPAREN, LBRACE);
+    r = r && RootFn_4(b, l + 1);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // Statement*
-  private static boolean RootFn_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "RootFn_2")) return false;
+  private static boolean RootFn_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_4")) return false;
     while (true) {
       int c = current_position_(b);
       if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "RootFn_2", c)) break;
+      if (!empty_element_parsed_guard_(b, "RootFn_4", c)) break;
     }
     return true;
   }
 
   /* ********************************************************** */
-  // SCRIPLET_START (Expression) SCRIPLET_END
+  // SCRIPLET_START (TextScript) SCRIPLET_END
   public static boolean Scriplet(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Scriplet")) return false;
     if (!nextTokenIs(b, SCRIPLET_START)) return false;
@@ -1052,299 +270,100 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (Expression)
+  // (TextScript)
   private static boolean Scriplet_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Scriplet_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = Expression(b, l + 1);
+    r = TextScript(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // DefinedFnCall | TimesCall | ForCall
+  // PrintStatement
   public static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
+    if (!nextTokenIs(b, PRINT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STATEMENT, "<statement>");
-    r = DefinedFnCall(b, l + 1);
-    if (!r) r = TimesCall(b, l + 1);
-    if (!r) r = ForCall(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = PrintStatement(b, l + 1);
+    exit_section_(b, m, STATEMENT, r);
     return r;
   }
 
   /* ********************************************************** */
-  // FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (TFOR_LOOP | TFOR_VALUE_SCRIPTLET) RBRACE
-  public static boolean TFOR_LOOP(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP")) return false;
-    if (!nextTokenIs(b, FOR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FOR, LPAREN);
-    r = r && TFOR_LOOP_2(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, LBRACE);
-    r = r && TFOR_LOOP_5(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, TFOR_LOOP, r);
-    return r;
-  }
-
-  // identifier (':' Type) IN identifier (':' Type)?
-  private static boolean TFOR_LOOP_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && TFOR_LOOP_2_1(b, l + 1);
-    r = r && consumeTokens(b, 0, IN, IDENTIFIER);
-    r = r && TFOR_LOOP_2_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean TFOR_LOOP_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean TFOR_LOOP_2_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP_2_4")) return false;
-    TFOR_LOOP_2_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean TFOR_LOOP_2_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP_2_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // TFOR_LOOP | TFOR_VALUE_SCRIPTLET
-  private static boolean TFOR_LOOP_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_LOOP_5")) return false;
-    boolean r;
-    r = TFOR_LOOP(b, l + 1);
-    if (!r) r = TFOR_VALUE_SCRIPTLET(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // FOR_SCRIPLET_END TextTemplate FOR_SCRIPLET_START
-  public static boolean TFOR_VALUE_SCRIPTLET(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TFOR_VALUE_SCRIPTLET")) return false;
-    if (!nextTokenIs(b, FOR_SCRIPLET_END)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FOR_SCRIPLET_END);
-    r = r && TextTemplate(b, l + 1);
-    r = r && consumeToken(b, FOR_SCRIPLET_START);
-    exit_section_(b, m, TFOR_VALUE_SCRIPTLET, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // ForBlock| Scriplet | TEXT_LITERAL
+  // Scriplet | TEXT_LITERAL
   public static boolean TextBlock(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "TextBlock")) return false;
+    if (!nextTokenIs(b, "<text block>", SCRIPLET_START, TEXT_LITERAL)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, TEXT_BLOCK, "<text block>");
-    r = ForBlock(b, l + 1);
-    if (!r) r = Scriplet(b, l + 1);
+    r = Scriplet(b, l + 1);
     if (!r) r = consumeToken(b, TEXT_LITERAL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // TextBlock*
+  // Expression
+  public static boolean TextScript(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TextScript")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TEXT_SCRIPT, "<text script>");
+    r = Expression(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // BACKTICK TextBlock* BACKTICK
   public static boolean TextTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "TextTemplate")) return false;
-    Marker m = enter_section_(b, l, _NONE_, TEXT_TEMPLATE, "<text template>");
+    if (!nextTokenIs(b, BACKTICK)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BACKTICK);
+    r = r && TextTemplate_1(b, l + 1);
+    r = r && consumeToken(b, BACKTICK);
+    exit_section_(b, m, TEXT_TEMPLATE, r);
+    return r;
+  }
+
+  // TextBlock*
+  private static boolean TextTemplate_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TextTemplate_1")) return false;
     while (true) {
       int c = current_position_(b);
       if (!TextBlock(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "TextTemplate", c)) break;
-    }
-    exit_section_(b, l, m, true, false, null);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // TextStart QUOTE TextTemplate QUOTE
-  public static boolean TextTemplateValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TextTemplateValue")) return false;
-    if (!nextTokenIs(b, TEXTSTART)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TEXTSTART, QUOTE);
-    r = r && TextTemplate(b, l + 1);
-    r = r && consumeToken(b, QUOTE);
-    exit_section_(b, m, TEXT_TEMPLATE_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // TIMES '(' (LongValue | (identifier (':' Type)?)) ',' identifier ',' (identifier (':' Type) IN identifier (':' Type)?) ')' '{' Statement * '}' ';'
-  public static boolean TimesCall(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall")) return false;
-    if (!nextTokenIs(b, TIMES)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TIMES, LPAREN);
-    r = r && TimesCall_2(b, l + 1);
-    r = r && consumeTokens(b, 0, COMMA, IDENTIFIER, COMMA);
-    r = r && TimesCall_6(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, LBRACE);
-    r = r && TimesCall_9(b, l + 1);
-    r = r && consumeTokens(b, 0, RBRACE, SEMICOLON);
-    exit_section_(b, m, TIMES_CALL, r);
-    return r;
-  }
-
-  // LongValue | (identifier (':' Type)?)
-  private static boolean TimesCall_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LONGVALUE);
-    if (!r) r = TimesCall_2_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // identifier (':' Type)?
-  private static boolean TimesCall_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && TimesCall_2_1_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean TimesCall_2_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_2_1_1")) return false;
-    TimesCall_2_1_1_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean TimesCall_2_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_2_1_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // identifier (':' Type) IN identifier (':' Type)?
-  private static boolean TimesCall_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_6")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    r = r && TimesCall_6_1(b, l + 1);
-    r = r && consumeTokens(b, 0, IN, IDENTIFIER);
-    r = r && TimesCall_6_4(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ':' Type
-  private static boolean TimesCall_6_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_6_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (':' Type)?
-  private static boolean TimesCall_6_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_6_4")) return false;
-    TimesCall_6_4_0(b, l + 1);
-    return true;
-  }
-
-  // ':' Type
-  private static boolean TimesCall_6_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_6_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COLON);
-    r = r && Type(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // Statement *
-  private static boolean TimesCall_9(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "TimesCall_9")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "TimesCall_9", c)) break;
+      if (!empty_element_parsed_guard_(b, "TextTemplate_1", c)) break;
     }
     return true;
   }
 
   /* ********************************************************** */
-  // STRING | LONG | LIST | OBJECT
+  // STRING | BOOL | POSITIVE_INTEGER | INTEGER | DOUBLE
   public static boolean Type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Type")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, TYPE, "<type>");
     r = consumeToken(b, STRING);
-    if (!r) r = consumeToken(b, LONG);
-    if (!r) r = consumeToken(b, LIST);
-    if (!r) r = consumeToken(b, OBJECT);
+    if (!r) r = consumeToken(b, BOOL);
+    if (!r) r = consumeToken(b, POSITIVE_INTEGER);
+    if (!r) r = consumeToken(b, INTEGER);
+    if (!r) r = consumeToken(b, DOUBLE);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // TextTemplateValue | JsonTemplateValue | EJsonTemplateValue | Nil | MapValue
-  public static boolean Value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Value")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
-    r = TextTemplateValue(b, l + 1);
-    if (!r) r = JsonTemplateValue(b, l + 1);
-    if (!r) r = EJsonTemplateValue(b, l + 1);
-    if (!r) r = Nil(b, l + 1);
-    if (!r) r = MapValue(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // identifier (':' Type)?
+  // VariableReference (':' Type)?
   public static boolean VariableExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableExpression")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
+    r = VariableReference(b, l + 1);
     r = r && VariableExpression_1(b, l + 1);
     exit_section_(b, m, VARIABLE_EXPRESSION, r);
     return r;
@@ -1364,6 +383,40 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, COLON);
     r = r && Type(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // identifier (DOT identifier)*
+  public static boolean VariableReference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableReference")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    r = r && VariableReference_1(b, l + 1);
+    exit_section_(b, m, VARIABLE_REFERENCE, r);
+    return r;
+  }
+
+  // (DOT identifier)*
+  private static boolean VariableReference_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableReference_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!VariableReference_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "VariableReference_1", c)) break;
+    }
+    return true;
+  }
+
+  // DOT identifier
+  private static boolean VariableReference_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableReference_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DOT, IDENTIFIER);
     exit_section_(b, m, null, r);
     return r;
   }

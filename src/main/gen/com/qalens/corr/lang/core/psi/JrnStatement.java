@@ -7,13 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnStatement extends PsiElement {
 
-  @Nullable
-  JrnDefinedFnCall getDefinedFnCall();
-
-  @Nullable
-  JrnForCall getForCall();
-
-  @Nullable
-  JrnTimesCall getTimesCall();
+  @NotNull
+  JrnPrintStatement getPrintStatement();
 
 }

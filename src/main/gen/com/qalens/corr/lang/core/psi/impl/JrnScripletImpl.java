@@ -28,8 +28,8 @@ public class JrnScripletImpl extends ASTWrapperPsiElement implements JrnScriplet
 
   @Override
   @NotNull
-  public JrnExpression getExpression() {
-    return findNotNullChildByClass(JrnExpression.class);
+  public JrnTextScript getTextScript() {
+    return findNotNullChildByClass(JrnTextScript.class);
   }
 
 }

@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnTforValueScriptlet extends PsiElement {
-
-  @NotNull
-  JrnTextTemplate getTextTemplate();
+public interface JrnJourneyName extends PsiElement {
 
 }

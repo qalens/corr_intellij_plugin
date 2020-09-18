@@ -28,12 +28,6 @@ public class JrnTextBlockImpl extends ASTWrapperPsiElement implements JrnTextBlo
 
   @Override
   @Nullable
-  public JrnForBlock getForBlock() {
-    return findChildByClass(JrnForBlock.class);
-  }
-
-  @Override
-  @Nullable
   public JrnScriplet getScriplet() {
     return findChildByClass(JrnScriplet.class);
   }
