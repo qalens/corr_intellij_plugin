@@ -48,14 +48,20 @@
           PRINT  = 'print'
           FILLABLE = 'fillable'
           TEXT = 'text'
+          FOR = 'for'
+          FATARROW = '=>'
 
       ]
 }
 journeyFile ::= RootFn
 RootFn ::= JourneyName LPAREN RPAREN LBRACE Statement* RBRACE
 JourneyName ::= identifier | NAME
-Statement ::= PrintStatement
+Statement ::= PrintStatement | ForStatement
 PrintStatement ::= PRINT DynamicFillableTextTemplate SEMICOLON
+ForStatement ::= VariableReference DOT FOR ( UnArgedFor | ArgedFor)
+UnArgedFor ::= Statement | MultipleStatement
+ArgedFor ::= LPAREN ( VariableReference COMMA VariableReference | VariableReference?) RPAREN FATARROW (Statement | MultipleStatement)
+MultipleStatement ::= LBRACE (Statement)* RBRACE
 DynamicFillableTextTemplate ::= FILLABLE TEXT TextTemplate
 TextTemplate ::= BACKTICK TextBlock* BACKTICK
 TextBlock ::= Scriplet | TEXT_LITERAL

@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnStatement extends PsiElement {
+public interface JrnForStatement extends PsiElement {
 
   @Nullable
-  JrnForStatement getForStatement();
+  JrnArgedFor getArgedFor();
 
   @Nullable
-  JrnPrintStatement getPrintStatement();
+  JrnUnArgedFor getUnArgedFor();
+
+  @NotNull
+  JrnVariableReference getVariableReference();
 
 }

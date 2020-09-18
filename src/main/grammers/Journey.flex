@@ -90,6 +90,8 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     ")"                             { return RPAREN; }
     ":"                             { return COLON; }
     ";"                             { return SEMICOLON; }
+    "for"                           { return FOR;}
+    "=>"                            { return FATARROW;}
     "null"                          { return NULLVALUE;}
     "true"                          { return BOOLEANVALUE;}
     "false"                         { return BOOLEANVALUE;}

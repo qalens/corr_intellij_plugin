@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public class JrnVisitor extends PsiElementVisitor {
 
+  public void visitArgedFor(@NotNull JrnArgedFor o) {
+    visitPsiElement(o);
+  }
+
   public void visitBinaryFunction(@NotNull JrnBinaryFunction o) {
     visitPsiElement(o);
   }
@@ -23,6 +27,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitForStatement(@NotNull JrnForStatement o) {
+    visitPsiElement(o);
+  }
+
   public void visitFunctionExpression(@NotNull JrnFunctionExpression o) {
     visitPsiElement(o);
   }
@@ -32,6 +40,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitMultiValuedFunction(@NotNull JrnMultiValuedFunction o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMultipleStatement(@NotNull JrnMultipleStatement o) {
     visitPsiElement(o);
   }
 
@@ -68,6 +80,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitType(@NotNull JrnType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnArgedFor(@NotNull JrnUnArgedFor o) {
     visitPsiElement(o);
   }
 

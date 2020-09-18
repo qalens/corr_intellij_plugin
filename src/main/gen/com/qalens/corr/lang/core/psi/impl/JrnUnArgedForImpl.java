@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStatement {
+public class JrnUnArgedForImpl extends ASTWrapperPsiElement implements JrnUnArgedFor {
 
-  public JrnStatementImpl(@NotNull ASTNode node) {
+  public JrnUnArgedForImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitStatement(this);
+    visitor.visitUnArgedFor(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,14 +28,14 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
 
   @Override
   @Nullable
-  public JrnForStatement getForStatement() {
-    return findChildByClass(JrnForStatement.class);
+  public JrnMultipleStatement getMultipleStatement() {
+    return findChildByClass(JrnMultipleStatement.class);
   }
 
   @Override
   @Nullable
-  public JrnPrintStatement getPrintStatement() {
-    return findChildByClass(JrnPrintStatement.class);
+  public JrnStatement getStatement() {
+    return findChildByClass(JrnStatement.class);
   }
 
 }

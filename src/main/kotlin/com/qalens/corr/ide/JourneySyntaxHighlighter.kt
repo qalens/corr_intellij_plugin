@@ -59,6 +59,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.RANDOM)
             || tokenType.equals(JrnElementTypes.SUB)
             || tokenType.equals(JrnElementTypes.DIV)
+            || tokenType.equals(JrnElementTypes.FOR)
         )
             return Keywords;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

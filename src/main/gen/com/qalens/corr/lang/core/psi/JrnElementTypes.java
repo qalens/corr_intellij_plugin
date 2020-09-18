@@ -8,12 +8,15 @@ import com.qalens.corr.lang.core.psi.impl.*;
 
 public interface JrnElementTypes {
 
+  IElementType ARGED_FOR = new JrnElementType("ARGED_FOR");
   IElementType BINARY_FUNCTION = new JrnElementType("BINARY_FUNCTION");
   IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
   IElementType DYNAMIC_FILLABLE_TEXT_TEMPLATE = new JrnElementType("DYNAMIC_FILLABLE_TEXT_TEMPLATE");
   IElementType EXPRESSION = new JrnElementType("EXPRESSION");
+  IElementType FOR_STATEMENT = new JrnElementType("FOR_STATEMENT");
   IElementType FUNCTION_EXPRESSION = new JrnElementType("FUNCTION_EXPRESSION");
   IElementType JOURNEY_NAME = new JrnElementType("JOURNEY_NAME");
+  IElementType MULTIPLE_STATEMENT = new JrnElementType("MULTIPLE_STATEMENT");
   IElementType MULTI_VALUED_FUNCTION = new JrnElementType("MULTI_VALUED_FUNCTION");
   IElementType NO_ARG_FUNCTION = new JrnElementType("NO_ARG_FUNCTION");
   IElementType PRINT_STATEMENT = new JrnElementType("PRINT_STATEMENT");
@@ -24,6 +27,7 @@ public interface JrnElementTypes {
   IElementType TEXT_SCRIPT = new JrnElementType("TEXT_SCRIPT");
   IElementType TEXT_TEMPLATE = new JrnElementType("TEXT_TEMPLATE");
   IElementType TYPE = new JrnElementType("TYPE");
+  IElementType UN_ARGED_FOR = new JrnElementType("UN_ARGED_FOR");
   IElementType VARIABLE_EXPRESSION = new JrnElementType("VARIABLE_EXPRESSION");
   IElementType VARIABLE_REFERENCE = new JrnElementType("VARIABLE_REFERENCE");
 
@@ -38,7 +42,9 @@ public interface JrnElementTypes {
   IElementType DOT = new JrnTokenType(".");
   IElementType DOUBLE = new JrnTokenType("Double");
   IElementType DOUBLEVALUE = new JrnTokenType("DoubleValue");
+  IElementType FATARROW = new JrnTokenType("=>");
   IElementType FILLABLE = new JrnTokenType("fillable");
+  IElementType FOR = new JrnTokenType("for");
   IElementType IDENTIFIER = new JrnTokenType("identifier");
   IElementType INETEGERVALUE = new JrnTokenType("InetegerValue");
   IElementType INTEGER = new JrnTokenType("Integer");
@@ -74,7 +80,10 @@ public interface JrnElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == BINARY_FUNCTION) {
+      if (type == ARGED_FOR) {
+        return new JrnArgedForImpl(node);
+      }
+      else if (type == BINARY_FUNCTION) {
         return new JrnBinaryFunctionImpl(node);
       }
       else if (type == CONSTANT_EXPRESSION) {
@@ -86,11 +95,17 @@ public interface JrnElementTypes {
       else if (type == EXPRESSION) {
         return new JrnExpressionImpl(node);
       }
+      else if (type == FOR_STATEMENT) {
+        return new JrnForStatementImpl(node);
+      }
       else if (type == FUNCTION_EXPRESSION) {
         return new JrnFunctionExpressionImpl(node);
       }
       else if (type == JOURNEY_NAME) {
         return new JrnJourneyNameImpl(node);
+      }
+      else if (type == MULTIPLE_STATEMENT) {
+        return new JrnMultipleStatementImpl(node);
       }
       else if (type == MULTI_VALUED_FUNCTION) {
         return new JrnMultiValuedFunctionImpl(node);
@@ -121,6 +136,9 @@ public interface JrnElementTypes {
       }
       else if (type == TYPE) {
         return new JrnTypeImpl(node);
+      }
+      else if (type == UN_ARGED_FOR) {
+        return new JrnUnArgedForImpl(node);
       }
       else if (type == VARIABLE_EXPRESSION) {
         return new JrnVariableExpressionImpl(node);

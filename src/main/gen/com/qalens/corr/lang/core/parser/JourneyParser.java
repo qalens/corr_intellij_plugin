@@ -36,6 +36,60 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LPAREN ( VariableReference COMMA VariableReference | VariableReference?) RPAREN FATARROW (Statement | MultipleStatement)
+  public static boolean ArgedFor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ArgedFor")) return false;
+    if (!nextTokenIs(b, LPAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LPAREN);
+    r = r && ArgedFor_1(b, l + 1);
+    r = r && consumeTokens(b, 0, RPAREN, FATARROW);
+    r = r && ArgedFor_4(b, l + 1);
+    exit_section_(b, m, ARGED_FOR, r);
+    return r;
+  }
+
+  // VariableReference COMMA VariableReference | VariableReference?
+  private static boolean ArgedFor_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ArgedFor_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ArgedFor_1_0(b, l + 1);
+    if (!r) r = ArgedFor_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // VariableReference COMMA VariableReference
+  private static boolean ArgedFor_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ArgedFor_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && consumeToken(b, COMMA);
+    r = r && VariableReference(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // VariableReference?
+  private static boolean ArgedFor_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ArgedFor_1_1")) return false;
+    VariableReference(b, l + 1);
+    return true;
+  }
+
+  // Statement | MultipleStatement
+  private static boolean ArgedFor_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ArgedFor_4")) return false;
+    boolean r;
+    r = Statement(b, l + 1);
+    if (!r) r = MultipleStatement(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // (ROUND | RANDOM | SUB | DIV) LPAREN (Expression COMMA Expression)  RPAREN
   public static boolean BinaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction")) return false;
@@ -111,6 +165,29 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = FunctionExpression(b, l + 1);
     if (!r) r = VariableExpression(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // VariableReference DOT FOR ( UnArgedFor | ArgedFor)
+  public static boolean ForStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ForStatement")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && consumeTokens(b, 0, DOT, FOR);
+    r = r && ForStatement_3(b, l + 1);
+    exit_section_(b, m, FOR_STATEMENT, r);
+    return r;
+  }
+
+  // UnArgedFor | ArgedFor
+  private static boolean ForStatement_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ForStatement_3")) return false;
+    boolean r;
+    r = UnArgedFor(b, l + 1);
+    if (!r) r = ArgedFor(b, l + 1);
     return r;
   }
 
@@ -205,6 +282,41 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LBRACE (Statement)* RBRACE
+  public static boolean MultipleStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultipleStatement")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACE);
+    r = r && MultipleStatement_1(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, MULTIPLE_STATEMENT, r);
+    return r;
+  }
+
+  // (Statement)*
+  private static boolean MultipleStatement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultipleStatement_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!MultipleStatement_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "MultipleStatement_1", c)) break;
+    }
+    return true;
+  }
+
+  // (Statement)
+  private static boolean MultipleStatement_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MultipleStatement_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Statement(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // UUID LPAREN  RPAREN
   public static boolean NoArgFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "NoArgFunction")) return false;
@@ -281,14 +393,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PrintStatement
+  // PrintStatement | ForStatement
   public static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
-    if (!nextTokenIs(b, PRINT)) return false;
+    if (!nextTokenIs(b, "<statement>", IDENTIFIER, PRINT)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, STATEMENT, "<statement>");
     r = PrintStatement(b, l + 1);
-    exit_section_(b, m, STATEMENT, r);
+    if (!r) r = ForStatement(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -352,6 +465,18 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, POSITIVE_INTEGER);
     if (!r) r = consumeToken(b, INTEGER);
     if (!r) r = consumeToken(b, DOUBLE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // Statement | MultipleStatement
+  public static boolean UnArgedFor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "UnArgedFor")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, UN_ARGED_FOR, "<un arged for>");
+    r = Statement(b, l + 1);
+    if (!r) r = MultipleStatement(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
