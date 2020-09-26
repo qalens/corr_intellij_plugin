@@ -48,7 +48,7 @@ WHITE_SPACE      = {WHITE_SPACE_CHAR}+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Identifier
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-TEXT_LITERAL = ( [^\\\<\`)] | \\[^] )+
+TEXT_LITERAL = ( [^\\<`] | \\[\\<`] )+
 IDENTIFIER = [_\p{xidstart}][\p{xidcontinue}]*
 NAME = [`] [^`]* [`]
 
@@ -66,7 +66,10 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
 <YYINITIAL> {
     "print"                         { return PRINT; }
     "fillable"                      { return FILLABLE; }
-    "text"                           { pushState(IN_TEXT);return TEXT;}
+    "text"                          { pushState(IN_TEXT);return TEXT;}
+    "object"                        { return OBJECT_TEMPLATE;}
+    "let"                           { return LET;}
+    "="                             { return ASSIGN;}
     {NAME}                          { return NAME; }
 
 }
@@ -86,6 +89,8 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "."                             {return DOT;}
     "{"                             { return LBRACE; }
     "}"                             { return RBRACE; }
+    "["                             { return LBRACK; }
+    "]"                             { return RBRACK; }
     "("                             { return LPAREN; }
     ")"                             { return RPAREN; }
     ":"                             { return COLON; }

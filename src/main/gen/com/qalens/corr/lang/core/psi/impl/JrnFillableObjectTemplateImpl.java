@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnDynamicFillableTextTemplateImpl extends ASTWrapperPsiElement implements JrnDynamicFillableTextTemplate {
+public class JrnFillableObjectTemplateImpl extends ASTWrapperPsiElement implements JrnFillableObjectTemplate {
 
-  public JrnDynamicFillableTextTemplateImpl(@NotNull ASTNode node) {
+  public JrnFillableObjectTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitDynamicFillableTextTemplate(this);
+    visitor.visitFillableObjectTemplate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class JrnDynamicFillableTextTemplateImpl extends ASTWrapperPsiElement imp
 
   @Override
   @NotNull
-  public JrnTextTemplate getTextTemplate() {
-    return findNotNullChildByClass(JrnTextTemplate.class);
+  public JrnObjectValueTemplate getObjectValueTemplate() {
+    return findNotNullChildByClass(JrnObjectValueTemplate.class);
   }
 
 }

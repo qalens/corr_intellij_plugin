@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface JrnPrintStatement extends PsiElement {
 
   @NotNull
-  JrnDynamicFillableTextTemplate getDynamicFillableTextTemplate();
+  JrnFillableTextTemplate getFillableTextTemplate();
 
 }

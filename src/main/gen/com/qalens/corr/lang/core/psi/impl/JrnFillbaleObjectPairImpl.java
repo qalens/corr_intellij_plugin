@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnTextScriptImpl extends ASTWrapperPsiElement implements JrnTextScript {
+public class JrnFillbaleObjectPairImpl extends ASTWrapperPsiElement implements JrnFillbaleObjectPair {
 
-  public JrnTextScriptImpl(@NotNull ASTNode node) {
+  public JrnFillbaleObjectPairImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitTextScript(this);
+    visitor.visitFillbaleObjectPair(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,15 +27,9 @@ public class JrnTextScriptImpl extends ASTWrapperPsiElement implements JrnTextSc
   }
 
   @Override
-  @Nullable
-  public JrnExpression getExpression() {
-    return findChildByClass(JrnExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnForLoopInText getForLoopInText() {
-    return findChildByClass(JrnForLoopInText.class);
+  @NotNull
+  public JrnObjectValueTemplate getObjectValueTemplate() {
+    return findNotNullChildByClass(JrnObjectValueTemplate.class);
   }
 
 }

@@ -29,7 +29,7 @@
           BACKTICK    =  '`'
           UNDERSCORE  =  '_'
           QUOTE      =  '"'
-          OP_ASIGNMENT  =  '='
+          ASSIGN     =  '='
           STRING      = 'String'
           BOOL      = 'Boolean'
           DOUBLE    = 'Double'
@@ -49,33 +49,46 @@
           FILLABLE = 'fillable'
           TEXT = 'text'
           FOR = 'for'
+          LET = 'let'
+          OBJECT_TEMPLATE = 'object'
           FATARROW = '=>'
 
       ]
 }
 journeyFile ::= RootFn
-RootFn ::= JourneyName LPAREN RPAREN LBRACE Statement* RBRACE
+RootFn ::= JourneyName '(' ')' '{' Statement* '}'
 JourneyName ::= identifier | NAME
-Statement ::= PrintStatement | ForStatement
-PrintStatement ::= PRINT DynamicFillableTextTemplate SEMICOLON
-ForStatement ::= VariableReference DOT FOR ( UnArgedFor | ArgedFor)
+Statement ::= PrintStatement | ForStatement | LetStatement
+LetStatement ::= 'let' VariableReference '=' Assignable
+Assignable ::= Expression | FillableObjectTemplate | FillableTextTemplate
+FillableObjectTemplate ::= 'fillable' 'object' ObjectValueTemplate
+ObjectValueTemplate ::= Expression | FillableMapTemplate | FillableArrayTemplate
+FillableMapTemplate ::= '('  (FillbaleObjectPair (',' FillbaleObjectPair)*)? '}'
+FillbaleObjectPair ::= STRING_LITERAL ':' ObjectValueTemplate
+FillableArrayTemplate ::= '[' (ObjectValueTemplate (',' ObjectValueTemplate)*)? ']'
+PrintStatement ::= 'print' FillableTextTemplate
+ForStatement ::= VariableReference '.' 'for' ( UnArgedFor | ArgedFor)
 UnArgedFor ::= Statement | MultipleStatement
-ArgedFor ::= LPAREN ( VariableReference COMMA VariableReference | VariableReference?) RPAREN FATARROW (Statement | MultipleStatement)
-MultipleStatement ::= LBRACE (Statement)* RBRACE
-DynamicFillableTextTemplate ::= FILLABLE TEXT TextTemplate
-TextTemplate ::= BACKTICK TextBlock* BACKTICK
+ArgedFor ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Statement | MultipleStatement)
+MultipleStatement ::= '{' (Statement)* '}'
+FillableTextTemplate ::= 'fillable' 'text' TextTemplate
+TextTemplate ::= '`' TextBlock* '`'
 TextBlock ::= Scriplet | TEXT_LITERAL
-Scriplet ::= SCRIPLET_START (TextScript) SCRIPLET_END
-TextScript ::= Expression
+Scriplet ::= '<%' (TextScript) '%>'
+TextScript ::= ForLoopInText | Expression
+ForLoopInText ::= VariableReference '.' 'for' (UnArgedForInText | ArgedForInText )
+UnArgedForInText ::= ForBlockForText
+ForBlockForText ::= TextScript | ( '%>' (TextBlock)* '<%' )
+ArgedForInText ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' ForBlockForText
 Expression ::= ConstantExpression | FunctionExpression | VariableExpression
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | NoArgFunction
-MultiValuedFunction ::= (CONCAT | MUL | ADD) LPAREN (Expression (',' Expression)*)? RPAREN
-BinaryFunction ::= (ROUND | RANDOM | SUB | DIV) LPAREN (Expression COMMA Expression)  RPAREN
-NoArgFunction ::= UUID LPAREN  RPAREN
+MultiValuedFunction ::= ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
+BinaryFunction ::= ('round' | 'random' | 'sub' | 'div') '(' (Expression ',' Expression)  ')'
+NoArgFunction ::= UUID '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
-VariableReference ::= identifier (DOT identifier)*
-Type ::= (STRING | BOOL | POSITIVE_INTEGER | INTEGER | DOUBLE)
+VariableReference ::= identifier ('.' identifier)*
+Type ::= ('String' | 'Boolean' | 'PositiveInteger' | 'integer' | 'double')
 //journeyFile ::= RootFn
 //RootFn ::= Label '{' Statement* '}'
 //Label ::= identifier | NAME
@@ -91,9 +104,9 @@ Type ::= (STRING | BOOL | POSITIVE_INTEGER | INTEGER | DOUBLE)
 //VarTemplateValue ::=  SCRIPLET_START VariableExpression SCRIPLET_END
 //JsonTemplateValue ::= JsonStart JsonTemplate
 //MapValue ::= MapStart MapObject
-//ReqHeadersValue ::=  ReqHeadersValueStart LBRACE (ReqHeaderPair ( COMMA ReqHeaderPair)*) RBRACE
+//ReqHeadersValue ::=  ReqHeadersValueStart LBRACE (ReqHeaderPair ( COMMA ReqHeaderPair)*) '}'
 //ReqHeaderPair ::= STRING_LITERAL COLON TextTemplateValue
-//ResHeadersValue ::=  ResHeadersValueStart LBRACE (ResHeaderPair ( COMMA ResHeaderPair)*) RBRACE
+//ResHeadersValue ::=  ResHeadersValueStart LBRACE (ResHeaderPair ( COMMA ResHeaderPair)*) '}'
 //ResHeaderPair ::= STRING_LITERAL COLON VarTemplateValue
 //EJsonTemplateValue ::= EjsonStart EJsonTemplate
 //TextTemplate ::= TextBlock*
@@ -101,11 +114,11 @@ Type ::= (STRING | BOOL | POSITIVE_INTEGER | INTEGER | DOUBLE)
 //EJsonTemplate ::= EScriplet | EJsonArray | EJsonObject
 //JsonTemplate ::= Scriplet | JsonArray | JsonObject | STRING_LITERAL
 //Scriplet ::= SCRIPLET_START (Expression) SCRIPLET_END
-//FOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (FOR_LOOP | FOR_VALUE_SCRIPTLET) RBRACE
+//FOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (FOR_LOOP | FOR_VALUE_SCRIPTLET) '}'
 //FOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END JsonTemplate FOR_SCRIPLET_START
-//EFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (EFOR_LOOP | EFOR_VALUE_SCRIPTLET) RBRACE
+//EFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (EFOR_LOOP | EFOR_VALUE_SCRIPTLET) '}'
 //EFOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END EJsonTemplate FOR_SCRIPLET_START
-//TFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (TFOR_LOOP | TFOR_VALUE_SCRIPTLET) RBRACE
+//TFOR_LOOP ::= FOR '('(identifier (':' Type) IN identifier (':' Type)?) ')' LBRACE (TFOR_LOOP | TFOR_VALUE_SCRIPTLET) '}'
 //TFOR_VALUE_SCRIPTLET ::= FOR_SCRIPLET_END TextTemplate FOR_SCRIPLET_START
 //JsonArray ::= '[' ((FOR_SCRIPLET_START FOR_LOOP FOR_SCRIPLET_END) | ((JsonTemplate ',')* JsonTemplate))?']'
 //EJsonArray ::= '[' ((FOR_SCRIPLET_START EFOR_LOOP FOR_SCRIPLET_END) | ((EJsonTemplate ',')* EJsonTemplate))?']'

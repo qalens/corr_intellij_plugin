@@ -34,6 +34,12 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
 
   @Override
   @Nullable
+  public JrnLetStatement getLetStatement() {
+    return findChildByClass(JrnLetStatement.class);
+  }
+
+  @Override
+  @Nullable
   public JrnPrintStatement getPrintStatement() {
     return findChildByClass(JrnPrintStatement.class);
   }

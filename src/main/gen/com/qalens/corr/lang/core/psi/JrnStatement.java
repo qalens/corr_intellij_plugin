@@ -11,6 +11,9 @@ public interface JrnStatement extends PsiElement {
   JrnForStatement getForStatement();
 
   @Nullable
+  JrnLetStatement getLetStatement();
+
+  @Nullable
   JrnPrintStatement getPrintStatement();
 
 }

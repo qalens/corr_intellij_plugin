@@ -60,6 +60,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.SUB)
             || tokenType.equals(JrnElementTypes.DIV)
             || tokenType.equals(JrnElementTypes.FOR)
+            || tokenType.equals(JrnElementTypes.OBJECT_TEMPLATE)
+            || tokenType.equals(JrnElementTypes.LET)
         )
             return Keywords;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnTextScript extends PsiElement {
+public interface JrnForBlockForText extends PsiElement {
+
+  @NotNull
+  List<JrnTextBlock> getTextBlockList();
 
   @Nullable
-  JrnExpression getExpression();
-
-  @Nullable
-  JrnForLoopInText getForLoopInText();
+  JrnTextScript getTextScript();
 
 }

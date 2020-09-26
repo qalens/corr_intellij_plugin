@@ -9,16 +9,26 @@ import com.qalens.corr.lang.core.psi.impl.*;
 public interface JrnElementTypes {
 
   IElementType ARGED_FOR = new JrnElementType("ARGED_FOR");
+  IElementType ARGED_FOR_IN_TEXT = new JrnElementType("ARGED_FOR_IN_TEXT");
+  IElementType ASSIGNABLE = new JrnElementType("ASSIGNABLE");
   IElementType BINARY_FUNCTION = new JrnElementType("BINARY_FUNCTION");
   IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
-  IElementType DYNAMIC_FILLABLE_TEXT_TEMPLATE = new JrnElementType("DYNAMIC_FILLABLE_TEXT_TEMPLATE");
   IElementType EXPRESSION = new JrnElementType("EXPRESSION");
+  IElementType FILLABLE_ARRAY_TEMPLATE = new JrnElementType("FILLABLE_ARRAY_TEMPLATE");
+  IElementType FILLABLE_MAP_TEMPLATE = new JrnElementType("FILLABLE_MAP_TEMPLATE");
+  IElementType FILLABLE_OBJECT_TEMPLATE = new JrnElementType("FILLABLE_OBJECT_TEMPLATE");
+  IElementType FILLABLE_TEXT_TEMPLATE = new JrnElementType("FILLABLE_TEXT_TEMPLATE");
+  IElementType FILLBALE_OBJECT_PAIR = new JrnElementType("FILLBALE_OBJECT_PAIR");
+  IElementType FOR_BLOCK_FOR_TEXT = new JrnElementType("FOR_BLOCK_FOR_TEXT");
+  IElementType FOR_LOOP_IN_TEXT = new JrnElementType("FOR_LOOP_IN_TEXT");
   IElementType FOR_STATEMENT = new JrnElementType("FOR_STATEMENT");
   IElementType FUNCTION_EXPRESSION = new JrnElementType("FUNCTION_EXPRESSION");
   IElementType JOURNEY_NAME = new JrnElementType("JOURNEY_NAME");
+  IElementType LET_STATEMENT = new JrnElementType("LET_STATEMENT");
   IElementType MULTIPLE_STATEMENT = new JrnElementType("MULTIPLE_STATEMENT");
   IElementType MULTI_VALUED_FUNCTION = new JrnElementType("MULTI_VALUED_FUNCTION");
   IElementType NO_ARG_FUNCTION = new JrnElementType("NO_ARG_FUNCTION");
+  IElementType OBJECT_VALUE_TEMPLATE = new JrnElementType("OBJECT_VALUE_TEMPLATE");
   IElementType PRINT_STATEMENT = new JrnElementType("PRINT_STATEMENT");
   IElementType ROOT_FN = new JrnElementType("ROOT_FN");
   IElementType SCRIPLET = new JrnElementType("SCRIPLET");
@@ -28,10 +38,12 @@ public interface JrnElementTypes {
   IElementType TEXT_TEMPLATE = new JrnElementType("TEXT_TEMPLATE");
   IElementType TYPE = new JrnElementType("TYPE");
   IElementType UN_ARGED_FOR = new JrnElementType("UN_ARGED_FOR");
+  IElementType UN_ARGED_FOR_IN_TEXT = new JrnElementType("UN_ARGED_FOR_IN_TEXT");
   IElementType VARIABLE_EXPRESSION = new JrnElementType("VARIABLE_EXPRESSION");
   IElementType VARIABLE_REFERENCE = new JrnElementType("VARIABLE_REFERENCE");
 
   IElementType ADD = new JrnTokenType("add");
+  IElementType ASSIGN = new JrnTokenType("=");
   IElementType BACKTICK = new JrnTokenType("`");
   IElementType BOOL = new JrnTokenType("Boolean");
   IElementType BOOLEANVALUE = new JrnTokenType("BooleanValue");
@@ -50,13 +62,14 @@ public interface JrnElementTypes {
   IElementType INTEGER = new JrnTokenType("Integer");
   IElementType LBRACE = new JrnTokenType("{");
   IElementType LBRACK = new JrnTokenType("[");
+  IElementType LET = new JrnTokenType("let");
   IElementType LIST = new JrnTokenType("List");
   IElementType LPAREN = new JrnTokenType("(");
   IElementType MUL = new JrnTokenType("mul");
   IElementType NAME = new JrnTokenType("NAME");
   IElementType NULLVALUE = new JrnTokenType("NullValue");
   IElementType OBJECT = new JrnTokenType("Object");
-  IElementType OP_ASIGNMENT = new JrnTokenType("=");
+  IElementType OBJECT_TEMPLATE = new JrnTokenType("object");
   IElementType POSITIVEINTEGERVALUE = new JrnTokenType("PositiveIntegerValue");
   IElementType POSITIVE_INTEGER = new JrnTokenType("PositiveInteger");
   IElementType PRINT = new JrnTokenType("print");
@@ -83,17 +96,41 @@ public interface JrnElementTypes {
       if (type == ARGED_FOR) {
         return new JrnArgedForImpl(node);
       }
+      else if (type == ARGED_FOR_IN_TEXT) {
+        return new JrnArgedForInTextImpl(node);
+      }
+      else if (type == ASSIGNABLE) {
+        return new JrnAssignableImpl(node);
+      }
       else if (type == BINARY_FUNCTION) {
         return new JrnBinaryFunctionImpl(node);
       }
       else if (type == CONSTANT_EXPRESSION) {
         return new JrnConstantExpressionImpl(node);
       }
-      else if (type == DYNAMIC_FILLABLE_TEXT_TEMPLATE) {
-        return new JrnDynamicFillableTextTemplateImpl(node);
-      }
       else if (type == EXPRESSION) {
         return new JrnExpressionImpl(node);
+      }
+      else if (type == FILLABLE_ARRAY_TEMPLATE) {
+        return new JrnFillableArrayTemplateImpl(node);
+      }
+      else if (type == FILLABLE_MAP_TEMPLATE) {
+        return new JrnFillableMapTemplateImpl(node);
+      }
+      else if (type == FILLABLE_OBJECT_TEMPLATE) {
+        return new JrnFillableObjectTemplateImpl(node);
+      }
+      else if (type == FILLABLE_TEXT_TEMPLATE) {
+        return new JrnFillableTextTemplateImpl(node);
+      }
+      else if (type == FILLBALE_OBJECT_PAIR) {
+        return new JrnFillbaleObjectPairImpl(node);
+      }
+      else if (type == FOR_BLOCK_FOR_TEXT) {
+        return new JrnForBlockForTextImpl(node);
+      }
+      else if (type == FOR_LOOP_IN_TEXT) {
+        return new JrnForLoopInTextImpl(node);
       }
       else if (type == FOR_STATEMENT) {
         return new JrnForStatementImpl(node);
@@ -104,6 +141,9 @@ public interface JrnElementTypes {
       else if (type == JOURNEY_NAME) {
         return new JrnJourneyNameImpl(node);
       }
+      else if (type == LET_STATEMENT) {
+        return new JrnLetStatementImpl(node);
+      }
       else if (type == MULTIPLE_STATEMENT) {
         return new JrnMultipleStatementImpl(node);
       }
@@ -112,6 +152,9 @@ public interface JrnElementTypes {
       }
       else if (type == NO_ARG_FUNCTION) {
         return new JrnNoArgFunctionImpl(node);
+      }
+      else if (type == OBJECT_VALUE_TEMPLATE) {
+        return new JrnObjectValueTemplateImpl(node);
       }
       else if (type == PRINT_STATEMENT) {
         return new JrnPrintStatementImpl(node);
@@ -139,6 +182,9 @@ public interface JrnElementTypes {
       }
       else if (type == UN_ARGED_FOR) {
         return new JrnUnArgedForImpl(node);
+      }
+      else if (type == UN_ARGED_FOR_IN_TEXT) {
+        return new JrnUnArgedForInTextImpl(node);
       }
       else if (type == VARIABLE_EXPRESSION) {
         return new JrnVariableExpressionImpl(node);

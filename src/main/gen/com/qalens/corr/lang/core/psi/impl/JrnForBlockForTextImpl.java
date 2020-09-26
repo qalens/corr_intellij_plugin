@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnTextScriptImpl extends ASTWrapperPsiElement implements JrnTextScript {
+public class JrnForBlockForTextImpl extends ASTWrapperPsiElement implements JrnForBlockForText {
 
-  public JrnTextScriptImpl(@NotNull ASTNode node) {
+  public JrnForBlockForTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitTextScript(this);
+    visitor.visitForBlockForText(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,15 +27,15 @@ public class JrnTextScriptImpl extends ASTWrapperPsiElement implements JrnTextSc
   }
 
   @Override
-  @Nullable
-  public JrnExpression getExpression() {
-    return findChildByClass(JrnExpression.class);
+  @NotNull
+  public List<JrnTextBlock> getTextBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnTextBlock.class);
   }
 
   @Override
   @Nullable
-  public JrnForLoopInText getForLoopInText() {
-    return findChildByClass(JrnForLoopInText.class);
+  public JrnTextScript getTextScript() {
+    return findChildByClass(JrnTextScript.class);
   }
 
 }

@@ -28,8 +28,8 @@ public class JrnPrintStatementImpl extends ASTWrapperPsiElement implements JrnPr
 
   @Override
   @NotNull
-  public JrnDynamicFillableTextTemplate getDynamicFillableTextTemplate() {
-    return findNotNullChildByClass(JrnDynamicFillableTextTemplate.class);
+  public JrnFillableTextTemplate getFillableTextTemplate() {
+    return findNotNullChildByClass(JrnFillableTextTemplate.class);
   }
 
 }
