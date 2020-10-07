@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements JrnFunctionExpression {
+public class JrnExtractableObjectTemplateImpl extends ASTWrapperPsiElement implements JrnExtractableObjectTemplate {
 
-  public JrnFunctionExpressionImpl(@NotNull ASTNode node) {
+  public JrnExtractableObjectTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitFunctionExpression(this);
+    visitor.visitExtractableObjectTemplate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,26 +28,20 @@ public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements J
 
   @Override
   @Nullable
-  public JrnBinaryFunction getBinaryFunction() {
-    return findChildByClass(JrnBinaryFunction.class);
+  public JrnExtractableObjectMap getExtractableObjectMap() {
+    return findChildByClass(JrnExtractableObjectMap.class);
   }
 
   @Override
   @Nullable
-  public JrnMultiValuedFunction getMultiValuedFunction() {
-    return findChildByClass(JrnMultiValuedFunction.class);
+  public JrnExtractableStaticArray getExtractableStaticArray() {
+    return findChildByClass(JrnExtractableStaticArray.class);
   }
 
   @Override
   @Nullable
-  public JrnNoArgFunction getNoArgFunction() {
-    return findChildByClass(JrnNoArgFunction.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnUnaryFunction getUnaryFunction() {
-    return findChildByClass(JrnUnaryFunction.class);
+  public JrnVariableReference getVariableReference() {
+    return findChildByClass(JrnVariableReference.class);
   }
 
 }

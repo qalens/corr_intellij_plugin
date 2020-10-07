@@ -185,6 +185,38 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // 'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
+  public static boolean BodyStartingResponse(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingResponse")) return false;
+    if (!nextTokenIs(b, BODY)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BODY);
+    r = r && ExtractableTemplate(b, l + 1);
+    r = r && BodyStartingResponse_2(b, l + 1);
+    exit_section_(b, m, BODY_STARTING_RESPONSE, r);
+    return r;
+  }
+
+  // ('and' 'headers' ExtractableHeaders)?
+  private static boolean BodyStartingResponse_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingResponse_2")) return false;
+    BodyStartingResponse_2_0(b, l + 1);
+    return true;
+  }
+
+  // 'and' 'headers' ExtractableHeaders
+  private static boolean BodyStartingResponse_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingResponse_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AND, HEADERS);
+    r = r && ExtractableHeaders(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
   public static boolean ConstantExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ConstantExpression")) return false;
@@ -210,6 +242,156 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = FunctionExpression(b, l + 1);
     if (!r) r = VariableExpression(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
+  public static boolean ExtractableHeaders(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableHeaders")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LBRACE, STRING_LITERAL, COLON);
+    r = r && VariableReference(b, l + 1);
+    r = r && ExtractableHeaders_4(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, EXTRACTABLE_HEADERS, r);
+    return r;
+  }
+
+  // (',' STRING_LITERAL ':' VariableReference)*
+  private static boolean ExtractableHeaders_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableHeaders_4")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!ExtractableHeaders_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ExtractableHeaders_4", c)) break;
+    }
+    return true;
+  }
+
+  // ',' STRING_LITERAL ':' VariableReference
+  private static boolean ExtractableHeaders_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableHeaders_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, STRING_LITERAL, COLON);
+    r = r && VariableReference(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '{' ExtractablePair ( ',' ExtractablePair)* '}'
+  public static boolean ExtractableObjectMap(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableObjectMap")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACE);
+    r = r && ExtractablePair(b, l + 1);
+    r = r && ExtractableObjectMap_2(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, EXTRACTABLE_OBJECT_MAP, r);
+    return r;
+  }
+
+  // ( ',' ExtractablePair)*
+  private static boolean ExtractableObjectMap_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableObjectMap_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!ExtractableObjectMap_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ExtractableObjectMap_2", c)) break;
+    }
+    return true;
+  }
+
+  // ',' ExtractablePair
+  private static boolean ExtractableObjectMap_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableObjectMap_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && ExtractablePair(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // VariableReference | ExtractableObjectMap | ExtractableStaticArray
+  public static boolean ExtractableObjectTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableObjectTemplate")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_OBJECT_TEMPLATE, "<extractable object template>");
+    r = VariableReference(b, l + 1);
+    if (!r) r = ExtractableObjectMap(b, l + 1);
+    if (!r) r = ExtractableStaticArray(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // STRING_LITERAL ':' ExtractableObjectTemplate
+  public static boolean ExtractablePair(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractablePair")) return false;
+    if (!nextTokenIs(b, STRING_LITERAL)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    exit_section_(b, m, EXTRACTABLE_PAIR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '[' ExtractableObjectTemplate (',' ExtractableObjectTemplate)* ']'
+  public static boolean ExtractableStaticArray(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableStaticArray")) return false;
+    if (!nextTokenIs(b, LBRACK)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACK);
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    r = r && ExtractableStaticArray_2(b, l + 1);
+    r = r && consumeToken(b, RBRACK);
+    exit_section_(b, m, EXTRACTABLE_STATIC_ARRAY, r);
+    return r;
+  }
+
+  // (',' ExtractableObjectTemplate)*
+  private static boolean ExtractableStaticArray_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableStaticArray_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!ExtractableStaticArray_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ExtractableStaticArray_2", c)) break;
+    }
+    return true;
+  }
+
+  // ',' ExtractableObjectTemplate
+  private static boolean ExtractableStaticArray_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableStaticArray_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'object' ExtractableObjectTemplate
+  public static boolean ExtractableTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableTemplate")) return false;
+    if (!nextTokenIs(b, OBJECT_TEMPLATE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, OBJECT_TEMPLATE);
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    exit_section_(b, m, EXTRACTABLE_TEMPLATE, r);
     return r;
   }
 
@@ -268,13 +450,50 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '('  (FillbaleObjectPair (',' FillbaleObjectPair)*)? '}'
-  public static boolean FillableMapTemplate(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableMapTemplate")) return false;
-    if (!nextTokenIs(b, LPAREN)) return false;
+  // '{' HeaderPair (',' HeaderPair)* '}'
+  public static boolean FillableHeaders(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableHeaders")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, LPAREN);
+    r = consumeToken(b, LBRACE);
+    r = r && HeaderPair(b, l + 1);
+    r = r && FillableHeaders_2(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, FILLABLE_HEADERS, r);
+    return r;
+  }
+
+  // (',' HeaderPair)*
+  private static boolean FillableHeaders_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableHeaders_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!FillableHeaders_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "FillableHeaders_2", c)) break;
+    }
+    return true;
+  }
+
+  // ',' HeaderPair
+  private static boolean FillableHeaders_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableHeaders_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && HeaderPair(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '{'  (FillbaleObjectPair (',' FillbaleObjectPair)*)? '}'
+  public static boolean FillableMapTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableMapTemplate")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACE);
     r = r && FillableMapTemplate_1(b, l + 1);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, FILLABLE_MAP_TEMPLATE, r);
@@ -322,26 +541,90 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'fillable' 'object' ObjectValueTemplate
+  // 'object' ObjectValueTemplate
   public static boolean FillableObjectTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableObjectTemplate")) return false;
-    if (!nextTokenIs(b, FILLABLE)) return false;
+    if (!nextTokenIs(b, OBJECT_TEMPLATE)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FILLABLE, OBJECT_TEMPLATE);
+    r = consumeToken(b, OBJECT_TEMPLATE);
     r = r && ObjectValueTemplate(b, l + 1);
     exit_section_(b, m, FILLABLE_OBJECT_TEMPLATE, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'fillable' 'text' TextTemplate
-  public static boolean FillableTextTemplate(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableTextTemplate")) return false;
-    if (!nextTokenIs(b, FILLABLE)) return false;
+  // 'request' '{'
+  //   'url' ':' (Expression | FillableTextTemplate)
+  //   ( ',' 'body' ':' FillableObjectTemplate)?
+  //   ( ',' 'headers' ':' FillableHeaders)? '}'
+  public static boolean FillableRequestTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate")) return false;
+    if (!nextTokenIs(b, REQUEST)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FILLABLE, TEXT);
+    r = consumeTokens(b, 0, REQUEST, LBRACE, URL, COLON);
+    r = r && FillableRequestTemplate_4(b, l + 1);
+    r = r && FillableRequestTemplate_5(b, l + 1);
+    r = r && FillableRequestTemplate_6(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, FILLABLE_REQUEST_TEMPLATE, r);
+    return r;
+  }
+
+  // Expression | FillableTextTemplate
+  private static boolean FillableRequestTemplate_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate_4")) return false;
+    boolean r;
+    r = Expression(b, l + 1);
+    if (!r) r = FillableTextTemplate(b, l + 1);
+    return r;
+  }
+
+  // ( ',' 'body' ':' FillableObjectTemplate)?
+  private static boolean FillableRequestTemplate_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate_5")) return false;
+    FillableRequestTemplate_5_0(b, l + 1);
+    return true;
+  }
+
+  // ',' 'body' ':' FillableObjectTemplate
+  private static boolean FillableRequestTemplate_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate_5_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, BODY, COLON);
+    r = r && FillableObjectTemplate(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( ',' 'headers' ':' FillableHeaders)?
+  private static boolean FillableRequestTemplate_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate_6")) return false;
+    FillableRequestTemplate_6_0(b, l + 1);
+    return true;
+  }
+
+  // ',' 'headers' ':' FillableHeaders
+  private static boolean FillableRequestTemplate_6_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableRequestTemplate_6_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, HEADERS, COLON);
+    r = r && FillableHeaders(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'text' TextTemplate
+  public static boolean FillableTextTemplate(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableTextTemplate")) return false;
+    if (!nextTokenIs(b, TEXT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TEXT);
     r = r && TextTemplate(b, l + 1);
     exit_section_(b, m, FILLABLE_TEXT_TEMPLATE, r);
     return r;
@@ -452,15 +735,61 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // MultiValuedFunction | BinaryFunction | NoArgFunction
+  // MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
   public static boolean FunctionExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FunctionExpression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, FUNCTION_EXPRESSION, "<function expression>");
     r = MultiValuedFunction(b, l + 1);
     if (!r) r = BinaryFunction(b, l + 1);
+    if (!r) r = UnaryFunction(b, l + 1);
     if (!r) r = NoArgFunction(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // STRING_LITERAL ':' FillableTextTemplate
+  public static boolean HeaderPair(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeaderPair")) return false;
+    if (!nextTokenIs(b, STRING_LITERAL)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
+    r = r && FillableTextTemplate(b, l + 1);
+    exit_section_(b, m, HEADER_PAIR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
+  public static boolean HeadersStartingResponse(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersStartingResponse")) return false;
+    if (!nextTokenIs(b, HEADERS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HEADERS);
+    r = r && ExtractableHeaders(b, l + 1);
+    r = r && HeadersStartingResponse_2(b, l + 1);
+    exit_section_(b, m, HEADERS_STARTING_RESPONSE, r);
+    return r;
+  }
+
+  // ('and' 'body' ExtractableTemplate)?
+  private static boolean HeadersStartingResponse_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersStartingResponse_2")) return false;
+    HeadersStartingResponse_2_0(b, l + 1);
+    return true;
+  }
+
+  // 'and' 'body' ExtractableTemplate
+  private static boolean HeadersStartingResponse_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersStartingResponse_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AND, BODY);
+    r = r && ExtractableTemplate(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -474,6 +803,18 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, NAME);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'let' 'matching' ExtractableStatement
+  public static boolean LetMatchingStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "LetMatchingStatement")) return false;
+    if (!nextTokenIs(b, LET)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LET, MATCHING, EXTRACTABLESTATEMENT);
+    exit_section_(b, m, LET_MATCHING_STATEMENT, r);
     return r;
   }
 
@@ -630,6 +971,58 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // ( 'get' | 'put' | 'post' | 'patch' | 'delete') FillableRequestTemplate ( 'matching' (HeadersStartingResponse | BodyStartingResponse))?
+  public static boolean RestStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RestStep")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, REST_STEP, "<rest step>");
+    r = RestStep_0(b, l + 1);
+    r = r && FillableRequestTemplate(b, l + 1);
+    r = r && RestStep_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // 'get' | 'put' | 'post' | 'patch' | 'delete'
+  private static boolean RestStep_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RestStep_0")) return false;
+    boolean r;
+    r = consumeToken(b, GET);
+    if (!r) r = consumeToken(b, PUT);
+    if (!r) r = consumeToken(b, POST);
+    if (!r) r = consumeToken(b, PATCH);
+    if (!r) r = consumeToken(b, DELETE);
+    return r;
+  }
+
+  // ( 'matching' (HeadersStartingResponse | BodyStartingResponse))?
+  private static boolean RestStep_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RestStep_2")) return false;
+    RestStep_2_0(b, l + 1);
+    return true;
+  }
+
+  // 'matching' (HeadersStartingResponse | BodyStartingResponse)
+  private static boolean RestStep_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RestStep_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, MATCHING);
+    r = r && RestStep_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // HeadersStartingResponse | BodyStartingResponse
+  private static boolean RestStep_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RestStep_2_0_1")) return false;
+    boolean r;
+    r = HeadersStartingResponse(b, l + 1);
+    if (!r) r = BodyStartingResponse(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // JourneyName '(' ')' '{' Statement* '}'
   public static boolean RootFn(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RootFn")) return false;
@@ -680,7 +1073,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PrintStatement | ForStatement | LetStatement
+  // PrintStatement | ForStatement | LetStatement | RestStep
   public static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
     boolean r;
@@ -688,6 +1081,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     r = PrintStatement(b, l + 1);
     if (!r) r = ForStatement(b, l + 1);
     if (!r) r = LetStatement(b, l + 1);
+    if (!r) r = RestStep(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -777,6 +1171,30 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, UN_ARGED_FOR_IN_TEXT, "<un arged for in text>");
     r = ForBlockForText(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ('fake' | 'from_json' ) '(' Expression  ')'
+  public static boolean UnaryFunction(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "UnaryFunction")) return false;
+    if (!nextTokenIs(b, "<unary function>", FAKE, FROMJSON)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, UNARY_FUNCTION, "<unary function>");
+    r = UnaryFunction_0(b, l + 1);
+    r = r && consumeToken(b, LPAREN);
+    r = r && Expression(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // 'fake' | 'from_json'
+  private static boolean UnaryFunction_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "UnaryFunction_0")) return false;
+    boolean r;
+    r = consumeToken(b, FAKE);
+    if (!r) r = consumeToken(b, FROMJSON);
     return r;
   }
 

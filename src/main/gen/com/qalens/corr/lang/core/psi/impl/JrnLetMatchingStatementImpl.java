@@ -11,43 +11,19 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStatement {
+public class JrnLetMatchingStatementImpl extends ASTWrapperPsiElement implements JrnLetMatchingStatement {
 
-  public JrnStatementImpl(@NotNull ASTNode node) {
+  public JrnLetMatchingStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitStatement(this);
+    visitor.visitLetMatchingStatement(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public JrnForStatement getForStatement() {
-    return findChildByClass(JrnForStatement.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnLetStatement getLetStatement() {
-    return findChildByClass(JrnLetStatement.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnPrintStatement getPrintStatement() {
-    return findChildByClass(JrnPrintStatement.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnRestStep getRestStep() {
-    return findChildByClass(JrnRestStep.class);
   }
 
 }

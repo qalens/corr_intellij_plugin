@@ -2,10 +2,10 @@ package com.qalens.corr.lang.core.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import kotlin.reflect.jvm.internal.impl.resolve.constants.LongValue;
+import com.qalens.corr.lang.core.psi.JrnTokenType;import kotlin.reflect.jvm.internal.impl.resolve.constants.LongValue;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import static com.intellij.psi.TokenType.*;
-import java.util.*;
+import java.net.URL;import java.util.*;
 
 %%
 %{
@@ -58,14 +58,24 @@ NAME = [`] [^`]* [`]
 
 ESCAPE_SEQUENCE=\\[^\r\n]
 STRING_LITERAL = \"([^\\\"\r\n]|{ESCAPE_SEQUENCE}|{WHITE_SPACE_CHAR})*(\"|\\)?
-POSITIVE_INTEGER_LITERAL = ([1-9] [0-9]*)
+POSITIVE_INTEGER_LITERAL = ([1-9] [0-9]*) | 0
 INTEGER_LITERAL = ([-]?[1-9] [0-9]*)
 DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
 %s IN_TEXT_TEMPLATE,IN_SCRIPLET,IN_STRING,IN_TEXT
 %%
 <YYINITIAL> {
     "print"                         { return PRINT; }
-    "fillable"                      { return FILLABLE; }
+    "matching"                      { return MATCHING; }
+    "and"                      { return AND; }
+    "url"                      { return URL; }
+    "body"                      { return BODY; }
+    "headers"                      { return HEADERS; }
+    "request"                      { return REQUEST; }
+    "get"                      { return GET; }
+    "put"                      { return PUT; }
+    "post"                      { return POST; }
+    "patch"                      { return PATCH; }
+    "delete"                      { return DELETE; }
     "text"                          { pushState(IN_TEXT);return TEXT;}
     "object"                        { return OBJECT_TEMPLATE;}
     "let"                           { return LET;}
@@ -110,11 +120,13 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }
     "concat"                        { return CONCAT;}
+    "from_json"                     { return FROMJSON;}
     "mul"                           { return MUL;}
     "add"                           { return ADD;}
     "sub"                           { return SUB;}
     "div"                           { return DIV;}
     "uuid"                          { return UUID;}
+    "fake"                      { return FAKE; }
     "random"                        { return RANDOM;}
     "round"                         { return ROUND;}
     {STRING_LITERAL}                             { return STRING_LITERAL; }

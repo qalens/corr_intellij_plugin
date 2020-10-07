@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements JrnFunctionExpression {
+public class JrnFillableRequestTemplateImpl extends ASTWrapperPsiElement implements JrnFillableRequestTemplate {
 
-  public JrnFunctionExpressionImpl(@NotNull ASTNode node) {
+  public JrnFillableRequestTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitFunctionExpression(this);
+    visitor.visitFillableRequestTemplate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,26 +28,26 @@ public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements J
 
   @Override
   @Nullable
-  public JrnBinaryFunction getBinaryFunction() {
-    return findChildByClass(JrnBinaryFunction.class);
+  public JrnExpression getExpression() {
+    return findChildByClass(JrnExpression.class);
   }
 
   @Override
   @Nullable
-  public JrnMultiValuedFunction getMultiValuedFunction() {
-    return findChildByClass(JrnMultiValuedFunction.class);
+  public JrnFillableHeaders getFillableHeaders() {
+    return findChildByClass(JrnFillableHeaders.class);
   }
 
   @Override
   @Nullable
-  public JrnNoArgFunction getNoArgFunction() {
-    return findChildByClass(JrnNoArgFunction.class);
+  public JrnFillableObjectTemplate getFillableObjectTemplate() {
+    return findChildByClass(JrnFillableObjectTemplate.class);
   }
 
   @Override
   @Nullable
-  public JrnUnaryFunction getUnaryFunction() {
-    return findChildByClass(JrnUnaryFunction.class);
+  public JrnFillableTextTemplate getFillableTextTemplate() {
+    return findChildByClass(JrnFillableTextTemplate.class);
   }
 
 }

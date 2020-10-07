@@ -23,6 +23,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBodyStartingResponse(@NotNull JrnBodyStartingResponse o) {
+    visitPsiElement(o);
+  }
+
   public void visitConstantExpression(@NotNull JrnConstantExpression o) {
     visitPsiElement(o);
   }
@@ -31,7 +35,35 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExtractableHeaders(@NotNull JrnExtractableHeaders o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractableObjectMap(@NotNull JrnExtractableObjectMap o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractableObjectTemplate(@NotNull JrnExtractableObjectTemplate o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractablePair(@NotNull JrnExtractablePair o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractableStaticArray(@NotNull JrnExtractableStaticArray o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractableTemplate(@NotNull JrnExtractableTemplate o) {
+    visitPsiElement(o);
+  }
+
   public void visitFillableArrayTemplate(@NotNull JrnFillableArrayTemplate o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFillableHeaders(@NotNull JrnFillableHeaders o) {
     visitPsiElement(o);
   }
 
@@ -40,6 +72,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitFillableObjectTemplate(@NotNull JrnFillableObjectTemplate o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFillableRequestTemplate(@NotNull JrnFillableRequestTemplate o) {
     visitPsiElement(o);
   }
 
@@ -67,7 +103,19 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitHeaderPair(@NotNull JrnHeaderPair o) {
+    visitPsiElement(o);
+  }
+
+  public void visitHeadersStartingResponse(@NotNull JrnHeadersStartingResponse o) {
+    visitPsiElement(o);
+  }
+
   public void visitJourneyName(@NotNull JrnJourneyName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLetMatchingStatement(@NotNull JrnLetMatchingStatement o) {
     visitPsiElement(o);
   }
 
@@ -92,6 +140,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitPrintStatement(@NotNull JrnPrintStatement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRestStep(@NotNull JrnRestStep o) {
     visitPsiElement(o);
   }
 
@@ -128,6 +180,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitUnArgedForInText(@NotNull JrnUnArgedForInText o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryFunction(@NotNull JrnUnaryFunction o) {
     visitPsiElement(o);
   }
 

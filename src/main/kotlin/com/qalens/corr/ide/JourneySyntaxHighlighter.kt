@@ -50,18 +50,30 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         if(
             tokenType.equals(JrnElementTypes.PRINT)
-            || tokenType.equals(JrnElementTypes.FILLABLE)
             || tokenType.equals(JrnElementTypes.TEXT)
             || tokenType.equals(JrnElementTypes.CONCAT)
             || tokenType.equals(JrnElementTypes.MUL)
             || tokenType.equals(JrnElementTypes.ADD)
             || tokenType.equals(JrnElementTypes.UUID)
             || tokenType.equals(JrnElementTypes.RANDOM)
+            || tokenType.equals(JrnElementTypes.FAKE)
             || tokenType.equals(JrnElementTypes.SUB)
             || tokenType.equals(JrnElementTypes.DIV)
             || tokenType.equals(JrnElementTypes.FOR)
             || tokenType.equals(JrnElementTypes.OBJECT_TEMPLATE)
             || tokenType.equals(JrnElementTypes.LET)
+            || tokenType.equals(JrnElementTypes.GET)
+            || tokenType.equals(JrnElementTypes.PUT)
+            || tokenType.equals(JrnElementTypes.POST)
+            || tokenType.equals(JrnElementTypes.PATCH)
+            || tokenType.equals(JrnElementTypes.DELETE)
+            || tokenType.equals(JrnElementTypes.AND)
+            || tokenType.equals(JrnElementTypes.MATCHING)
+            || tokenType.equals(JrnElementTypes.HEADERS)
+            || tokenType.equals(JrnElementTypes.URL)
+            || tokenType.equals(JrnElementTypes.BODY)
+            || tokenType.equals(JrnElementTypes.REQUEST)
+
         )
             return Keywords;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

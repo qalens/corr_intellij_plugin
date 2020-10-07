@@ -5,18 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnStatement extends PsiElement {
+public interface JrnExtractableObjectTemplate extends PsiElement {
 
   @Nullable
-  JrnForStatement getForStatement();
+  JrnExtractableObjectMap getExtractableObjectMap();
 
   @Nullable
-  JrnLetStatement getLetStatement();
+  JrnExtractableStaticArray getExtractableStaticArray();
 
   @Nullable
-  JrnPrintStatement getPrintStatement();
-
-  @Nullable
-  JrnRestStep getRestStep();
+  JrnVariableReference getVariableReference();
 
 }

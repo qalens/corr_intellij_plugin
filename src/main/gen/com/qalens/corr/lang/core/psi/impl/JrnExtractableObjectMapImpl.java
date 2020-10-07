@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements JrnFunctionExpression {
+public class JrnExtractableObjectMapImpl extends ASTWrapperPsiElement implements JrnExtractableObjectMap {
 
-  public JrnFunctionExpressionImpl(@NotNull ASTNode node) {
+  public JrnExtractableObjectMapImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitFunctionExpression(this);
+    visitor.visitExtractableObjectMap(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,27 +27,9 @@ public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements J
   }
 
   @Override
-  @Nullable
-  public JrnBinaryFunction getBinaryFunction() {
-    return findChildByClass(JrnBinaryFunction.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnMultiValuedFunction getMultiValuedFunction() {
-    return findChildByClass(JrnMultiValuedFunction.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnNoArgFunction getNoArgFunction() {
-    return findChildByClass(JrnNoArgFunction.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnUnaryFunction getUnaryFunction() {
-    return findChildByClass(JrnUnaryFunction.class);
+  @NotNull
+  public List<JrnExtractablePair> getExtractablePairList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExtractablePair.class);
   }
 
 }

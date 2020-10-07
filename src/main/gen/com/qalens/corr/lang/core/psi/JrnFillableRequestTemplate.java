@@ -5,18 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnFunctionExpression extends PsiElement {
+public interface JrnFillableRequestTemplate extends PsiElement {
 
   @Nullable
-  JrnBinaryFunction getBinaryFunction();
+  JrnExpression getExpression();
 
   @Nullable
-  JrnMultiValuedFunction getMultiValuedFunction();
+  JrnFillableHeaders getFillableHeaders();
 
   @Nullable
-  JrnNoArgFunction getNoArgFunction();
+  JrnFillableObjectTemplate getFillableObjectTemplate();
 
   @Nullable
-  JrnUnaryFunction getUnaryFunction();
+  JrnFillableTextTemplate getFillableTextTemplate();
 
 }
