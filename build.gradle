@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.qalens.corr'
-version '0.0.2'
+version '0.0.3'
 
 repositories {
     mavenCentral()
@@ -35,15 +35,11 @@ compileTestKotlin {
 }
 patchPluginXml {
     changeNotes """
-        <h1>IntelliJ CORR Changelog #0.0.2</h1>
+        <h1>IntelliJ CORR Changelog #0.0.3</h1>
         <h2>Fetures</h2>
         <ul>
-            <li>Compatibility with corr 0.0.17</li>
-            <li>Added Layered lexers for syntaxt highlighting in layers</li>
-        </ul>
-        <h2>Bug Fixes</h2>
-        <ul>
-            <li>Syntax Highlighting for text template fixed</li>
+            <li>Compatibility with corr 0.0.23</li>
+            <li>All New Syntax and semantics</li>
         </ul>
     """
 }
