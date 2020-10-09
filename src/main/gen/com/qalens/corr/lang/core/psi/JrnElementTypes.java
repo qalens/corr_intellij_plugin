@@ -74,6 +74,7 @@ public interface JrnElementTypes {
   IElementType DOT = new JrnTokenType(".");
   IElementType DOUBLE = new JrnTokenType("Double");
   IElementType DOUBLEVALUE = new JrnTokenType("DoubleValue");
+  IElementType ENCODE = new JrnTokenType("encode");
   IElementType EXTRACTABLESTATEMENT = new JrnTokenType("ExtractableStatement");
   IElementType FAKE = new JrnTokenType("fake");
   IElementType FATARROW = new JrnTokenType("=>");

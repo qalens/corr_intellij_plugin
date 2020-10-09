@@ -1010,7 +1010,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // UUID '('  ')'
+  // 'uuid' '('  ')'
   public static boolean NoArgFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "NoArgFunction")) return false;
     if (!nextTokenIs(b, UUID)) return false;
@@ -1253,10 +1253,9 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ('fake' | 'from_json' ) '(' Expression  ')'
+  // ('fake' | 'from_json' | 'encode' ) '(' Expression  ')'
   public static boolean UnaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction")) return false;
-    if (!nextTokenIs(b, "<unary function>", FAKE, FROMJSON)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, UNARY_FUNCTION, "<unary function>");
     r = UnaryFunction_0(b, l + 1);
@@ -1267,12 +1266,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'fake' | 'from_json'
+  // 'fake' | 'from_json' | 'encode'
   private static boolean UnaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_0")) return false;
     boolean r;
     r = consumeToken(b, FAKE);
     if (!r) r = consumeToken(b, FROMJSON);
+    if (!r) r = consumeToken(b, ENCODE);
     return r;
   }
 

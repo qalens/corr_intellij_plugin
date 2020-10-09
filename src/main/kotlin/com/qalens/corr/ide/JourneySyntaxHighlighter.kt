@@ -56,6 +56,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.ADD)
             || tokenType.equals(JrnElementTypes.UUID)
             || tokenType.equals(JrnElementTypes.RANDOM)
+            || tokenType.equals(JrnElementTypes.ENCODE)
             || tokenType.equals(JrnElementTypes.FAKE)
             || tokenType.equals(JrnElementTypes.SUB)
             || tokenType.equals(JrnElementTypes.DIV)

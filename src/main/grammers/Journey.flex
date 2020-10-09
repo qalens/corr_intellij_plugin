@@ -126,7 +126,8 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "sub"                           { return SUB;}
     "div"                           { return DIV;}
     "uuid"                          { return UUID;}
-    "fake"                      { return FAKE; }
+    "fake"                          { return FAKE; }
+    "encode"                        { return ENCODE; }
     "random"                        { return RANDOM;}
     "round"                         { return ROUND;}
     {STRING_LITERAL}                             { return STRING_LITERAL; }
