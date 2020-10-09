@@ -27,9 +27,15 @@ public class JrnHeaderPairImpl extends ASTWrapperPsiElement implements JrnHeader
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public JrnExpression getExpression() {
+    return findChildByClass(JrnExpression.class);
+  }
+
+  @Override
+  @Nullable
   public JrnFillableTextTemplate getFillableTextTemplate() {
-    return findNotNullChildByClass(JrnFillableTextTemplate.class);
+    return findChildByClass(JrnFillableTextTemplate.class);
   }
 
 }

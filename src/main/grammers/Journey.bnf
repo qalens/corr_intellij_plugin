@@ -88,7 +88,7 @@ FillableRequestTemplate ::= 'request' '{'
   ( ',' 'body' ':' FillableObjectTemplate)?
   ( ',' 'headers' ':' FillableHeaders)? '}'
 FillableHeaders ::= '{' HeaderPair (',' HeaderPair)* '}'
-HeaderPair ::= STRING_LITERAL ':' FillableTextTemplate
+HeaderPair ::= STRING_LITERAL ':' (Expression | FillableTextTemplate)
 Assignable ::= Expression | FillableObjectTemplate | FillableTextTemplate
 FillableObjectTemplate ::= 'object' ObjectValueTemplate
 ObjectValueTemplate ::= FillableForLoop | Expression | FillableMapTemplate | FillableArrayTemplate

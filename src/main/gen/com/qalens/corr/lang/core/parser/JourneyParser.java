@@ -817,15 +817,24 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_LITERAL ':' FillableTextTemplate
+  // STRING_LITERAL ':' (Expression | FillableTextTemplate)
   public static boolean HeaderPair(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "HeaderPair")) return false;
     if (!nextTokenIs(b, STRING_LITERAL)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, STRING_LITERAL, COLON);
-    r = r && FillableTextTemplate(b, l + 1);
+    r = r && HeaderPair_2(b, l + 1);
     exit_section_(b, m, HEADER_PAIR, r);
+    return r;
+  }
+
+  // Expression | FillableTextTemplate
+  private static boolean HeaderPair_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeaderPair_2")) return false;
+    boolean r;
+    r = Expression(b, l + 1);
+    if (!r) r = FillableTextTemplate(b, l + 1);
     return r;
   }
 

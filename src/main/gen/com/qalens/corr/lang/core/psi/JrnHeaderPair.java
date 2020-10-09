@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnHeaderPair extends PsiElement {
 
-  @NotNull
+  @Nullable
+  JrnExpression getExpression();
+
+  @Nullable
   JrnFillableTextTemplate getFillableTextTemplate();
 
 }
