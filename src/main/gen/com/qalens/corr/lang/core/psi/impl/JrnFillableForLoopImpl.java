@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnObjectValueTemplateImpl extends ASTWrapperPsiElement implements JrnObjectValueTemplate {
+public class JrnFillableForLoopImpl extends ASTWrapperPsiElement implements JrnFillableForLoop {
 
-  public JrnObjectValueTemplateImpl(@NotNull ASTNode node) {
+  public JrnFillableForLoopImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitObjectValueTemplate(this);
+    visitor.visitFillableForLoop(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,26 +28,20 @@ public class JrnObjectValueTemplateImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @Nullable
-  public JrnExpression getExpression() {
-    return findChildByClass(JrnExpression.class);
+  public JrnFillableForLoopWithArguments getFillableForLoopWithArguments() {
+    return findChildByClass(JrnFillableForLoopWithArguments.class);
   }
 
   @Override
   @Nullable
-  public JrnFillableArrayTemplate getFillableArrayTemplate() {
-    return findChildByClass(JrnFillableArrayTemplate.class);
+  public JrnFillableForLoopWithoutArguments getFillableForLoopWithoutArguments() {
+    return findChildByClass(JrnFillableForLoopWithoutArguments.class);
   }
 
   @Override
-  @Nullable
-  public JrnFillableForLoop getFillableForLoop() {
-    return findChildByClass(JrnFillableForLoop.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnFillableMapTemplate getFillableMapTemplate() {
-    return findChildByClass(JrnFillableMapTemplate.class);
+  @NotNull
+  public JrnVariableReference getVariableReference() {
+    return findNotNullChildByClass(JrnVariableReference.class);
   }
 
 }

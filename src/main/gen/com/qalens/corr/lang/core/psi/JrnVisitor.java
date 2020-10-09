@@ -63,6 +63,18 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFillableForLoop(@NotNull JrnFillableForLoop o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFillableForLoopWithArguments(@NotNull JrnFillableForLoopWithArguments o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFillableForLoopWithoutArguments(@NotNull JrnFillableForLoopWithoutArguments o) {
+    visitPsiElement(o);
+  }
+
   public void visitFillableHeaders(@NotNull JrnFillableHeaders o) {
     visitPsiElement(o);
   }

@@ -22,6 +22,9 @@ public interface JrnElementTypes {
   IElementType EXTRACTABLE_STATIC_ARRAY = new JrnElementType("EXTRACTABLE_STATIC_ARRAY");
   IElementType EXTRACTABLE_TEMPLATE = new JrnElementType("EXTRACTABLE_TEMPLATE");
   IElementType FILLABLE_ARRAY_TEMPLATE = new JrnElementType("FILLABLE_ARRAY_TEMPLATE");
+  IElementType FILLABLE_FOR_LOOP = new JrnElementType("FILLABLE_FOR_LOOP");
+  IElementType FILLABLE_FOR_LOOP_WITHOUT_ARGUMENTS = new JrnElementType("FILLABLE_FOR_LOOP_WITHOUT_ARGUMENTS");
+  IElementType FILLABLE_FOR_LOOP_WITH_ARGUMENTS = new JrnElementType("FILLABLE_FOR_LOOP_WITH_ARGUMENTS");
   IElementType FILLABLE_HEADERS = new JrnElementType("FILLABLE_HEADERS");
   IElementType FILLABLE_MAP_TEMPLATE = new JrnElementType("FILLABLE_MAP_TEMPLATE");
   IElementType FILLABLE_OBJECT_TEMPLATE = new JrnElementType("FILLABLE_OBJECT_TEMPLATE");
@@ -161,6 +164,15 @@ public interface JrnElementTypes {
       }
       else if (type == FILLABLE_ARRAY_TEMPLATE) {
         return new JrnFillableArrayTemplateImpl(node);
+      }
+      else if (type == FILLABLE_FOR_LOOP) {
+        return new JrnFillableForLoopImpl(node);
+      }
+      else if (type == FILLABLE_FOR_LOOP_WITHOUT_ARGUMENTS) {
+        return new JrnFillableForLoopWithoutArgumentsImpl(node);
+      }
+      else if (type == FILLABLE_FOR_LOOP_WITH_ARGUMENTS) {
+        return new JrnFillableForLoopWithArgumentsImpl(node);
       }
       else if (type == FILLABLE_HEADERS) {
         return new JrnFillableHeadersImpl(node);

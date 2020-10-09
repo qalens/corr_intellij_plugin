@@ -14,6 +14,9 @@ public interface JrnObjectValueTemplate extends PsiElement {
   JrnFillableArrayTemplate getFillableArrayTemplate();
 
   @Nullable
+  JrnFillableForLoop getFillableForLoop();
+
+  @Nullable
   JrnFillableMapTemplate getFillableMapTemplate();
 
 }

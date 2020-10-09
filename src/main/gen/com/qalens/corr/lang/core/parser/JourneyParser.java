@@ -450,6 +450,74 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // VariableReference '.' 'for' (FillableForLoopWithArguments | FillableForLoopWithoutArguments)
+  public static boolean FillableForLoop(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoop")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && consumeTokens(b, 0, DOT, FOR);
+    r = r && FillableForLoop_3(b, l + 1);
+    exit_section_(b, m, FILLABLE_FOR_LOOP, r);
+    return r;
+  }
+
+  // FillableForLoopWithArguments | FillableForLoopWithoutArguments
+  private static boolean FillableForLoop_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoop_3")) return false;
+    boolean r;
+    r = FillableForLoopWithArguments(b, l + 1);
+    if (!r) r = FillableForLoopWithoutArguments(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '(' VariableReference (',' VariableReference )? ')' '=>' ObjectValueTemplate
+  public static boolean FillableForLoopWithArguments(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoopWithArguments")) return false;
+    if (!nextTokenIs(b, LPAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LPAREN);
+    r = r && VariableReference(b, l + 1);
+    r = r && FillableForLoopWithArguments_2(b, l + 1);
+    r = r && consumeTokens(b, 0, RPAREN, FATARROW);
+    r = r && ObjectValueTemplate(b, l + 1);
+    exit_section_(b, m, FILLABLE_FOR_LOOP_WITH_ARGUMENTS, r);
+    return r;
+  }
+
+  // (',' VariableReference )?
+  private static boolean FillableForLoopWithArguments_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoopWithArguments_2")) return false;
+    FillableForLoopWithArguments_2_0(b, l + 1);
+    return true;
+  }
+
+  // ',' VariableReference
+  private static boolean FillableForLoopWithArguments_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoopWithArguments_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && VariableReference(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ObjectValueTemplate
+  public static boolean FillableForLoopWithoutArguments(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "FillableForLoopWithoutArguments")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, FILLABLE_FOR_LOOP_WITHOUT_ARGUMENTS, "<fillable for loop without arguments>");
+    r = ObjectValueTemplate(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // '{' HeaderPair (',' HeaderPair)* '}'
   public static boolean FillableHeaders(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableHeaders")) return false;
@@ -945,12 +1013,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // Expression | FillableMapTemplate | FillableArrayTemplate
+  // FillableForLoop | Expression | FillableMapTemplate | FillableArrayTemplate
   public static boolean ObjectValueTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ObjectValueTemplate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, OBJECT_VALUE_TEMPLATE, "<object value template>");
-    r = Expression(b, l + 1);
+    r = FillableForLoop(b, l + 1);
+    if (!r) r = Expression(b, l + 1);
     if (!r) r = FillableMapTemplate(b, l + 1);
     if (!r) r = FillableArrayTemplate(b, l + 1);
     exit_section_(b, l, m, r, false, null);
@@ -1137,7 +1206,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'String' | 'Boolean' | 'PositiveInteger' | 'integer' | 'double'
+  // 'String' | 'Boolean' | 'PositiveInteger' | 'Integer' | 'Double'
   public static boolean Type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Type")) return false;
     boolean r;
@@ -1145,8 +1214,8 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, STRING);
     if (!r) r = consumeToken(b, BOOL);
     if (!r) r = consumeToken(b, POSITIVE_INTEGER);
-    if (!r) r = consumeToken(b, "integer");
-    if (!r) r = consumeToken(b, "double");
+    if (!r) r = consumeToken(b, INTEGER);
+    if (!r) r = consumeToken(b, DOUBLE);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
