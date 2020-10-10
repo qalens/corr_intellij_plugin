@@ -246,6 +246,22 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
+  public static boolean ExtractableForLoop(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableForLoop")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && consumeTokens(b, 0, DOT, FOR, LPAREN);
+    r = r && VariableReference(b, l + 1);
+    r = r && consumeTokens(b, 0, RPAREN, FATARROW);
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    exit_section_(b, m, EXTRACTABLE_FOR_LOOP, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
   public static boolean ExtractableHeaders(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableHeaders")) return false;
@@ -320,12 +336,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VariableReference | ExtractableObjectMap | ExtractableStaticArray
+  // ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
   public static boolean ExtractableObjectTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableObjectTemplate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_OBJECT_TEMPLATE, "<extractable object template>");
-    r = VariableReference(b, l + 1);
+    r = ExtractableForLoop(b, l + 1);
+    if (!r) r = VariableReference(b, l + 1);
     if (!r) r = ExtractableObjectMap(b, l + 1);
     if (!r) r = ExtractableStaticArray(b, l + 1);
     exit_section_(b, l, m, r, false, null);

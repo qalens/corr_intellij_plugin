@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface JrnExtractableObjectTemplate extends PsiElement {
 
   @Nullable
+  JrnExtractableForLoop getExtractableForLoop();
+
+  @Nullable
   JrnExtractableObjectMap getExtractableObjectMap();
 
   @Nullable

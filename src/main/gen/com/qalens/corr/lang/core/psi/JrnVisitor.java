@@ -35,6 +35,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExtractableForLoop(@NotNull JrnExtractableForLoop o) {
+    visitPsiElement(o);
+  }
+
   public void visitExtractableHeaders(@NotNull JrnExtractableHeaders o) {
     visitPsiElement(o);
   }

@@ -28,6 +28,12 @@ public class JrnExtractableObjectTemplateImpl extends ASTWrapperPsiElement imple
 
   @Override
   @Nullable
+  public JrnExtractableForLoop getExtractableForLoop() {
+    return findChildByClass(JrnExtractableForLoop.class);
+  }
+
+  @Override
+  @Nullable
   public JrnExtractableObjectMap getExtractableObjectMap() {
     return findChildByClass(JrnExtractableObjectMap.class);
   }

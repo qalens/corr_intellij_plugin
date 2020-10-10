@@ -24,10 +24,11 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val SEMICOLON = createTextAttributesKey("SEMICOLON",DefaultLanguageHighlighterColors.SEMICOLON)
     val CONSTANT = createTextAttributesKey("CONSTANT",DefaultLanguageHighlighterColors.CONSTANT)
     val STRING = createTextAttributesKey("STRING",DefaultLanguageHighlighterColors.STRING)
-    val MARKUP_TAG = createTextAttributesKey("MARKUP_TAG",DefaultLanguageHighlighterColors.MARKUP_TAG)
     val IDENTIFIER = createTextAttributesKey("IDENTIFIER",DefaultLanguageHighlighterColors.IDENTIFIER)
     val TYPE = createTextAttributesKey("TYPE",DefaultLanguageHighlighterColors.CLASS_NAME)
     val BAD_CHARACTER = createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
+    val FUNCTION_CALL = createTextAttributesKey("FUNCTION_CALL", DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE);
+    val SCRIPTLET_CHARS = createTextAttributesKey("FUNCTION_CALL", DefaultLanguageHighlighterColors.MARKUP_ENTITY);
 
     val Keywords = arrayOf(
         TEXT_TEMPLATE_MARKER,
@@ -37,13 +38,16 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
         FOR,
         IN
     )
+    val FunctionCall = arrayOf(
+        FUNCTION_CALL
+    )
     val Braces = arrayOf(BRACES)
     val Brackets = arrayOf(BRACKETS)
     val Comma = arrayOf(COMMA)
     val Semicolon = arrayOf(SEMICOLON)
     val Constant = arrayOf(CONSTANT)
     val String = arrayOf(STRING)
-    val MarkupTag = arrayOf(MARKUP_TAG)
+    val MarkupTag = arrayOf(SCRIPTLET_CHARS)
     val Identifier = arrayOf(IDENTIFIER)
     val Type = arrayOf(TYPE)
     val badCharacter = arrayOf(BAD_CHARACTER)
@@ -51,15 +55,6 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
         if(
             tokenType.equals(JrnElementTypes.PRINT)
             || tokenType.equals(JrnElementTypes.TEXT)
-            || tokenType.equals(JrnElementTypes.CONCAT)
-            || tokenType.equals(JrnElementTypes.MUL)
-            || tokenType.equals(JrnElementTypes.ADD)
-            || tokenType.equals(JrnElementTypes.UUID)
-            || tokenType.equals(JrnElementTypes.RANDOM)
-            || tokenType.equals(JrnElementTypes.ENCODE)
-            || tokenType.equals(JrnElementTypes.FAKE)
-            || tokenType.equals(JrnElementTypes.SUB)
-            || tokenType.equals(JrnElementTypes.DIV)
             || tokenType.equals(JrnElementTypes.FOR)
             || tokenType.equals(JrnElementTypes.OBJECT_TEMPLATE)
             || tokenType.equals(JrnElementTypes.LET)
@@ -77,6 +72,18 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
 
         )
             return Keywords;
+        else if (
+                tokenType.equals(JrnElementTypes.CONCAT)
+                || tokenType.equals(JrnElementTypes.MUL)
+                || tokenType.equals(JrnElementTypes.ADD)
+                || tokenType.equals(JrnElementTypes.UUID)
+                || tokenType.equals(JrnElementTypes.RANDOM)
+                || tokenType.equals(JrnElementTypes.ENCODE)
+                || tokenType.equals(JrnElementTypes.FAKE)
+                || tokenType.equals(JrnElementTypes.SUB)
+                || tokenType.equals(JrnElementTypes.DIV)
+                )
+            return FunctionCall;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(
                 JrnElementTypes.RBRACE))
             return Braces;

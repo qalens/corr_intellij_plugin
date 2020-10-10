@@ -15,6 +15,7 @@ public interface JrnElementTypes {
   IElementType BODY_STARTING_RESPONSE = new JrnElementType("BODY_STARTING_RESPONSE");
   IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
   IElementType EXPRESSION = new JrnElementType("EXPRESSION");
+  IElementType EXTRACTABLE_FOR_LOOP = new JrnElementType("EXTRACTABLE_FOR_LOOP");
   IElementType EXTRACTABLE_HEADERS = new JrnElementType("EXTRACTABLE_HEADERS");
   IElementType EXTRACTABLE_OBJECT_MAP = new JrnElementType("EXTRACTABLE_OBJECT_MAP");
   IElementType EXTRACTABLE_OBJECT_TEMPLATE = new JrnElementType("EXTRACTABLE_OBJECT_TEMPLATE");
@@ -144,6 +145,9 @@ public interface JrnElementTypes {
       }
       else if (type == EXPRESSION) {
         return new JrnExpressionImpl(node);
+      }
+      else if (type == EXTRACTABLE_FOR_LOOP) {
+        return new JrnExtractableForLoopImpl(node);
       }
       else if (type == EXTRACTABLE_HEADERS) {
         return new JrnExtractableHeadersImpl(node);

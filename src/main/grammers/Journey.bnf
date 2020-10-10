@@ -78,9 +78,10 @@ RestStep ::= ( 'get' | 'put' | 'post' | 'patch' | 'delete') FillableRequestTempl
 HeadersStartingResponse ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
 BodyStartingResponse ::=   'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
 ExtractableTemplate ::= ('object' ExtractableObjectTemplate)
-ExtractableObjectTemplate ::= VariableReference | ExtractableObjectMap | ExtractableStaticArray
+ExtractableObjectTemplate ::= ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
 ExtractableObjectMap ::= '{' ExtractablePair ( ',' ExtractablePair)* '}'
 ExtractableStaticArray ::= '[' ExtractableObjectTemplate (',' ExtractableObjectTemplate)* ']'
+ExtractableForLoop ::= VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
 ExtractablePair ::= STRING_LITERAL ':' ExtractableObjectTemplate
 
 ExtractableHeaders ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'

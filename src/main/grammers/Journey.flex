@@ -119,17 +119,17 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "Integer"                       { return INTEGER;}
     "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }
-    "concat"                        { return CONCAT;}
-    "from_json"                     { return FROMJSON;}
-    "mul"                           { return MUL;}
-    "add"                           { return ADD;}
-    "sub"                           { return SUB;}
-    "div"                           { return DIV;}
-    "uuid"                          { return UUID;}
-    "fake"                          { return FAKE; }
-    "encode"                        { return ENCODE; }
-    "random"                        { return RANDOM;}
-    "round"                         { return ROUND;}
+    "concat" / [(]                        { return CONCAT;}
+    "from_json"  / [(]                   { return FROMJSON;}
+    "mul"  / [(]                         { return MUL;}
+    "add"  / [(]                         { return ADD;}
+    "sub"  / [(]                         { return SUB;}
+    "div"  / [(]                         { return DIV;}
+    "uuid" / [(]                         { return UUID;}
+    "fake" / [(]                         { return FAKE; }
+    "encode"  / [(]                      { return ENCODE; }
+    "random"  / [(]                      { return RANDOM;}
+    "round"  / [(]                       { return ROUND;}
     {STRING_LITERAL}                             { return STRING_LITERAL; }
     {POSITIVE_INTEGER_LITERAL} / [^\.]          { return POSITIVEINTEGERVALUE;}
     {INTEGER_LITERAL} / [^\.]                   { return INETEGERVALUE;}
