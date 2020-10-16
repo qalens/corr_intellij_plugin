@@ -205,12 +205,12 @@ class JourneyLexer implements FlexLexer {
     "\1\41\1\42\1\43\1\3\1\44\1\45\2\3\1\46"+
     "\2\3\1\47\2\3\1\50\6\3\1\51\1\52\7\3"+
     "\1\53\3\3\1\54\5\3\1\55\4\3\1\56\1\57"+
-    "\2\3\1\60\3\3\1\61\1\62\1\3\1\63\1\64"+
-    "\1\65\2\3\1\66\1\67\1\70\4\3\1\71\5\3"+
-    "\1\72";
+    "\2\3\1\60\3\3\1\61\1\3\1\62\1\3\1\63"+
+    "\1\64\1\65\2\3\1\66\1\67\1\3\1\70\6\3"+
+    "\1\71\11\3\1\72\1\73";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[229];
+    int [] result = new int[238];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -261,12 +261,13 @@ class JourneyLexer implements FlexLexer {
     "\0\u0131\0\u21d6\0\u2213\0\u2250\0\u0131\0\u228d\0\u22ca\0\u2307"+
     "\0\u2344\0\u2381\0\u0131\0\u23be\0\u23fb\0\u2438\0\u2475\0\u01ab"+
     "\0\u01ab\0\u24b2\0\u24ef\0\u01ab\0\u252c\0\u2569\0\u25a6\0\u0131"+
-    "\0\u01ab\0\u25e3\0\u0131\0\u01ab\0\u0131\0\u2620\0\u265d\0\u01ab"+
-    "\0\u01ab\0\u01ab\0\u269a\0\u26d7\0\u2714\0\u2751\0\u0131\0\u278e"+
-    "\0\u27cb\0\u2808\0\u2845\0\u2882\0\u01ab";
+    "\0\u25e3\0\u01ab\0\u2620\0\u0131\0\u01ab\0\u0131\0\u265d\0\u269a"+
+    "\0\u01ab\0\u01ab\0\u26d7\0\u01ab\0\u2714\0\u2751\0\u278e\0\u27cb"+
+    "\0\u2808\0\u2845\0\u0131\0\u2882\0\u28bf\0\u28fc\0\u2939\0\u2976"+
+    "\0\u29b3\0\u29f0\0\u2a2d\0\u2a6a\0\u0131\0\u01ab";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[229];
+    int [] result = new int[238];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -538,47 +539,61 @@ class JourneyLexer implements FlexLexer {
     "\2\10\2\0\2\10\2\0\6\10\1\317\16\10\12\0"+
     "\1\10\1\0\14\10\1\0\2\10\5\0\2\10\2\0"+
     "\2\10\2\0\25\10\6\0\1\320\3\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\4\10\1\321\20\10\12\0\1\10\1\0\14\10\1\0"+
-    "\2\10\5\0\2\10\2\0\2\10\2\0\3\10\1\322"+
-    "\21\10\12\0\1\10\1\0\14\10\1\0\2\10\5\0"+
-    "\2\10\2\0\2\10\2\0\25\10\6\0\1\323\3\0"+
-    "\1\10\1\0\14\10\1\0\2\10\5\0\2\10\2\0"+
-    "\2\10\2\0\21\10\1\324\3\10\12\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\25\10\6\0\1\325\3\0\1\10\1\0\14\10\1\0"+
-    "\2\10\5\0\2\10\2\0\2\10\2\0\21\10\1\326"+
-    "\3\10\12\0\1\10\1\0\14\10\1\0\2\10\5\0"+
-    "\2\10\2\0\2\10\2\0\25\10\12\0\1\10\1\0"+
-    "\11\10\1\327\2\10\1\0\2\10\5\0\2\10\2\0"+
-    "\2\10\2\0\1\10\1\330\23\10\12\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\3\10\1\331\21\10\12\0\1\10\1\0\14\10\1\0"+
-    "\2\10\5\0\2\10\2\0\2\10\2\0\11\10\1\332"+
-    "\13\10\12\0\1\10\1\0\14\10\1\0\2\10\5\0"+
-    "\2\10\2\0\2\10\2\0\16\10\1\333\6\10\12\0"+
-    "\1\10\1\0\14\10\1\0\2\10\5\0\2\10\2\0"+
-    "\2\10\2\0\20\10\1\334\4\10\12\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\3\10\1\335\21\10\12\0\1\10\1\0\14\10\1\0"+
-    "\2\10\5\0\2\10\2\0\2\10\2\0\25\10\12\0"+
-    "\1\10\1\0\12\10\1\336\1\10\1\0\2\10\5\0"+
-    "\2\10\2\0\2\10\2\0\25\10\6\0\1\337\3\0"+
-    "\1\10\1\0\14\10\1\0\2\10\5\0\2\10\2\0"+
-    "\2\10\2\0\3\10\1\340\21\10\12\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\4\10\1\341\20\10\12\0\1\10\1\0\14\10\1\0"+
-    "\2\10\5\0\2\10\2\0\2\10\2\0\20\10\1\342"+
-    "\4\10\12\0\1\10\1\0\14\10\1\0\2\10\5\0"+
-    "\2\10\2\0\2\10\2\0\11\10\1\343\13\10\12\0"+
-    "\1\10\1\0\14\10\1\0\2\10\5\0\2\10\2\0"+
-    "\2\10\2\0\20\10\1\344\4\10\12\0\1\10\1\0"+
-    "\14\10\1\0\2\10\5\0\2\10\2\0\2\10\2\0"+
-    "\1\10\1\345\23\10\12\0\1\10\1\0\14\10\1\0"+
-    "\2\10";
+    "\14\10\1\0\1\321\1\10\5\0\2\10\2\0\2\10"+
+    "\2\0\4\10\1\322\20\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\3\10"+
+    "\1\323\21\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\25\10\6\0\1\324"+
+    "\3\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\21\10\1\325\3\10\12\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\25\10\6\0\1\326\3\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\21\10"+
+    "\1\327\3\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\25\10\12\0\1\10"+
+    "\1\0\11\10\1\330\2\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\1\10\1\331\23\10\12\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\3\10\1\332\21\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\20\10"+
+    "\1\333\4\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\11\10\1\334\13\10"+
+    "\12\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\16\10\1\335\6\10\12\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\20\10\1\336\4\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\14\10"+
+    "\1\337\10\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\3\10\1\340\21\10"+
+    "\12\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\25\10\12\0\1\10\1\0\12\10"+
+    "\1\341\1\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\20\10\1\342\4\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\25\10"+
+    "\6\0\1\343\3\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\3\10\1\344\21\10"+
+    "\12\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\5\10\1\345\17\10\12\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\4\10\1\346\20\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\20\10"+
+    "\1\347\4\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\20\10\1\350\4\10"+
+    "\12\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\3\10\1\351\21\10\12\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\11\10\1\352\13\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10\5\0\2\10\2\0\2\10\2\0\4\10"+
+    "\1\353\20\10\12\0\1\10\1\0\14\10\1\0\2\10"+
+    "\5\0\2\10\2\0\2\10\2\0\20\10\1\354\4\10"+
+    "\12\0\1\10\1\0\14\10\1\0\2\10\5\0\2\10"+
+    "\2\0\2\10\2\0\25\10\6\0\1\355\3\0\1\10"+
+    "\1\0\14\10\1\0\2\10\5\0\2\10\2\0\2\10"+
+    "\2\0\1\10\1\356\23\10\12\0\1\10\1\0\14\10"+
+    "\1\0\2\10";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[10431];
+    int [] result = new int[10919];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -620,11 +635,11 @@ class JourneyLexer implements FlexLexer {
     "\10\1\1\11\1\0\1\11\1\1\2\11\3\1\1\0"+
     "\32\1\1\11\12\1\1\0\2\11\1\0\1\11\57\1"+
     "\2\11\2\1\1\11\5\1\1\11\17\1\1\11\3\1"+
-    "\1\11\5\1\1\11\14\1\1\11\2\1\1\11\1\1"+
-    "\1\11\11\1\1\11\6\1";
+    "\1\11\5\1\1\11\14\1\1\11\3\1\1\11\1\1"+
+    "\1\11\14\1\1\11\11\1\1\11\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[229];
+    int [] result = new int[238];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -959,99 +974,99 @@ class JourneyLexer implements FlexLexer {
             { return BAD_CHARACTER;
             } 
             // fall through
-          case 59: break;
+          case 60: break;
           case 2: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 60: break;
+          case 61: break;
           case 3: 
             { return IDENTIFIER;
             } 
             // fall through
-          case 61: break;
+          case 62: break;
           case 4: 
             { return STRING_LITERAL;
             } 
             // fall through
-          case 62: break;
+          case 63: break;
           case 5: 
             { return DOT;
             } 
             // fall through
-          case 63: break;
+          case 64: break;
           case 6: 
             { return ASSIGN;
             } 
             // fall through
-          case 64: break;
+          case 65: break;
           case 7: 
             { return LBRACE;
             } 
             // fall through
-          case 65: break;
+          case 66: break;
           case 8: 
             { return RBRACE;
             } 
             // fall through
-          case 66: break;
+          case 67: break;
           case 9: 
             { return LBRACK;
             } 
             // fall through
-          case 67: break;
+          case 68: break;
           case 10: 
             { return RBRACK;
             } 
             // fall through
-          case 68: break;
+          case 69: break;
           case 11: 
             { return LPAREN;
             } 
             // fall through
-          case 69: break;
+          case 70: break;
           case 12: 
             { return RPAREN;
             } 
             // fall through
-          case 70: break;
+          case 71: break;
           case 13: 
             { return COLON;
             } 
             // fall through
-          case 71: break;
+          case 72: break;
           case 14: 
             { return SEMICOLON;
             } 
             // fall through
-          case 72: break;
+          case 73: break;
           case 15: 
             { return COMMA;
             } 
             // fall through
-          case 73: break;
+          case 74: break;
           case 16: 
             { return TEXT_LITERAL;
             } 
             // fall through
-          case 74: break;
+          case 75: break;
           case 17: 
             { popState();
                                         popState();
                                         return BACKTICK;
             } 
             // fall through
-          case 75: break;
+          case 76: break;
           case 18: 
             { pushState(IN_TEXT_TEMPLATE); return BACKTICK;
             } 
             // fall through
-          case 76: break;
+          case 77: break;
           case 19: 
             { return NAME;
             } 
             // fall through
-          case 77: break;
+          case 78: break;
           case 20: 
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1059,27 +1074,27 @@ class JourneyLexer implements FlexLexer {
             { return POSITIVEINTEGERVALUE;
             } 
             // fall through
-          case 78: break;
+          case 79: break;
           case 21: 
             { return DOUBLEVALUE ;
             } 
             // fall through
-          case 79: break;
+          case 80: break;
           case 22: 
             { return FATARROW;
             } 
             // fall through
-          case 80: break;
+          case 81: break;
           case 23: 
             { pushState(IN_SCRIPLET);return SCRIPLET_START;
             } 
             // fall through
-          case 81: break;
+          case 82: break;
           case 24: 
             { popState(); return SCRIPLET_END;
             } 
             // fall through
-          case 82: break;
+          case 83: break;
           case 25: 
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1087,57 +1102,57 @@ class JourneyLexer implements FlexLexer {
             { return INETEGERVALUE;
             } 
             // fall through
-          case 83: break;
+          case 84: break;
           case 26: 
             { return PUT;
             } 
             // fall through
-          case 84: break;
+          case 85: break;
           case 27: 
             { return AND;
             } 
             // fall through
-          case 85: break;
+          case 86: break;
           case 28: 
             { return GET;
             } 
             // fall through
-          case 86: break;
+          case 87: break;
           case 29: 
             { return URL;
             } 
             // fall through
-          case 87: break;
+          case 88: break;
           case 30: 
             { return LET;
             } 
             // fall through
-          case 88: break;
+          case 89: break;
           case 31: 
             { return FOR;
             } 
             // fall through
-          case 89: break;
+          case 90: break;
           case 32: 
             { return POST;
             } 
             // fall through
-          case 90: break;
+          case 91: break;
           case 33: 
             { return NULLVALUE;
             } 
             // fall through
-          case 91: break;
+          case 92: break;
           case 34: 
             { return BOOLEANVALUE;
             } 
             // fall through
-          case 92: break;
+          case 93: break;
           case 35: 
             { pushState(IN_TEXT);return TEXT;
             } 
             // fall through
-          case 93: break;
+          case 94: break;
           case 36: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1145,7 +1160,7 @@ class JourneyLexer implements FlexLexer {
             { return MUL;
             } 
             // fall through
-          case 94: break;
+          case 95: break;
           case 37: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1153,7 +1168,7 @@ class JourneyLexer implements FlexLexer {
             { return ADD;
             } 
             // fall through
-          case 95: break;
+          case 96: break;
           case 38: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1161,12 +1176,12 @@ class JourneyLexer implements FlexLexer {
             { return DIV;
             } 
             // fall through
-          case 96: break;
+          case 97: break;
           case 39: 
             { return BODY;
             } 
             // fall through
-          case 97: break;
+          case 98: break;
           case 40: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1174,17 +1189,17 @@ class JourneyLexer implements FlexLexer {
             { return SUB;
             } 
             // fall through
-          case 98: break;
+          case 99: break;
           case 41: 
             { return PRINT;
             } 
             // fall through
-          case 99: break;
+          case 100: break;
           case 42: 
             { return PATCH;
             } 
             // fall through
-          case 100: break;
+          case 101: break;
           case 43: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1192,7 +1207,7 @@ class JourneyLexer implements FlexLexer {
             { return UUID;
             } 
             // fall through
-          case 101: break;
+          case 102: break;
           case 44: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1200,7 +1215,7 @@ class JourneyLexer implements FlexLexer {
             { return FAKE;
             } 
             // fall through
-          case 102: break;
+          case 103: break;
           case 45: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1208,22 +1223,22 @@ class JourneyLexer implements FlexLexer {
             { return ROUND;
             } 
             // fall through
-          case 103: break;
+          case 104: break;
           case 46: 
             { return DELETE;
             } 
             // fall through
-          case 104: break;
+          case 105: break;
           case 47: 
             { return OBJECT_TEMPLATE;
             } 
             // fall through
-          case 105: break;
+          case 106: break;
           case 48: 
             { return STRING;
             } 
             // fall through
-          case 106: break;
+          case 107: break;
           case 49: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1231,12 +1246,12 @@ class JourneyLexer implements FlexLexer {
             { return RANDOM;
             } 
             // fall through
-          case 107: break;
+          case 108: break;
           case 50: 
             { return REQUEST;
             } 
             // fall through
-          case 108: break;
+          case 109: break;
           case 51: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1244,12 +1259,12 @@ class JourneyLexer implements FlexLexer {
             { return CONCAT;
             } 
             // fall through
-          case 109: break;
+          case 110: break;
           case 52: 
             { return HEADERS;
             } 
             // fall through
-          case 110: break;
+          case 111: break;
           case 53: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1257,22 +1272,22 @@ class JourneyLexer implements FlexLexer {
             { return ENCODE;
             } 
             // fall through
-          case 111: break;
+          case 112: break;
           case 54: 
             { return INTEGER;
             } 
             // fall through
-          case 112: break;
+          case 113: break;
           case 55: 
             { return BOOL;
             } 
             // fall through
-          case 113: break;
+          case 114: break;
           case 56: 
             { return MATCHING;
             } 
             // fall through
-          case 114: break;
+          case 115: break;
           case 57: 
             // lookahead expression with fixed base length
             zzMarkedPos = Character.offsetByCodePoints
@@ -1280,12 +1295,20 @@ class JourneyLexer implements FlexLexer {
             { return FROMJSON;
             } 
             // fall through
-          case 115: break;
+          case 116: break;
           case 58: 
+            // lookahead expression with fixed base length
+            zzMarkedPos = Character.offsetByCodePoints
+                (zzBufferL/*, zzStartRead, zzEndRead - zzStartRead*/, zzStartRead, 14);
+            { return RANDOMELEMENT;
+            } 
+            // fall through
+          case 117: break;
+          case 59: 
             { return POSITIVE_INTEGER;
             } 
             // fall through
-          case 116: break;
+          case 118: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

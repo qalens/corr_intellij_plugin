@@ -47,6 +47,7 @@
           ENCODE = 'encode'
           UUID = 'uuid'
           RANDOM = 'random'
+          RANDOMELEMENT = 'random_element'
           ROUND = 'round'
           PRINT  = 'print'
           TEXT = 'text'
@@ -119,7 +120,7 @@ ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | Ine
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::= ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
 BinaryFunction ::= ('round' | 'random' | 'sub' | 'div') '(' (Expression ',' Expression)  ')'
-UnaryFunction ::= ('fake' | 'from_json' | 'encode' ) '(' Expression  ')'
+UnaryFunction ::= ('fake' | 'from_json' | 'random_element' | 'encode' ) '(' Expression  ')'
 NoArgFunction ::= 'uuid' '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
 VariableReference ::= identifier ('.' identifier)*

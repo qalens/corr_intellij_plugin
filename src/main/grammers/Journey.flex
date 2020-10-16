@@ -129,6 +129,7 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "fake" / [(]                         { return FAKE; }
     "encode"  / [(]                      { return ENCODE; }
     "random"  / [(]                      { return RANDOM;}
+    "random_element"  / [(]                      { return RANDOMELEMENT;}
     "round"  / [(]                       { return ROUND;}
     {STRING_LITERAL}                             { return STRING_LITERAL; }
     {POSITIVE_INTEGER_LITERAL} / [^\.]          { return POSITIVEINTEGERVALUE;}

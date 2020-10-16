@@ -105,6 +105,7 @@ public interface JrnElementTypes {
   IElementType PUT = new JrnTokenType("put");
   IElementType QUOTE = new JrnTokenType("\"");
   IElementType RANDOM = new JrnTokenType("random");
+  IElementType RANDOMELEMENT = new JrnTokenType("random_element");
   IElementType RBRACE = new JrnTokenType("}");
   IElementType RBRACK = new JrnTokenType("]");
   IElementType REQUEST = new JrnTokenType("request");

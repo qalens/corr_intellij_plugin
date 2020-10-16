@@ -82,6 +82,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
                 || tokenType.equals(JrnElementTypes.FAKE)
                 || tokenType.equals(JrnElementTypes.SUB)
                 || tokenType.equals(JrnElementTypes.DIV)
+                || tokenType.equals(JrnElementTypes.RANDOMELEMENT)
                 )
             return FunctionCall;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

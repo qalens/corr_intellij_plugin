@@ -1270,7 +1270,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ('fake' | 'from_json' | 'encode' ) '(' Expression  ')'
+  // ('fake' | 'from_json' | 'random_element' | 'encode' ) '(' Expression  ')'
   public static boolean UnaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction")) return false;
     boolean r;
@@ -1283,12 +1283,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'fake' | 'from_json' | 'encode'
+  // 'fake' | 'from_json' | 'random_element' | 'encode'
   private static boolean UnaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_0")) return false;
     boolean r;
     r = consumeToken(b, FAKE);
     if (!r) r = consumeToken(b, FROMJSON);
+    if (!r) r = consumeToken(b, RANDOMELEMENT);
     if (!r) r = consumeToken(b, ENCODE);
     return r;
   }
