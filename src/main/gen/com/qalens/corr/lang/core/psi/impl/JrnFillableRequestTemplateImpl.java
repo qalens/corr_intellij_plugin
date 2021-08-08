@@ -21,6 +21,7 @@ public class JrnFillableRequestTemplateImpl extends ASTWrapperPsiElement impleme
     visitor.visitFillableRequestTemplate(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

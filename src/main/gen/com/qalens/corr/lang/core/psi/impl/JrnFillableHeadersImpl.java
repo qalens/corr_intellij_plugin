@@ -21,6 +21,7 @@ public class JrnFillableHeadersImpl extends ASTWrapperPsiElement implements JrnF
     visitor.visitFillableHeaders(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

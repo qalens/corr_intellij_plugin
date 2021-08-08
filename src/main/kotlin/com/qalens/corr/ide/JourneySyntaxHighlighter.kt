@@ -28,7 +28,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val TYPE = createTextAttributesKey("TYPE",DefaultLanguageHighlighterColors.CLASS_NAME)
     val BAD_CHARACTER = createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
     val FUNCTION_CALL = createTextAttributesKey("FUNCTION_CALL", DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE);
-    val SCRIPTLET_CHARS = createTextAttributesKey("FUNCTION_CALL", DefaultLanguageHighlighterColors.MARKUP_ENTITY);
+    val SCRIPTLET_CHARS = createTextAttributesKey("SCRIPLET", DefaultLanguageHighlighterColors.MARKUP_ENTITY);
 
     val Keywords = arrayOf(
         TEXT_TEMPLATE_MARKER,
@@ -69,6 +69,17 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.URL)
             || tokenType.equals(JrnElementTypes.BODY)
             || tokenType.equals(JrnElementTypes.REQUEST)
+            || tokenType.equals(JrnElementTypes.RESPOND)
+            || tokenType.equals(JrnElementTypes.ON)
+            || tokenType.equals(JrnElementTypes.TO)
+            || tokenType.equals(JrnElementTypes.WITH)
+            || tokenType.equals(JrnElementTypes.ASYNC)
+            || tokenType.equals(JrnElementTypes.SYNC)
+            || tokenType.equals(JrnElementTypes.LOAD)
+            || tokenType.equals(JrnElementTypes.PUSH)
+            || tokenType.equals(JrnElementTypes.LISTEN)
+            || tokenType.equals(JrnElementTypes.FROM)
+            || tokenType.equals(JrnElementTypes.SANDBOX)
 
         )
             return Keywords;

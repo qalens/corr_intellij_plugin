@@ -21,6 +21,7 @@ public class JrnTypeImpl extends ASTWrapperPsiElement implements JrnType {
     visitor.visitType(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

@@ -21,6 +21,7 @@ public class JrnFillableTextTemplateImpl extends ASTWrapperPsiElement implements
     visitor.visitFillableTextTemplate(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

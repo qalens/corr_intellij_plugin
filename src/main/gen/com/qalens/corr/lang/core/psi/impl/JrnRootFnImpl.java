@@ -21,6 +21,7 @@ public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
     visitor.visitRootFn(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

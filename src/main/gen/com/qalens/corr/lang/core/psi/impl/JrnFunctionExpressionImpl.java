@@ -21,6 +21,7 @@ public class JrnFunctionExpressionImpl extends ASTWrapperPsiElement implements J
     visitor.visitFunctionExpression(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

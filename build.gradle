@@ -1,12 +1,11 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.4.17'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.0'
-    id "de.undercouch.download" version "3.4.3"
+    id "org.jetbrains.intellij" version "0.7.2"
+    id "org.jetbrains.kotlin.jvm" version "1.5.0-RC"
+    id "de.undercouch.download" version "4.1.1"
 }
 
 group 'com.qalens.corr'
-version '0.0.4'
-
+version "${version}"
 repositories {
     mavenCentral()
 }
@@ -23,46 +22,40 @@ sourceSets {
 }
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2020.2'
-
-
+    version '2021.2'
+    plugins = ["PsiViewer:${psiViewerPluginVersion}"]
+}
+publishPlugin {
+    token getLocalProperties().TOKEN
 }
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
+File change_notes_file = file("change-notes/${version}.md")
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
-patchPluginXml {
-    changeNotes """
-        <h1>IntelliJ CORR Changelog #0.0.4</h1>
-        <h2>Fetures</h2>
-        <ul>
-            <li>Compatibility with corr 0.0.24</li>
-            <li>Support for FOR loop in fillable and extractable objects</li>
-        </ul>
-        <h2>Bug Fixes</h2>
-        <ul>
-            <li>Fixed bug for integer and double data types</li>
-        </ul>
-    """
+    patchPluginXml {
+
+    changeNotes change_notes_file.getText()
 }
-task downloadPsiViewerPlugin() {
-    download {
-        src 'https://plugins.jetbrains.com/plugin/download?updateId=31087'
-        dest new File("${buildDir}/tmp/plugins/", 'PsiViewer.jar')
-        onlyIfNewer true
+def getLocalProperties() {
+    Properties props = new Properties()
+    if (file('./local.properties').exists()) {
+        props.load(new FileInputStream(file('./local.properties')))
     }
+    return props
 }
 
-task copyPsiViewerPluginToSandBox(type: Copy) {
-    from "${buildDir}/tmp/plugins/PsiViewer.jar"
-    into "${buildDir}/idea-sandbox/plugins/"
-}
+//task copyPsiViewerPluginToSandBox(type: Copy) {
+//    from "${buildDir}/tmp/plugins/PsiViewer.jar"
+//    into "${buildDir}/idea-sandbox/plugins/"
+//}
 runIde {
+    jbrVersion '11_0_2b159'
     jvmArgs '-Xmx1G'
 }
 
-copyPsiViewerPluginToSandBox.dependsOn downloadPsiViewerPlugin
-copyPsiViewerPluginToSandBox.mustRunAfter prepareSandbox
-runIde.dependsOn copyPsiViewerPluginToSandBox,check
+//copyPsiViewerPluginToSandBox.dependsOn downloadPsiViewerPlugin
+//copyPsiViewerPluginToSandBox.mustRunAfter prepareSandbox
+//runIde.dependsOn copyPsiViewerPluginToSandBox,check

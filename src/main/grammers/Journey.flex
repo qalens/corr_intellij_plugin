@@ -71,6 +71,13 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "body"                      { return BODY; }
     "headers"                      { return HEADERS; }
     "request"                      { return REQUEST; }
+    "respond"                      { return RESPOND; }
+    "on"                      { return ON; }
+    "push"                      { return PUSH; }
+    "listen"                      { return LISTEN; }
+    "with"                      { return WITH; }
+    "sync"                      { return SYNC; }
+    "async"                      { return ASYNC; }
     "get"                      { return GET; }
     "put"                      { return PUT; }
     "post"                      { return POST; }
@@ -79,6 +86,10 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "text"                          { pushState(IN_TEXT);return TEXT;}
     "object"                        { return OBJECT_TEMPLATE;}
     "let"                           { return LET;}
+    "sandbox"                           { return SANDBOX;}
+    "load"                           { return LOAD;}
+    "from"                           { return FROM;}
+    "to"                           { return TO;}
     "="                             { return ASSIGN;}
     {NAME}                          { return NAME; }
 
@@ -103,9 +114,19 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "]"                             { return RBRACK; }
     "("                             { return LPAREN; }
     ")"                             { return RPAREN; }
+    "--"                            { return OP_DECREMENT;}
+    "++"                            { return OP_INCREMENT;}
+    "=="                            { return OP_EQUAL;}
+    "+"                             { return OP_PLUS; }
+    "-"                             { return OP_MINUS;}
+    "/"                             { return OP_DIVIDE;}
+    "*"                             { return OP_MULTIPLY;}
+    "%"                             { return OP_MOD;}
     ":"                             { return COLON; }
     ";"                             { return SEMICOLON; }
     "for"                           { return FOR;}
+    "if"                            { return IF;}
+    "else"                          { return ELSE;}
     "=>"                            { return FATARROW;}
     "null"                          { return NULLVALUE;}
     "true"                          { return BOOLEANVALUE;}
@@ -123,11 +144,14 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "from_json"  / [(]                   { return FROMJSON;}
     "mul"  / [(]                         { return MUL;}
     "add"  / [(]                         { return ADD;}
+    "now"  / [(]                         { return NOW;}
+    "timestamp"  / [(]                   { return TIMESTAMP;}
     "sub"  / [(]                         { return SUB;}
     "div"  / [(]                         { return DIV;}
     "uuid" / [(]                         { return UUID;}
     "fake" / [(]                         { return FAKE; }
     "encode"  / [(]                      { return ENCODE; }
+    "mod"  / [(]                         { return MOD; }
     "random"  / [(]                      { return RANDOM;}
     "random_element"  / [(]                      { return RANDOMELEMENT;}
     "round"  / [(]                       { return ROUND;}

@@ -21,6 +21,7 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
     visitor.visitStatement(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
@@ -34,8 +35,26 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
 
   @Override
   @Nullable
+  public JrnIfElseStatement getIfElseStatement() {
+    return findChildByClass(JrnIfElseStatement.class);
+  }
+
+  @Override
+  @Nullable
   public JrnLetStatement getLetStatement() {
     return findChildByClass(JrnLetStatement.class);
+  }
+
+  @Override
+  @Nullable
+  public JrnListenerStep getListenerStep() {
+    return findChildByClass(JrnListenerStep.class);
+  }
+
+  @Override
+  @Nullable
+  public JrnLoadStep getLoadStep() {
+    return findChildByClass(JrnLoadStep.class);
   }
 
   @Override
@@ -46,8 +65,20 @@ public class JrnStatementImpl extends ASTWrapperPsiElement implements JrnStateme
 
   @Override
   @Nullable
+  public JrnPushStatement getPushStatement() {
+    return findChildByClass(JrnPushStatement.class);
+  }
+
+  @Override
+  @Nullable
   public JrnRestStep getRestStep() {
     return findChildByClass(JrnRestStep.class);
+  }
+
+  @Override
+  @Nullable
+  public JrnSyncStep getSyncStep() {
+    return findChildByClass(JrnSyncStep.class);
   }
 
 }

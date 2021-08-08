@@ -8,12 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface JrnRestStep extends PsiElement {
 
   @Nullable
-  JrnBodyStartingResponse getBodyStartingResponse();
+  JrnBodyStartingRestData getBodyStartingRestData();
 
   @NotNull
   JrnFillableRequestTemplate getFillableRequestTemplate();
 
   @Nullable
-  JrnHeadersStartingResponse getHeadersStartingResponse();
+  JrnHeadersStartingRestData getHeadersStartingRestData();
 
 }

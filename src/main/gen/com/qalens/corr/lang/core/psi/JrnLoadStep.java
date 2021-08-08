@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnBodyStartingResponse extends PsiElement {
-
-  @Nullable
-  JrnExtractableHeaders getExtractableHeaders();
+public interface JrnLoadStep extends PsiElement {
 
   @NotNull
-  JrnExtractableTemplate getExtractableTemplate();
+  List<JrnExpression> getExpressionList();
+
+  @NotNull
+  JrnVariableReference getVariableReference();
 
 }

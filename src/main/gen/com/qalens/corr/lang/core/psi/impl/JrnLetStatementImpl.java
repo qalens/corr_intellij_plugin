@@ -21,6 +21,7 @@ public class JrnLetStatementImpl extends ASTWrapperPsiElement implements JrnLetS
     visitor.visitLetStatement(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

@@ -21,6 +21,7 @@ public class JrnTextScriptImpl extends ASTWrapperPsiElement implements JrnTextSc
     visitor.visitTextScript(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

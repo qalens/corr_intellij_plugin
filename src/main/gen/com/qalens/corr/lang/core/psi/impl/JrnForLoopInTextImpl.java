@@ -21,6 +21,7 @@ public class JrnForLoopInTextImpl extends ASTWrapperPsiElement implements JrnFor
     visitor.visitForLoopInText(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

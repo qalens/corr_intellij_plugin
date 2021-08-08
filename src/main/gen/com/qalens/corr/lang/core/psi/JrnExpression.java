@@ -8,12 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface JrnExpression extends PsiElement {
 
   @Nullable
-  JrnConstantExpression getConstantExpression();
+  JrnNonOperatorExpression getNonOperatorExpression();
 
   @Nullable
-  JrnFunctionExpression getFunctionExpression();
-
-  @Nullable
-  JrnVariableExpression getVariableExpression();
+  JrnOperatorExpression getOperatorExpression();
 
 }

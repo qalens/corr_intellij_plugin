@@ -23,7 +23,19 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBodyStartingResponse(@NotNull JrnBodyStartingResponse o) {
+  public void visitBinaryOperator(@NotNull JrnBinaryOperator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBinaryOperatorExpression(@NotNull JrnBinaryOperatorExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBodyStartingRestData(@NotNull JrnBodyStartingRestData o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBracketedExpression(@NotNull JrnBracketedExpression o) {
     visitPsiElement(o);
   }
 
@@ -60,6 +72,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitExtractableTemplate(@NotNull JrnExtractableTemplate o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtractableText(@NotNull JrnExtractableText o) {
     visitPsiElement(o);
   }
 
@@ -123,7 +139,11 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitHeadersStartingResponse(@NotNull JrnHeadersStartingResponse o) {
+  public void visitHeadersStartingRestData(@NotNull JrnHeadersStartingRestData o) {
+    visitPsiElement(o);
+  }
+
+  public void visitIfElseStatement(@NotNull JrnIfElseStatement o) {
     visitPsiElement(o);
   }
 
@@ -131,15 +151,23 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitLetMatchingStatement(@NotNull JrnLetMatchingStatement o) {
-    visitPsiElement(o);
-  }
-
   public void visitLetStatement(@NotNull JrnLetStatement o) {
     visitPsiElement(o);
   }
 
+  public void visitListenerStep(@NotNull JrnListenerStep o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLoadStep(@NotNull JrnLoadStep o) {
+    visitPsiElement(o);
+  }
+
   public void visitMultiValuedFunction(@NotNull JrnMultiValuedFunction o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMultiVariableText(@NotNull JrnMultiVariableText o) {
     visitPsiElement(o);
   }
 
@@ -151,11 +179,23 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitNonOperatorExpression(@NotNull JrnNonOperatorExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitObjectValueTemplate(@NotNull JrnObjectValueTemplate o) {
     visitPsiElement(o);
   }
 
+  public void visitOperatorExpression(@NotNull JrnOperatorExpression o) {
+    visitPsiElement(o);
+  }
+
   public void visitPrintStatement(@NotNull JrnPrintStatement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPushStatement(@NotNull JrnPushStatement o) {
     visitPsiElement(o);
   }
 
@@ -171,7 +211,19 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSingleVariableText(@NotNull JrnSingleVariableText o) {
+    visitPsiElement(o);
+  }
+
   public void visitStatement(@NotNull JrnStatement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStubPart(@NotNull JrnStubPart o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSyncStep(@NotNull JrnSyncStep o) {
     visitPsiElement(o);
   }
 
@@ -200,6 +252,14 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitUnaryFunction(@NotNull JrnUnaryFunction o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryOperator(@NotNull JrnUnaryOperator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryOperatorExpression(@NotNull JrnUnaryOperatorExpression o) {
     visitPsiElement(o);
   }
 

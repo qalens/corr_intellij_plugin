@@ -21,6 +21,7 @@ public class JrnConstantExpressionImpl extends ASTWrapperPsiElement implements J
     visitor.visitConstantExpression(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

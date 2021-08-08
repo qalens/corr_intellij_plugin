@@ -21,6 +21,7 @@ public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpres
     visitor.visitExpression(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
@@ -28,20 +29,14 @@ public class JrnExpressionImpl extends ASTWrapperPsiElement implements JrnExpres
 
   @Override
   @Nullable
-  public JrnConstantExpression getConstantExpression() {
-    return findChildByClass(JrnConstantExpression.class);
+  public JrnNonOperatorExpression getNonOperatorExpression() {
+    return findChildByClass(JrnNonOperatorExpression.class);
   }
 
   @Override
   @Nullable
-  public JrnFunctionExpression getFunctionExpression() {
-    return findChildByClass(JrnFunctionExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnVariableExpression getVariableExpression() {
-    return findChildByClass(JrnVariableExpression.class);
+  public JrnOperatorExpression getOperatorExpression() {
+    return findChildByClass(JrnOperatorExpression.class);
   }
 
 }

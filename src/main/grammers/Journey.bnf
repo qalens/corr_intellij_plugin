@@ -45,13 +45,29 @@
           SUB = 'sub'
           FAKE = 'fake'
           ENCODE = 'encode'
+          TIMESTAMP = 'timestamp'
+          NOW = 'now'
+          MOD = 'mod'
           UUID = 'uuid'
+          ASYNC = 'async'
+          WITH = 'with'
+          RESPOND = 'respond'
+          SYNC = 'sync'
+          ON = 'on'
+          LISTEN = 'listen'
           RANDOM = 'random'
           RANDOMELEMENT = 'random_element'
           ROUND = 'round'
           PRINT  = 'print'
           TEXT = 'text'
           FOR = 'for'
+          PUSH = 'push'
+          IF = 'if'
+          TO = 'to'
+          LOAD = 'load'
+          FROM = 'from'
+          SANDBOX = 'sandbox'
+          ELSE = 'else'
           LET = 'let'
           MATCHING = 'matching'
           BODY = 'body'
@@ -66,18 +82,30 @@
           PATCH = 'patch'
           DELETE = 'delete'
           FATARROW = '=>'
+          OP_EQUAL = '=='
+          OP_PLUS = '+'
+          OP_MINUS = '-'
+          OP_DIVIDE = '/'
+          OP_MULTIPLY = '*'
+          OP_MOD = '%'
+          OP_INCREMENT = '++'
+          OP_DECREMENT = '--'
 
       ]
 }
 journeyFile ::= RootFn
 RootFn ::= JourneyName '(' ')' '{' Statement* '}'
 JourneyName ::= identifier | NAME
-Statement ::= PrintStatement | ForStatement | LetStatement | RestStep
+Statement ::= PrintStatement | PushStatement| ForStatement | LoadStep | SyncStep | ListenerStep | IfElseStatement | LetStatement | RestStep
 LetStatement ::= 'let' VariableReference '=' Assignable
-LetMatchingStatement ::= 'let' 'matching' ExtractableStatement
-RestStep ::= ( 'get' | 'put' | 'post' | 'patch' | 'delete') FillableRequestTemplate ( 'matching' (HeadersStartingResponse | BodyStartingResponse))?
-HeadersStartingResponse ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
-BodyStartingResponse ::=   'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
+LoadStep ::= 'let' VariableReference '=' 'load' Expression ('from' 'sandbox' Expression)?
+SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)?
+ListenerStep ::= 'listen' 'on' Expression 'with' '{' StubPart* '}'
+StubPart ::=  'on' 'get' 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
+IfElseStatement ::= 'if' Expression '{' Statement* '}' ('else' 'if' '{' Statement* '}')* ('else' '{' Statement* '}')?
+RestStep ::= ('async')? ( 'get' | 'put' | 'post' | 'patch' | 'delete') FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
+HeadersStartingRestData ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
+BodyStartingRestData ::=   'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
 ExtractableTemplate ::= ('object' ExtractableObjectTemplate)
 ExtractableObjectTemplate ::= ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
 ExtractableObjectMap ::= '{' ExtractablePair ( ',' ExtractablePair)* '}'
@@ -103,10 +131,14 @@ FillableForLoopWithArguments ::= '(' VariableReference (',' VariableReference )?
 FillableForLoopWithoutArguments ::= ObjectValueTemplate
 PrintStatement ::= 'print' FillableTextTemplate
 ForStatement ::= VariableReference '.' 'for' ( UnArgedFor | ArgedFor)
+PushStatement ::= VariableReference '.' 'push' ( Expression )
 UnArgedFor ::= Statement | MultipleStatement
 ArgedFor ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Statement | MultipleStatement)
 MultipleStatement ::= '{' (Statement)* '}'
 FillableTextTemplate ::= 'text' TextTemplate
+ExtractableText ::= 'text' '`' (SingleVariableText | MultiVariableText) '`'
+SingleVariableText ::= '<%' VariableExpression '%>'
+MultiVariableText ::= (TEXT_LITERAL)? ('<%' VariableExpression '%>' TEXT_LITERAL)* ('<%' VariableExpression '%>')?
 TextTemplate ::= '`' TextBlock* '`'
 TextBlock ::= Scriplet | TEXT_LITERAL
 Scriplet ::= '<%' (TextScript) '%>'
@@ -115,13 +147,20 @@ ForLoopInText ::= VariableReference '.' 'for' (UnArgedForInText | ArgedForInText
 UnArgedForInText ::= ForBlockForText
 ForBlockForText ::= TextScript | ( '%>' (TextBlock)* '<%' )
 ArgedForInText ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' ForBlockForText
-Expression ::= ConstantExpression | FunctionExpression | VariableExpression
+Expression ::=  OperatorExpression | NonOperatorExpression
+NonOperatorExpression  ::= BracketedExpression | ConstantExpression | FunctionExpression | VariableExpression
+BracketedExpression ::= '(' Expression ')'
+OperatorExpression ::= BinaryOperatorExpression | UnaryOperatorExpression
+BinaryOperatorExpression ::= ((UnaryOperatorExpression | NonOperatorExpression) BinaryOperator)+ (UnaryOperatorExpression | NonOperatorExpression)
+UnaryOperatorExpression ::= NonOperatorExpression UnaryOperator
+BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '=='
+UnaryOperator ::= '++' | '--'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::= ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= ('round' | 'random' | 'sub' | 'div') '(' (Expression ',' Expression)  ')'
-UnaryFunction ::= ('fake' | 'from_json' | 'random_element' | 'encode' ) '(' Expression  ')'
-NoArgFunction ::= 'uuid' '('  ')'
+BinaryFunction ::= ('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')'
+UnaryFunction ::= ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')'
+NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
 VariableReference ::= identifier ('.' identifier)*
 Type ::= ('String' | 'Boolean' | 'PositiveInteger' | 'Integer' | 'Double')

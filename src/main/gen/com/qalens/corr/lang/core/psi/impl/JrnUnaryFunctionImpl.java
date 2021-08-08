@@ -21,6 +21,7 @@ public class JrnUnaryFunctionImpl extends ASTWrapperPsiElement implements JrnUna
     visitor.visitUnaryFunction(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

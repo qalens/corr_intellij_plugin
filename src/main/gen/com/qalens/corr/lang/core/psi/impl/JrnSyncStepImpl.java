@@ -11,19 +11,32 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnLetMatchingStatementImpl extends ASTWrapperPsiElement implements JrnLetMatchingStatement {
+public class JrnSyncStepImpl extends ASTWrapperPsiElement implements JrnSyncStep {
 
-  public JrnLetMatchingStatementImpl(@NotNull ASTNode node) {
+  public JrnSyncStepImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitLetMatchingStatement(this);
+    visitor.visitSyncStep(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public JrnExpression getExpression() {
+    return findChildByClass(JrnExpression.class);
+  }
+
+  @Override
+  @NotNull
+  public JrnVariableReference getVariableReference() {
+    return findNotNullChildByClass(JrnVariableReference.class);
   }
 
 }

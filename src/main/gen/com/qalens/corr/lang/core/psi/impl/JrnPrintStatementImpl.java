@@ -21,6 +21,7 @@ public class JrnPrintStatementImpl extends ASTWrapperPsiElement implements JrnPr
     visitor.visitPrintStatement(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);

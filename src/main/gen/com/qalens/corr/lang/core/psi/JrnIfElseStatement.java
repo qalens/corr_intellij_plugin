@@ -5,6 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnLetMatchingStatement extends PsiElement {
+public interface JrnIfElseStatement extends PsiElement {
+
+  @NotNull
+  JrnExpression getExpression();
+
+  @NotNull
+  List<JrnStatement> getStatementList();
 
 }

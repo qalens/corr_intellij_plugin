@@ -11,16 +11,17 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnHeadersStartingResponseImpl extends ASTWrapperPsiElement implements JrnHeadersStartingResponse {
+public class JrnSingleVariableTextImpl extends ASTWrapperPsiElement implements JrnSingleVariableText {
 
-  public JrnHeadersStartingResponseImpl(@NotNull ASTNode node) {
+  public JrnSingleVariableTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitHeadersStartingResponse(this);
+    visitor.visitSingleVariableText(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
@@ -28,14 +29,8 @@ public class JrnHeadersStartingResponseImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @NotNull
-  public JrnExtractableHeaders getExtractableHeaders() {
-    return findNotNullChildByClass(JrnExtractableHeaders.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnExtractableTemplate getExtractableTemplate() {
-    return findChildByClass(JrnExtractableTemplate.class);
+  public JrnVariableExpression getVariableExpression() {
+    return findNotNullChildByClass(JrnVariableExpression.class);
   }
 
 }

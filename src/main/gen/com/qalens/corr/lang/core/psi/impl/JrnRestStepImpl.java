@@ -21,6 +21,7 @@ public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep
     visitor.visitRestStep(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
@@ -28,8 +29,8 @@ public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep
 
   @Override
   @Nullable
-  public JrnBodyStartingResponse getBodyStartingResponse() {
-    return findChildByClass(JrnBodyStartingResponse.class);
+  public JrnBodyStartingRestData getBodyStartingRestData() {
+    return findChildByClass(JrnBodyStartingRestData.class);
   }
 
   @Override
@@ -40,8 +41,8 @@ public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep
 
   @Override
   @Nullable
-  public JrnHeadersStartingResponse getHeadersStartingResponse() {
-    return findChildByClass(JrnHeadersStartingResponse.class);
+  public JrnHeadersStartingRestData getHeadersStartingRestData() {
+    return findChildByClass(JrnHeadersStartingRestData.class);
   }
 
 }

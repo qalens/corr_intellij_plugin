@@ -11,16 +11,17 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnBodyStartingResponseImpl extends ASTWrapperPsiElement implements JrnBodyStartingResponse {
+public class JrnBodyStartingRestDataImpl extends ASTWrapperPsiElement implements JrnBodyStartingRestData {
 
-  public JrnBodyStartingResponseImpl(@NotNull ASTNode node) {
+  public JrnBodyStartingRestDataImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitBodyStartingResponse(this);
+    visitor.visitBodyStartingRestData(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
