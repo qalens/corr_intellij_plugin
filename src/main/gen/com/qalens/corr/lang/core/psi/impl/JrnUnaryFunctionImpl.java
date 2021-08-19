@@ -28,9 +28,15 @@ public class JrnUnaryFunctionImpl extends ASTWrapperPsiElement implements JrnUna
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnExpression getExpression() {
-    return findNotNullChildByClass(JrnExpression.class);
+    return findChildByClass(JrnExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public JrnVariableReference getVariableReference() {
+    return findChildByClass(JrnVariableReference.class);
   }
 
 }

@@ -9,6 +9,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.qalens.corr.lang.core.lexer.JrnSyntaxHighLighterLexer
+import com.qalens.corr.lang.core.psi.JrnElementType
 import com.qalens.corr.lang.core.psi.JrnElementTypes
 
 object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
@@ -29,6 +30,9 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val BAD_CHARACTER = createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
     val FUNCTION_CALL = createTextAttributesKey("FUNCTION_CALL", DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE);
     val SCRIPTLET_CHARS = createTextAttributesKey("SCRIPLET", DefaultLanguageHighlighterColors.MARKUP_ENTITY);
+    val LINE_COMMENT = createTextAttributesKey("LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+    val BLOCK_COMMENT = createTextAttributesKey("BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT)
+
 
     val Keywords = arrayOf(
         TEXT_TEMPLATE_MARKER,
@@ -51,6 +55,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val Identifier = arrayOf(IDENTIFIER)
     val Type = arrayOf(TYPE)
     val badCharacter = arrayOf(BAD_CHARACTER)
+    val lineComment = arrayOf(LINE_COMMENT)
+    val blockComment = arrayOf(BLOCK_COMMENT)
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         if(
             tokenType.equals(JrnElementTypes.PRINT)
@@ -80,6 +86,9 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.LISTEN)
             || tokenType.equals(JrnElementTypes.FROM)
             || tokenType.equals(JrnElementTypes.SANDBOX)
+            || tokenType.equals(JrnElementTypes.IF)
+            || tokenType.equals(JrnElementTypes.ELSE)
+            || tokenType.equals(JrnElementTypes.FORM)
 
         )
             return Keywords;
@@ -94,6 +103,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
                 || tokenType.equals(JrnElementTypes.SUB)
                 || tokenType.equals(JrnElementTypes.DIV)
                 || tokenType.equals(JrnElementTypes.RANDOMELEMENT)
+                || tokenType.equals(JrnElementTypes.CONTAINS)
+                || tokenType.equals(JrnElementTypes.TIMESTAMP)
                 )
             return FunctionCall;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(
@@ -132,6 +143,10 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             return Type;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return badCharacter;
+        } else if(tokenType.equals(JrnElementTypes.LINE_COMMENT)){
+            return lineComment
+        } else if(tokenType.equals(JrnElementTypes.BLOCK_COMMENT)){
+            return blockComment
         }
         else return arrayOf<TextAttributesKey>();
     }

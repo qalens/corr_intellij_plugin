@@ -53,6 +53,12 @@ public class JrnStubPartImpl extends ASTWrapperPsiElement implements JrnStubPart
 
   @Override
   @NotNull
+  public JrnRestVerb getRestVerb() {
+    return findNotNullChildByClass(JrnRestVerb.class);
+  }
+
+  @Override
+  @NotNull
   public List<JrnStatement> getStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnStatement.class);
   }

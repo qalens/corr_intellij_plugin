@@ -14,8 +14,10 @@ import com.qalens.corr.lang.JrnLanguage
 import com.qalens.corr.lang.core.lexer.TopLayer
 import com.qalens.corr.lang.core.psi.JrnFile
 import com.qalens.corr.lang.core.psi.JrnElementTypes
+import com.qalens.corr.lang.core.psi.JrnTokenType
 
 class JourneyParserDefinition :ParserDefinition{
+
     override fun createParser(project: Project?): PsiParser {
         return JourneyParser();
     }
@@ -41,6 +43,6 @@ class JourneyParserDefinition :ParserDefinition{
     }
 
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.EMPTY;
+        return TokenSet.create(JrnElementTypes.LINE_COMMENT,JrnElementTypes.BLOCK_COMMENT)
     }
 }

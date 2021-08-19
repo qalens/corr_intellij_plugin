@@ -10,4 +10,7 @@ public interface JrnMultiValuedFunction extends PsiElement {
   @NotNull
   List<JrnExpression> getExpressionList();
 
+  @Nullable
+  JrnVariableReference getVariableReference();
+
 }

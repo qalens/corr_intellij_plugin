@@ -18,6 +18,7 @@ public interface JrnElementTypes {
   IElementType BRACKETED_EXPRESSION = new JrnElementType("BRACKETED_EXPRESSION");
   IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
   IElementType EXPRESSION = new JrnElementType("EXPRESSION");
+  IElementType EXTRACTABLE_FORM_TEMPLATE = new JrnElementType("EXTRACTABLE_FORM_TEMPLATE");
   IElementType EXTRACTABLE_FOR_LOOP = new JrnElementType("EXTRACTABLE_FOR_LOOP");
   IElementType EXTRACTABLE_HEADERS = new JrnElementType("EXTRACTABLE_HEADERS");
   IElementType EXTRACTABLE_OBJECT_MAP = new JrnElementType("EXTRACTABLE_OBJECT_MAP");
@@ -57,6 +58,7 @@ public interface JrnElementTypes {
   IElementType PRINT_STATEMENT = new JrnElementType("PRINT_STATEMENT");
   IElementType PUSH_STATEMENT = new JrnElementType("PUSH_STATEMENT");
   IElementType REST_STEP = new JrnElementType("REST_STEP");
+  IElementType REST_VERB = new JrnElementType("REST_VERB");
   IElementType ROOT_FN = new JrnElementType("ROOT_FN");
   IElementType SCRIPLET = new JrnElementType("SCRIPLET");
   IElementType SINGLE_VARIABLE_TEXT = new JrnElementType("SINGLE_VARIABLE_TEXT");
@@ -80,12 +82,14 @@ public interface JrnElementTypes {
   IElementType ASSIGN = new JrnTokenType("=");
   IElementType ASYNC = new JrnTokenType("async");
   IElementType BACKTICK = new JrnTokenType("`");
+  IElementType BLOCK_COMMENT = new JrnTokenType("BLOCK_COMMENT");
   IElementType BODY = new JrnTokenType("body");
   IElementType BOOL = new JrnTokenType("Boolean");
   IElementType BOOLEANVALUE = new JrnTokenType("BooleanValue");
   IElementType COLON = new JrnTokenType(":");
   IElementType COMMA = new JrnTokenType(",");
   IElementType CONCAT = new JrnTokenType("concat");
+  IElementType CONTAINS = new JrnTokenType("contains");
   IElementType DELETE = new JrnTokenType("delete");
   IElementType DIV = new JrnTokenType("div");
   IElementType DOT = new JrnTokenType(".");
@@ -96,6 +100,7 @@ public interface JrnElementTypes {
   IElementType FAKE = new JrnTokenType("fake");
   IElementType FATARROW = new JrnTokenType("=>");
   IElementType FOR = new JrnTokenType("for");
+  IElementType FORM = new JrnTokenType("form");
   IElementType FROM = new JrnTokenType("from");
   IElementType FROMJSON = new JrnTokenType("from_json");
   IElementType GET = new JrnTokenType("get");
@@ -107,6 +112,7 @@ public interface JrnElementTypes {
   IElementType LBRACE = new JrnTokenType("{");
   IElementType LBRACK = new JrnTokenType("[");
   IElementType LET = new JrnTokenType("let");
+  IElementType LINE_COMMENT = new JrnTokenType("LINE_COMMENT");
   IElementType LIST = new JrnTokenType("List");
   IElementType LISTEN = new JrnTokenType("listen");
   IElementType LOAD = new JrnTokenType("load");
@@ -193,6 +199,9 @@ public interface JrnElementTypes {
       }
       else if (type == EXPRESSION) {
         return new JrnExpressionImpl(node);
+      }
+      else if (type == EXTRACTABLE_FORM_TEMPLATE) {
+        return new JrnExtractableFormTemplateImpl(node);
       }
       else if (type == EXTRACTABLE_FOR_LOOP) {
         return new JrnExtractableForLoopImpl(node);
@@ -310,6 +319,9 @@ public interface JrnElementTypes {
       }
       else if (type == REST_STEP) {
         return new JrnRestStepImpl(node);
+      }
+      else if (type == REST_VERB) {
+        return new JrnRestVerbImpl(node);
       }
       else if (type == ROOT_FN) {
         return new JrnRootFnImpl(node);

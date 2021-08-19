@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnBinaryFunctionImpl extends ASTWrapperPsiElement implements JrnBinaryFunction {
+public class JrnExtractableFormTemplateImpl extends ASTWrapperPsiElement implements JrnExtractableFormTemplate {
 
-  public JrnBinaryFunctionImpl(@NotNull ASTNode node) {
+  public JrnExtractableFormTemplateImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitBinaryFunction(this);
+    visitor.visitExtractableFormTemplate(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class JrnBinaryFunctionImpl extends ASTWrapperPsiElement implements JrnBi
 
   @Override
   @NotNull
-  public List<JrnExpression> getExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnVariableReference getVariableReference() {
-    return findChildByClass(JrnVariableReference.class);
+  public List<JrnVariableReference> getVariableReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnVariableReference.class);
   }
 
 }

@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnExtractableTemplate extends PsiElement {
 
-  @NotNull
+  @Nullable
+  JrnExtractableFormTemplate getExtractableFormTemplate();
+
+  @Nullable
   JrnExtractableObjectTemplate getExtractableObjectTemplate();
 
 }

@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnUnaryFunction extends PsiElement {
 
-  @NotNull
+  @Nullable
   JrnExpression getExpression();
+
+  @Nullable
+  JrnVariableReference getVariableReference();
 
 }

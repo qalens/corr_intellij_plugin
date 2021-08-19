@@ -34,6 +34,7 @@
         <runLineMarkerContributor language="Journey" implementationClass="com.qalens.corr.ide.JourneyRunLineMarkerProvider"/>
         <!-- Add your extensions here -->
         <moduleType id="Journey" implementationClass="com.qalens.corr.ide.module.JourneyModuleType"/>
+        <lang.commenter language="Journey" implementationClass="com.qalens.corr.lang.core.JourneyCommenter"/>
     </extensions>
 
     <actions>

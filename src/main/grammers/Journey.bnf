@@ -44,6 +44,7 @@
           ADD = 'add'
           SUB = 'sub'
           FAKE = 'fake'
+          CONTAINS = 'contains'
           ENCODE = 'encode'
           TIMESTAMP = 'timestamp'
           NOW = 'now'
@@ -62,6 +63,7 @@
           TEXT = 'text'
           FOR = 'for'
           PUSH = 'push'
+          FORM = 'form'
           IF = 'if'
           TO = 'to'
           LOAD = 'load'
@@ -90,6 +92,8 @@
           OP_MOD = '%'
           OP_INCREMENT = '++'
           OP_DECREMENT = '--'
+          LINE_COMMENT='regexp://..'
+          BLOCK_COMMENT='regexp:/*..*/'
 
       ]
 }
@@ -101,18 +105,19 @@ LetStatement ::= 'let' VariableReference '=' Assignable
 LoadStep ::= 'let' VariableReference '=' 'load' Expression ('from' 'sandbox' Expression)?
 SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)?
 ListenerStep ::= 'listen' 'on' Expression 'with' '{' StubPart* '}'
-StubPart ::=  'on' 'get' 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
+StubPart ::=  'on' RestVerb 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
 IfElseStatement ::= 'if' Expression '{' Statement* '}' ('else' 'if' '{' Statement* '}')* ('else' '{' Statement* '}')?
-RestStep ::= ('async')? ( 'get' | 'put' | 'post' | 'patch' | 'delete') FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
+RestVerb ::= 'get' | 'put' | 'post' | 'patch' | 'delete'
+RestStep ::= ('async')? RestVerb FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
 HeadersStartingRestData ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
 BodyStartingRestData ::=   'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
-ExtractableTemplate ::= ('object' ExtractableObjectTemplate)
+ExtractableTemplate ::= ('form' ExtractableFormTemplate) | ('object' ExtractableObjectTemplate)
 ExtractableObjectTemplate ::= ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
 ExtractableObjectMap ::= '{' ExtractablePair ( ',' ExtractablePair)* '}'
 ExtractableStaticArray ::= '[' ExtractableObjectTemplate (',' ExtractableObjectTemplate)* ']'
 ExtractableForLoop ::= VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
 ExtractablePair ::= STRING_LITERAL ':' ExtractableObjectTemplate
-
+ExtractableFormTemplate ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
 ExtractableHeaders ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
 FillableRequestTemplate ::= 'request' '{'
   'url' ':' (Expression | FillableTextTemplate)
@@ -157,9 +162,9 @@ BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '=='
 UnaryOperator ::= '++' | '--'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
-MultiValuedFunction ::= ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= ('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')'
-UnaryFunction ::= ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')'
+MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
+BinaryFunction ::= (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')')
+UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
 VariableReference ::= identifier ('.' identifier)*

@@ -16,4 +16,7 @@ public interface JrnRestStep extends PsiElement {
   @Nullable
   JrnHeadersStartingRestData getHeadersStartingRestData();
 
+  @NotNull
+  JrnRestVerb getRestVerb();
+
 }

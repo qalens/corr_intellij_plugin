@@ -33,4 +33,10 @@ public class JrnMultiValuedFunctionImpl extends ASTWrapperPsiElement implements 
     return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
   }
 
+  @Override
+  @Nullable
+  public JrnVariableReference getVariableReference() {
+    return findChildByClass(JrnVariableReference.class);
+  }
+
 }

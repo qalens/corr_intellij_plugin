@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnBinaryFunction extends PsiElement {
+public interface JrnExtractableFormTemplate extends PsiElement {
 
   @NotNull
-  List<JrnExpression> getExpressionList();
-
-  @Nullable
-  JrnVariableReference getVariableReference();
+  List<JrnVariableReference> getVariableReferenceList();
 
 }

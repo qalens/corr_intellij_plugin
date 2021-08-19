@@ -51,6 +51,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExtractableFormTemplate(@NotNull JrnExtractableFormTemplate o) {
+    visitPsiElement(o);
+  }
+
   public void visitExtractableHeaders(@NotNull JrnExtractableHeaders o) {
     visitPsiElement(o);
   }
@@ -200,6 +204,10 @@ public class JrnVisitor extends PsiElementVisitor {
   }
 
   public void visitRestStep(@NotNull JrnRestStep o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRestVerb(@NotNull JrnRestVerb o) {
     visitPsiElement(o);
   }
 

@@ -45,4 +45,10 @@ public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep
     return findChildByClass(JrnHeadersStartingRestData.class);
   }
 
+  @Override
+  @NotNull
+  public JrnRestVerb getRestVerb() {
+    return findNotNullChildByClass(JrnRestVerb.class);
+  }
+
 }

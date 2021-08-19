@@ -20,6 +20,9 @@ public interface JrnStubPart extends PsiElement {
   JrnHeadersStartingRestData getHeadersStartingRestData();
 
   @NotNull
+  JrnRestVerb getRestVerb();
+
+  @NotNull
   List<JrnStatement> getStatementList();
 
 }

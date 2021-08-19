@@ -1,7 +1,7 @@
 package com.qalens.corr.lang.core.lexer;
 
 import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.TokenType;import com.intellij.psi.tree.IElementType;
 import com.qalens.corr.lang.core.psi.JrnTokenType;import kotlin.reflect.jvm.internal.impl.resolve.constants.LongValue;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import static com.intellij.psi.TokenType.*;
@@ -61,6 +61,10 @@ STRING_LITERAL = \"([^\\\"\r\n]|{ESCAPE_SEQUENCE}|{WHITE_SPACE_CHAR})*(\"|\\)?
 POSITIVE_INTEGER_LITERAL = ([1-9] [0-9]*) | 0
 INTEGER_LITERAL = ([-]?[1-9] [0-9]*)
 DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
+InputCharacter = [^\r\n]
+BLOCK_COMMENT   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
+
 %s IN_TEXT_TEMPLATE,IN_SCRIPLET,IN_STRING,IN_TEXT
 %%
 <YYINITIAL> {
@@ -81,6 +85,7 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "get"                      { return GET; }
     "put"                      { return PUT; }
     "post"                      { return POST; }
+    "form"                      { return FORM; }
     "patch"                      { return PATCH; }
     "delete"                      { return DELETE; }
     "text"                          { pushState(IN_TEXT);return TEXT;}
@@ -141,6 +146,7 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }
     "concat" / [(]                        { return CONCAT;}
+    "contains" / [(]                        { return CONTAINS;}
     "from_json"  / [(]                   { return FROMJSON;}
     "mul"  / [(]                         { return MUL;}
     "add"  / [(]                         { return ADD;}
@@ -160,7 +166,10 @@ DOUBLE_LITERAL = ([0-9]* [\.] [0-9]*)
     {INTEGER_LITERAL} / [^\.]                   { return INETEGERVALUE;}
     {DOUBLE_LITERAL}                            { return DOUBLEVALUE ;}
     {IDENTIFIER}                    { return IDENTIFIER; }
+    {LINE_COMMENT}                       { return LINE_COMMENT; }
+    {BLOCK_COMMENT}                       { return BLOCK_COMMENT; }
     {WHITE_SPACE}                   { return WHITE_SPACE; }
+
 
 }
 <IN_SCRIPLET>{
