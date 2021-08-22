@@ -148,7 +148,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')')
+  // (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')')
   public static boolean BinaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction")) return false;
     boolean r;
@@ -159,7 +159,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod') '(' Expression ')'
+  // VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')'
   private static boolean BinaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0")) return false;
     boolean r;
@@ -174,7 +174,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' | 'random' | 'sub' | 'div' | 'mod'
+  // 'round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right'
   private static boolean BinaryFunction_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0_2")) return false;
     boolean r;
@@ -183,10 +183,12 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SUB);
     if (!r) r = consumeToken(b, DIV);
     if (!r) r = consumeToken(b, MOD);
+    if (!r) r = consumeToken(b, LEFT);
+    if (!r) r = consumeToken(b, RIGHT);
     return r;
   }
 
-  // ('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')'
+  // ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')'
   private static boolean BinaryFunction_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1")) return false;
     boolean r;
@@ -199,7 +201,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' | 'random' | 'sub' | 'div' | 'mod'
+  // 'round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right'
   private static boolean BinaryFunction_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1_0")) return false;
     boolean r;
@@ -208,6 +210,8 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SUB);
     if (!r) r = consumeToken(b, DIV);
     if (!r) r = consumeToken(b, MOD);
+    if (!r) r = consumeToken(b, LEFT);
+    if (!r) r = consumeToken(b, RIGHT);
     return r;
   }
 
@@ -1094,7 +1098,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'if' Expression '{' Statement* '}' ('else' 'if' '{' Statement* '}')* ('else' '{' Statement* '}')?
+  // 'if' Expression '{' Statement* '}' ('else' 'if' Expression '{' Statement* '}')* ('else' '{' Statement* '}')?
   public static boolean IfElseStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "IfElseStatement")) return false;
     if (!nextTokenIs(b, IF)) return false;
@@ -1122,7 +1126,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ('else' 'if' '{' Statement* '}')*
+  // ('else' 'if' Expression '{' Statement* '}')*
   private static boolean IfElseStatement_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "IfElseStatement_5")) return false;
     while (true) {
@@ -1133,25 +1137,27 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // 'else' 'if' '{' Statement* '}'
+  // 'else' 'if' Expression '{' Statement* '}'
   private static boolean IfElseStatement_5_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "IfElseStatement_5_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, ELSE, IF, LBRACE);
-    r = r && IfElseStatement_5_0_3(b, l + 1);
+    r = consumeTokens(b, 0, ELSE, IF);
+    r = r && Expression(b, l + 1);
+    r = r && consumeToken(b, LBRACE);
+    r = r && IfElseStatement_5_0_4(b, l + 1);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // Statement*
-  private static boolean IfElseStatement_5_0_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_5_0_3")) return false;
+  private static boolean IfElseStatement_5_0_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStatement_5_0_4")) return false;
     while (true) {
       int c = current_position_(b);
       if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "IfElseStatement_5_0_3", c)) break;
+      if (!empty_element_parsed_guard_(b, "IfElseStatement_5_0_4", c)) break;
     }
     return true;
   }
@@ -1182,6 +1188,31 @@ public class JourneyParser implements PsiParser, LightPsiParser {
       int c = current_position_(b);
       if (!Statement(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "IfElseStatement_6_0_2", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // '{' Statement* '}'
+  public static boolean JourneyBody(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyBody")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACE);
+    r = r && JourneyBody_1(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, JOURNEY_BODY, r);
+    return r;
+  }
+
+  // Statement*
+  private static boolean JourneyBody_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyBody_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!Statement(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "JourneyBody_1", c)) break;
     }
     return true;
   }
@@ -1276,7 +1307,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VariableReference '.')? ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
+  // (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'
   public static boolean MultiValuedFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MultiValuedFunction")) return false;
     boolean r;
@@ -1308,13 +1339,16 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'concat' | 'mul' | 'add'
+  // 'concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid'
   private static boolean MultiValuedFunction_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MultiValuedFunction_1")) return false;
     boolean r;
     r = consumeToken(b, CONCAT);
     if (!r) r = consumeToken(b, MUL);
     if (!r) r = consumeToken(b, ADD);
+    if (!r) r = consumeToken(b, LPAD);
+    if (!r) r = consumeToken(b, RPAD);
+    if (!r) r = consumeToken(b, MID);
     return r;
   }
 
@@ -1618,29 +1652,17 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // JourneyName '(' ')' '{' Statement* '}'
+  // JourneyName '(' ')' JourneyBody
   public static boolean RootFn(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RootFn")) return false;
     if (!nextTokenIs(b, "<root fn>", IDENTIFIER, NAME)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROOT_FN, "<root fn>");
     r = JourneyName(b, l + 1);
-    r = r && consumeTokens(b, 0, LPAREN, RPAREN, LBRACE);
-    r = r && RootFn_4(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
+    r = r && consumeTokens(b, 0, LPAREN, RPAREN);
+    r = r && JourneyBody(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
-  }
-
-  // Statement*
-  private static boolean RootFn_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "RootFn_4")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "RootFn_4", c)) break;
-    }
-    return true;
   }
 
   /* ********************************************************** */

@@ -1,0 +1,3 @@
+`${JOURNEY_NAME}`(){
+    print text `Hello <%YourName%>`
+}

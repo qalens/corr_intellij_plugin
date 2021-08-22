@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
+public class JrnJourneyBodyImpl extends ASTWrapperPsiElement implements JrnJourneyBody {
 
-  public JrnRootFnImpl(@NotNull ASTNode node) {
+  public JrnJourneyBodyImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitRootFn(this);
+    visitor.visitJourneyBody(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
 
   @Override
   @NotNull
-  public JrnJourneyBody getJourneyBody() {
-    return findNotNullChildByClass(JrnJourneyBody.class);
-  }
-
-  @Override
-  @NotNull
-  public JrnJourneyName getJourneyName() {
-    return findNotNullChildByClass(JrnJourneyName.class);
+  public List<JrnStatement> getStatementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnStatement.class);
   }
 
 }

@@ -23,6 +23,8 @@
                   implementationClass="com.qalens.corr.lang.JrnFileType"
                   extensions="journey"
                   fieldName="INSTANCE"/>
+        <fileTemplateGroup implementation="com.qalens.corr.ide.file.JrnFileTemplateGroup"/>
+
         <lang.parserDefinition language="Journey"
                                implementationClass="com.qalens.corr.lang.core.parser.JourneyParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Journey"
@@ -35,9 +37,19 @@
         <!-- Add your extensions here -->
         <moduleType id="Journey" implementationClass="com.qalens.corr.ide.module.JourneyModuleType"/>
         <lang.commenter language="Journey" implementationClass="com.qalens.corr.lang.core.JourneyCommenter"/>
+        <internalFileTemplate id="journey"
+                              name="Journey File"/>
+        <createFromTemplateHandler implementation="com.qalens.corr.ide.action.JourneyCreateFromTemplateHandler"/>
+
     </extensions>
 
     <actions>
+        <action class="com.qalens.corr.ide.action.CreateNewFileAction"
+                text="Journey File"
+                description="Create New Journey">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl W"/>
+        </action>
         <!-- Add your actions here -->
     </actions>
 </idea-plugin>

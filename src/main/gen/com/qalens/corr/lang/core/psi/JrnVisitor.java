@@ -151,6 +151,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitJourneyBody(@NotNull JrnJourneyBody o) {
+    visitPsiElement(o);
+  }
+
   public void visitJourneyName(@NotNull JrnJourneyName o) {
     visitPsiElement(o);
   }

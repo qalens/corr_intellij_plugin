@@ -5,10 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnIfElseStatement extends PsiElement {
-
-  @NotNull
-  List<JrnExpression> getExpressionList();
+public interface JrnJourneyBody extends PsiElement {
 
   @NotNull
   List<JrnStatement> getStatementList();

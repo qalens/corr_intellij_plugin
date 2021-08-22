@@ -29,8 +29,8 @@ public class JrnIfElseStatementImpl extends ASTWrapperPsiElement implements JrnI
 
   @Override
   @NotNull
-  public JrnExpression getExpression() {
-    return findNotNullChildByClass(JrnExpression.class);
+  public List<JrnExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
   }
 
   @Override

@@ -38,6 +38,11 @@
           LIST      = 'List'
           OBJECT      = 'Object'
           CONCAT = 'concat'
+          LPAD = 'lpad'
+          RPAD = 'rpad'
+          LEFT = 'left'
+          RIGHT = 'right'
+          MID = 'mid'
           FROMJSON = 'from_json'
           MUL = 'mul'
           DIV = 'div'
@@ -98,15 +103,16 @@
       ]
 }
 journeyFile ::= RootFn
-RootFn ::= JourneyName '(' ')' '{' Statement* '}'
+RootFn ::= JourneyName '(' ')' JourneyBody
 JourneyName ::= identifier | NAME
+JourneyBody ::= '{' Statement* '}'
 Statement ::= PrintStatement | PushStatement| ForStatement | LoadStep | SyncStep | ListenerStep | IfElseStatement | LetStatement | RestStep
 LetStatement ::= 'let' VariableReference '=' Assignable
 LoadStep ::= 'let' VariableReference '=' 'load' Expression ('from' 'sandbox' Expression)?
 SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)?
 ListenerStep ::= 'listen' 'on' Expression 'with' '{' StubPart* '}'
 StubPart ::=  'on' RestVerb 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
-IfElseStatement ::= 'if' Expression '{' Statement* '}' ('else' 'if' '{' Statement* '}')* ('else' '{' Statement* '}')?
+IfElseStatement ::= 'if' Expression '{' Statement* '}' ('else' 'if' Expression '{' Statement* '}')* ('else' '{' Statement* '}')?
 RestVerb ::= 'get' | 'put' | 'post' | 'patch' | 'delete'
 RestStep ::= ('async')? RestVerb FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
 HeadersStartingRestData ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
@@ -162,8 +168,8 @@ BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '=='
 UnaryOperator ::= '++' | '--'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
-MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod') '(' (Expression ',' Expression)  ')')
+MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'
+BinaryFunction ::= (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')')
 UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?

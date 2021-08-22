@@ -105,6 +105,11 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
                 || tokenType.equals(JrnElementTypes.RANDOMELEMENT)
                 || tokenType.equals(JrnElementTypes.CONTAINS)
                 || tokenType.equals(JrnElementTypes.TIMESTAMP)
+                || tokenType.equals(JrnElementTypes.LEFT)
+                || tokenType.equals(JrnElementTypes.RIGHT)
+                || tokenType.equals(JrnElementTypes.LPAD)
+                || tokenType.equals(JrnElementTypes.RPAD)
+                || tokenType.equals(JrnElementTypes.MID)
                 )
             return FunctionCall;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

@@ -146,6 +146,11 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }
     "concat" / [(]                        { return CONCAT;}
+    "lpad" / [(]                        { return LPAD;}
+    "rpad" / [(]                        { return RPAD;}
+    "left" / [(]                        { return LEFT;}
+    "right" / [(]                        { return RIGHT;}
+    "mid" / [(]                        { return MID;}
     "contains" / [(]                        { return CONTAINS;}
     "from_json"  / [(]                   { return FROMJSON;}
     "mul"  / [(]                         { return MUL;}

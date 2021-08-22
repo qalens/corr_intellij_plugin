@@ -44,6 +44,7 @@ public interface JrnElementTypes {
   IElementType HEADERS_STARTING_REST_DATA = new JrnElementType("HEADERS_STARTING_REST_DATA");
   IElementType HEADER_PAIR = new JrnElementType("HEADER_PAIR");
   IElementType IF_ELSE_STATEMENT = new JrnElementType("IF_ELSE_STATEMENT");
+  IElementType JOURNEY_BODY = new JrnElementType("JOURNEY_BODY");
   IElementType JOURNEY_NAME = new JrnElementType("JOURNEY_NAME");
   IElementType LET_STATEMENT = new JrnElementType("LET_STATEMENT");
   IElementType LISTENER_STEP = new JrnElementType("LISTENER_STEP");
@@ -111,13 +112,16 @@ public interface JrnElementTypes {
   IElementType INTEGER = new JrnTokenType("Integer");
   IElementType LBRACE = new JrnTokenType("{");
   IElementType LBRACK = new JrnTokenType("[");
+  IElementType LEFT = new JrnTokenType("left");
   IElementType LET = new JrnTokenType("let");
   IElementType LINE_COMMENT = new JrnTokenType("LINE_COMMENT");
   IElementType LIST = new JrnTokenType("List");
   IElementType LISTEN = new JrnTokenType("listen");
   IElementType LOAD = new JrnTokenType("load");
+  IElementType LPAD = new JrnTokenType("lpad");
   IElementType LPAREN = new JrnTokenType("(");
   IElementType MATCHING = new JrnTokenType("matching");
+  IElementType MID = new JrnTokenType("mid");
   IElementType MOD = new JrnTokenType("mod");
   IElementType MUL = new JrnTokenType("mul");
   IElementType NAME = new JrnTokenType("NAME");
@@ -148,7 +152,9 @@ public interface JrnElementTypes {
   IElementType RBRACK = new JrnTokenType("]");
   IElementType REQUEST = new JrnTokenType("request");
   IElementType RESPOND = new JrnTokenType("respond");
+  IElementType RIGHT = new JrnTokenType("right");
   IElementType ROUND = new JrnTokenType("round");
+  IElementType RPAD = new JrnTokenType("rpad");
   IElementType RPAREN = new JrnTokenType(")");
   IElementType SANDBOX = new JrnTokenType("sandbox");
   IElementType SCRIPLET_END = new JrnTokenType("%>");
@@ -277,6 +283,9 @@ public interface JrnElementTypes {
       }
       else if (type == IF_ELSE_STATEMENT) {
         return new JrnIfElseStatementImpl(node);
+      }
+      else if (type == JOURNEY_BODY) {
+        return new JrnJourneyBodyImpl(node);
       }
       else if (type == JOURNEY_NAME) {
         return new JrnJourneyNameImpl(node);
