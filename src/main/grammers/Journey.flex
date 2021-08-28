@@ -144,6 +144,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "FALSE"                         { return BOOLEANVALUE;}
     "String"                        { return STRING;}
     "PositiveInteger"               { return POSITIVE_INTEGER;}
+    "Double"                        { return DOUBLE;}
     "Integer"                       { return INTEGER;}
     "Boolean"                       { return BOOL;}
     ","                             { return COMMA; }

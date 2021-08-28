@@ -40,6 +40,8 @@
         <internalFileTemplate id="journey"
                               name="Journey File"/>
         <createFromTemplateHandler implementation="com.qalens.corr.ide.action.JourneyCreateFromTemplateHandler"/>
+<!--        <lang.formatter language="Journey"-->
+<!--                        implementationClass="com.qalens.corr.ide.formatter.JrnFormattingModelBuilder"/>-->
 
     </extensions>
 
