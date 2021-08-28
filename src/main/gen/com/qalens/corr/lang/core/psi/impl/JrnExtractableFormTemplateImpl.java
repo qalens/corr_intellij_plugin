@@ -29,8 +29,8 @@ public class JrnExtractableFormTemplateImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @NotNull
-  public List<JrnVariableReference> getVariableReferenceList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnVariableReference.class);
+  public List<JrnExtractableField> getExtractableFieldList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExtractableField.class);
   }
 
 }

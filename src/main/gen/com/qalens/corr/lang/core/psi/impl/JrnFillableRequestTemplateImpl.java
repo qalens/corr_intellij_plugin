@@ -29,26 +29,8 @@ public class JrnFillableRequestTemplateImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @Nullable
-  public JrnExpression getExpression() {
-    return findChildByClass(JrnExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnFillableHeaders getFillableHeaders() {
-    return findChildByClass(JrnFillableHeaders.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnFillableObjectTemplate getFillableObjectTemplate() {
-    return findChildByClass(JrnFillableObjectTemplate.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnFillableTextTemplate getFillableTextTemplate() {
-    return findChildByClass(JrnFillableTextTemplate.class);
+  public JrnRequestTemplatePart getRequestTemplatePart() {
+    return findChildByClass(JrnRequestTemplatePart.class);
   }
 
 }

@@ -21,7 +21,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
 
   public void parseLight(IElementType t, PsiBuilder b) {
     boolean r;
-    b = adapt_builder_(t, b, this, null);
+    b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
     r = parse_root_(t, b);
     exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
@@ -35,19 +35,25 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return journeyFile(b, l + 1);
   }
 
+  public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(ASSIGNMENT_STEP, IF_ELSE_STEP, LISTENER_STEP, PRINT_STEP,
+      REST_STEP, STEP, SYNC_STEP, VARIABLE_ACTION_STEP),
+  };
+
   /* ********************************************************** */
-  // '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Statement | MultipleStatement)
+  // '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Block | Step)
   public static boolean ArgedFor(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ArgedFor")) return false;
     if (!nextTokenIs(b, LPAREN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ARGED_FOR, null);
     r = consumeToken(b, LPAREN);
-    r = r && ArgedFor_1(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, FATARROW);
-    r = r && ArgedFor_4(b, l + 1);
-    exit_section_(b, m, ARGED_FOR, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, ArgedFor_1(b, l + 1));
+    r = p && report_error_(b, consumeTokens(b, -1, RPAREN, FATARROW)) && r;
+    r = p && ArgedFor_4(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (VariableReference ',' VariableReference) | VariableReference?
@@ -80,12 +86,14 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // Statement | MultipleStatement
+  // Block | Step
   private static boolean ArgedFor_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ArgedFor_4")) return false;
     boolean r;
-    r = Statement(b, l + 1);
-    if (!r) r = MultipleStatement(b, l + 1);
+    Marker m = enter_section_(b);
+    r = Block(b, l + 1);
+    if (!r) r = Step(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -144,6 +152,63 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = FillableObjectTemplate(b, l + 1);
     if (!r) r = FillableTextTemplate(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'let' VariableReference '=' (Assignable | ('load' Expression ('from' 'sandbox' Expression)?))
+  public static boolean AssignmentStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStep")) return false;
+    if (!nextTokenIs(b, LET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ASSIGNMENT_STEP, null);
+    r = consumeToken(b, LET);
+    p = r; // pin = 1
+    r = r && report_error_(b, VariableReference(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, ASSIGN)) && r;
+    r = p && AssignmentStep_3(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // Assignable | ('load' Expression ('from' 'sandbox' Expression)?)
+  private static boolean AssignmentStep_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStep_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Assignable(b, l + 1);
+    if (!r) r = AssignmentStep_3_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // 'load' Expression ('from' 'sandbox' Expression)?
+  private static boolean AssignmentStep_3_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStep_3_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LOAD);
+    r = r && Expression(b, l + 1);
+    r = r && AssignmentStep_3_1_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ('from' 'sandbox' Expression)?
+  private static boolean AssignmentStep_3_1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStep_3_1_2")) return false;
+    AssignmentStep_3_1_2_0(b, l + 1);
+    return true;
+  }
+
+  // 'from' 'sandbox' Expression
+  private static boolean AssignmentStep_3_1_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStep_3_1_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, FROM, SANDBOX);
+    r = r && Expression(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -228,7 +293,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '+' | '-' | '/' | '*' | '%' | '=='
+  // '+' | '-' | '/' | '*' | '%' | '==' | '!='
   public static boolean BinaryOperator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryOperator")) return false;
     boolean r;
@@ -239,6 +304,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, OP_MULTIPLY);
     if (!r) r = consumeToken(b, OP_MOD);
     if (!r) r = consumeToken(b, OP_EQUAL);
+    if (!r) r = consumeToken(b, OP_NOTEQUAL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -300,33 +366,73 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
-  public static boolean BodyStartingRestData(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BodyStartingRestData")) return false;
-    if (!nextTokenIs(b, BODY)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, BODY);
-    r = r && ExtractableTemplate(b, l + 1);
-    r = r && BodyStartingRestData_2(b, l + 1);
-    exit_section_(b, m, BODY_STARTING_REST_DATA, r);
-    return r;
+  // '{' Step* '}'
+  public static boolean Block(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Block")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BLOCK, null);
+    r = consumeToken(b, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, Block_1(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // ('and' 'headers' ExtractableHeaders)?
-  private static boolean BodyStartingRestData_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BodyStartingRestData_2")) return false;
-    BodyStartingRestData_2_0(b, l + 1);
+  // Step*
+  private static boolean Block_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Block_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!Step(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "Block_1", c)) break;
+    }
     return true;
   }
 
-  // 'and' 'headers' ExtractableHeaders
-  private static boolean BodyStartingRestData_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "BodyStartingRestData_2_0")) return false;
+  /* ********************************************************** */
+  // 'body' ExtractableTemplate
+  public static boolean BodyDeclaration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyDeclaration")) return false;
+    if (!nextTokenIs(b, BODY)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BODY_DECLARATION, null);
+    r = consumeToken(b, BODY);
+    p = r; // pin = 1
+    r = r && ExtractableTemplate(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // BodyDeclaration ('and' HeadersDeclaration)?
+  public static boolean BodyStartingRestData(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingRestData")) return false;
+    if (!nextTokenIs(b, BODY)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BODY_STARTING_REST_DATA, null);
+    r = BodyDeclaration(b, l + 1);
+    p = r; // pin = 1
+    r = r && BodyStartingRestData_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // ('and' HeadersDeclaration)?
+  private static boolean BodyStartingRestData_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingRestData_1")) return false;
+    BodyStartingRestData_1_0(b, l + 1);
+    return true;
+  }
+
+  // 'and' HeadersDeclaration
+  private static boolean BodyStartingRestData_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "BodyStartingRestData_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AND, HEADERS);
-    r = r && ExtractableHeaders(b, l + 1);
+    r = consumeToken(b, AND);
+    r = r && HeadersDeclaration(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -343,6 +449,20 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, BRACKETED_EXPRESSION, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // Step*
+  public static boolean CalculationSteps(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CalculationSteps")) return false;
+    Marker m = enter_section_(b, l, _NONE_, CALCULATION_STEPS, "<calculation steps>");
+    while (true) {
+      int c = current_position_(b);
+      if (!Step(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "CalculationSteps", c)) break;
+    }
+    exit_section_(b, l, m, true, false, JourneyParser::recoverCalculationSteps);
+    return true;
   }
 
   /* ********************************************************** */
@@ -374,54 +494,83 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // STRING_LITERAL ':' VariableReference
+  public static boolean ExtractableField(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableField")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FIELD, "<extractable field>");
+    r = consumeTokens(b, 1, STRING_LITERAL, COLON);
+    p = r; // pin = 1
+    r = r && VariableReference(b, l + 1);
+    exit_section_(b, l, m, r, p, JourneyParser::recoverExtractableField);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
   public static boolean ExtractableForLoop(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableForLoop")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FOR_LOOP, null);
     r = VariableReference(b, l + 1);
-    r = r && consumeTokens(b, 0, DOT, FOR, LPAREN);
-    r = r && VariableReference(b, l + 1);
-    r = r && consumeTokens(b, 0, RPAREN, FATARROW);
-    r = r && ExtractableObjectTemplate(b, l + 1);
-    exit_section_(b, m, EXTRACTABLE_FOR_LOOP, r);
-    return r;
+    r = r && consumeTokens(b, 2, DOT, FOR, LPAREN);
+    p = r; // pin = 3
+    r = r && report_error_(b, VariableReference(b, l + 1));
+    r = p && report_error_(b, consumeTokens(b, -1, RPAREN, FATARROW)) && r;
+    r = p && ExtractableObjectTemplate(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
-  // '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
+  // 'form' ExtractableFormTemplate
+  public static boolean ExtractableForm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableForm")) return false;
+    if (!nextTokenIs(b, FORM)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FORM, null);
+    r = consumeToken(b, FORM);
+    p = r; // pin = 1
+    r = r && ExtractableFormTemplate(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // '{'  ExtractableField (',' ExtractableField )* '}'
   public static boolean ExtractableFormTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableFormTemplate")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, LBRACE, STRING_LITERAL, COLON);
-    r = r && VariableReference(b, l + 1);
-    r = r && ExtractableFormTemplate_4(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, EXTRACTABLE_FORM_TEMPLATE, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FORM_TEMPLATE, null);
+    r = consumeToken(b, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, ExtractableField(b, l + 1));
+    r = p && report_error_(b, ExtractableFormTemplate_2(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // (',' STRING_LITERAL ':' VariableReference)*
-  private static boolean ExtractableFormTemplate_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ExtractableFormTemplate_4")) return false;
+  // (',' ExtractableField )*
+  private static boolean ExtractableFormTemplate_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableFormTemplate_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!ExtractableFormTemplate_4_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ExtractableFormTemplate_4", c)) break;
+      if (!ExtractableFormTemplate_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ExtractableFormTemplate_2", c)) break;
     }
     return true;
   }
 
-  // ',' STRING_LITERAL ':' VariableReference
-  private static boolean ExtractableFormTemplate_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ExtractableFormTemplate_4_0")) return false;
+  // ',' ExtractableField
+  private static boolean ExtractableFormTemplate_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableFormTemplate_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, COMMA, STRING_LITERAL, COLON);
-    r = r && VariableReference(b, l + 1);
+    r = consumeToken(b, COMMA);
+    r = r && ExtractableField(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -431,14 +580,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean ExtractableHeaders(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableHeaders")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, LBRACE, STRING_LITERAL, COLON);
-    r = r && VariableReference(b, l + 1);
-    r = r && ExtractableHeaders_4(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, EXTRACTABLE_HEADERS, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_HEADERS, null);
+    r = consumeTokens(b, 1, LBRACE, STRING_LITERAL, COLON);
+    p = r; // pin = 1
+    r = r && report_error_(b, VariableReference(b, l + 1));
+    r = p && report_error_(b, ExtractableHeaders_4(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (',' STRING_LITERAL ':' VariableReference)*
@@ -464,18 +614,33 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // 'object' ExtractableObjectTemplate
+  public static boolean ExtractableObject(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ExtractableObject")) return false;
+    if (!nextTokenIs(b, OBJECT_TEMPLATE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_OBJECT, null);
+    r = consumeToken(b, OBJECT_TEMPLATE);
+    p = r; // pin = 1
+    r = r && ExtractableObjectTemplate(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // '{' ExtractablePair ( ',' ExtractablePair)* '}'
   public static boolean ExtractableObjectMap(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableObjectMap")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_OBJECT_MAP, null);
     r = consumeToken(b, LBRACE);
-    r = r && ExtractablePair(b, l + 1);
-    r = r && ExtractableObjectMap_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, EXTRACTABLE_OBJECT_MAP, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, ExtractablePair(b, l + 1));
+    r = p && report_error_(b, ExtractableObjectMap_2(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ',' ExtractablePair)*
@@ -501,15 +666,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
+  // ExtractableObjectMap | ExtractableStaticArray | ExtractableForLoop | VariableReference
   public static boolean ExtractableObjectTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableObjectTemplate")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_OBJECT_TEMPLATE, "<extractable object template>");
-    r = ExtractableForLoop(b, l + 1);
-    if (!r) r = VariableReference(b, l + 1);
-    if (!r) r = ExtractableObjectMap(b, l + 1);
+    r = ExtractableObjectMap(b, l + 1);
     if (!r) r = ExtractableStaticArray(b, l + 1);
+    if (!r) r = ExtractableForLoop(b, l + 1);
+    if (!r) r = VariableReference(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -518,13 +683,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // STRING_LITERAL ':' ExtractableObjectTemplate
   public static boolean ExtractablePair(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractablePair")) return false;
-    if (!nextTokenIs(b, STRING_LITERAL)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, STRING_LITERAL, COLON);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_PAIR, "<extractable pair>");
+    r = consumeTokens(b, 1, STRING_LITERAL, COLON);
+    p = r; // pin = 1
     r = r && ExtractableObjectTemplate(b, l + 1);
-    exit_section_(b, m, EXTRACTABLE_PAIR, r);
-    return r;
+    exit_section_(b, l, m, r, p, JourneyParser::recoverExtractablePair);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -532,14 +697,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean ExtractableStaticArray(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableStaticArray")) return false;
     if (!nextTokenIs(b, LBRACK)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_STATIC_ARRAY, null);
     r = consumeToken(b, LBRACK);
-    r = r && ExtractableObjectTemplate(b, l + 1);
-    r = r && ExtractableStaticArray_2(b, l + 1);
-    r = r && consumeToken(b, RBRACK);
-    exit_section_(b, m, EXTRACTABLE_STATIC_ARRAY, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, ExtractableObjectTemplate(b, l + 1));
+    r = p && report_error_(b, ExtractableStaticArray_2(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACK) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (',' ExtractableObjectTemplate)*
@@ -565,37 +731,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ('form' ExtractableFormTemplate) | ('object' ExtractableObjectTemplate)
+  // ExtractableObject | ExtractableForm
   public static boolean ExtractableTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableTemplate")) return false;
     if (!nextTokenIs(b, "<extractable template>", FORM, OBJECT_TEMPLATE)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_TEMPLATE, "<extractable template>");
-    r = ExtractableTemplate_0(b, l + 1);
-    if (!r) r = ExtractableTemplate_1(b, l + 1);
+    r = ExtractableObject(b, l + 1);
+    if (!r) r = ExtractableForm(b, l + 1);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // 'form' ExtractableFormTemplate
-  private static boolean ExtractableTemplate_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ExtractableTemplate_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FORM);
-    r = r && ExtractableFormTemplate(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // 'object' ExtractableObjectTemplate
-  private static boolean ExtractableTemplate_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ExtractableTemplate_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, OBJECT_TEMPLATE);
-    r = r && ExtractableObjectTemplate(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -749,14 +893,15 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean FillableHeaders(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableHeaders")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FILLABLE_HEADERS, null);
     r = consumeToken(b, LBRACE);
-    r = r && HeaderPair(b, l + 1);
-    r = r && FillableHeaders_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, FILLABLE_HEADERS, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, HeaderPair(b, l + 1));
+    r = p && report_error_(b, FillableHeaders_2(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (',' HeaderPair)*
@@ -840,76 +985,30 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean FillableObjectTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableObjectTemplate")) return false;
     if (!nextTokenIs(b, OBJECT_TEMPLATE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FILLABLE_OBJECT_TEMPLATE, null);
     r = consumeToken(b, OBJECT_TEMPLATE);
+    p = r; // pin = 1
     r = r && ObjectValueTemplate(b, l + 1);
-    exit_section_(b, m, FILLABLE_OBJECT_TEMPLATE, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
   // 'request' '{'
-  //   'url' ':' (Expression | FillableTextTemplate)
-  //   ( ',' 'body' ':' FillableObjectTemplate)?
-  //   ( ',' 'headers' ':' FillableHeaders)? '}'
+  //         RequestTemplatePart
+  //    '}'
   public static boolean FillableRequestTemplate(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableRequestTemplate")) return false;
     if (!nextTokenIs(b, REQUEST)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, REQUEST, LBRACE, URL, COLON);
-    r = r && FillableRequestTemplate_4(b, l + 1);
-    r = r && FillableRequestTemplate_5(b, l + 1);
-    r = r && FillableRequestTemplate_6(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, FILLABLE_REQUEST_TEMPLATE, r);
-    return r;
-  }
-
-  // Expression | FillableTextTemplate
-  private static boolean FillableRequestTemplate_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableRequestTemplate_4")) return false;
-    boolean r;
-    r = Expression(b, l + 1);
-    if (!r) r = FillableTextTemplate(b, l + 1);
-    return r;
-  }
-
-  // ( ',' 'body' ':' FillableObjectTemplate)?
-  private static boolean FillableRequestTemplate_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableRequestTemplate_5")) return false;
-    FillableRequestTemplate_5_0(b, l + 1);
-    return true;
-  }
-
-  // ',' 'body' ':' FillableObjectTemplate
-  private static boolean FillableRequestTemplate_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableRequestTemplate_5_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, COMMA, BODY, COLON);
-    r = r && FillableObjectTemplate(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ( ',' 'headers' ':' FillableHeaders)?
-  private static boolean FillableRequestTemplate_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableRequestTemplate_6")) return false;
-    FillableRequestTemplate_6_0(b, l + 1);
-    return true;
-  }
-
-  // ',' 'headers' ':' FillableHeaders
-  private static boolean FillableRequestTemplate_6_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FillableRequestTemplate_6_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, COMMA, HEADERS, COLON);
-    r = r && FillableHeaders(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FILLABLE_REQUEST_TEMPLATE, null);
+    r = consumeTokens(b, 2, REQUEST, LBRACE);
+    p = r; // pin = 2
+    r = r && report_error_(b, RequestTemplatePart(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1007,25 +1106,25 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VariableReference '.' 'for' ( UnArgedFor | ArgedFor)
-  public static boolean ForStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForStatement")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = VariableReference(b, l + 1);
-    r = r && consumeTokens(b, 0, DOT, FOR);
-    r = r && ForStatement_3(b, l + 1);
-    exit_section_(b, m, FOR_STATEMENT, r);
-    return r;
+  // 'for' ( ArgedFor | UnArgedFor )
+  public static boolean ForStepPart(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ForStepPart")) return false;
+    if (!nextTokenIs(b, FOR)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FOR_STEP_PART, null);
+    r = consumeToken(b, FOR);
+    p = r; // pin = 1
+    r = r && ForStepPart_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // UnArgedFor | ArgedFor
-  private static boolean ForStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ForStatement_3")) return false;
+  // ArgedFor | UnArgedFor
+  private static boolean ForStepPart_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ForStepPart_1")) return false;
     boolean r;
-    r = UnArgedFor(b, l + 1);
-    if (!r) r = ArgedFor(b, l + 1);
+    r = ArgedFor(b, l + 1);
+    if (!r) r = UnArgedFor(b, l + 1);
     return r;
   }
 
@@ -1066,155 +1165,107 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
+  // 'headers' ExtractableHeaders
+  public static boolean HeadersDeclaration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersDeclaration")) return false;
+    if (!nextTokenIs(b, HEADERS)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, HEADERS_DECLARATION, null);
+    r = consumeToken(b, HEADERS);
+    p = r; // pin = 1
+    r = r && ExtractableHeaders(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // HeadersDeclaration ('and' BodyDeclaration)?
   public static boolean HeadersStartingRestData(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "HeadersStartingRestData")) return false;
     if (!nextTokenIs(b, HEADERS)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, HEADERS);
-    r = r && ExtractableHeaders(b, l + 1);
-    r = r && HeadersStartingRestData_2(b, l + 1);
-    exit_section_(b, m, HEADERS_STARTING_REST_DATA, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, HEADERS_STARTING_REST_DATA, null);
+    r = HeadersDeclaration(b, l + 1);
+    p = r; // pin = 1
+    r = r && HeadersStartingRestData_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // ('and' 'body' ExtractableTemplate)?
-  private static boolean HeadersStartingRestData_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "HeadersStartingRestData_2")) return false;
-    HeadersStartingRestData_2_0(b, l + 1);
+  // ('and' BodyDeclaration)?
+  private static boolean HeadersStartingRestData_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersStartingRestData_1")) return false;
+    HeadersStartingRestData_1_0(b, l + 1);
     return true;
   }
 
-  // 'and' 'body' ExtractableTemplate
-  private static boolean HeadersStartingRestData_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "HeadersStartingRestData_2_0")) return false;
+  // 'and' BodyDeclaration
+  private static boolean HeadersStartingRestData_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "HeadersStartingRestData_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AND, BODY);
-    r = r && ExtractableTemplate(b, l + 1);
+    r = consumeToken(b, AND);
+    r = r && BodyDeclaration(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // 'if' Expression '{' Statement* '}' ('else' 'if' Expression '{' Statement* '}')* ('else' '{' Statement* '}')?
-  public static boolean IfElseStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement")) return false;
+  // 'if' Expression Block ('else' 'if' Expression Block)* ('else' Block)?
+  public static boolean IfElseStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStep")) return false;
     if (!nextTokenIs(b, IF)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, IF_ELSE_STEP, null);
     r = consumeToken(b, IF);
-    r = r && Expression(b, l + 1);
-    r = r && consumeToken(b, LBRACE);
-    r = r && IfElseStatement_3(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    r = r && IfElseStatement_5(b, l + 1);
-    r = r && IfElseStatement_6(b, l + 1);
-    exit_section_(b, m, IF_ELSE_STATEMENT, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, Expression(b, l + 1));
+    r = p && report_error_(b, Block(b, l + 1)) && r;
+    r = p && report_error_(b, IfElseStep_3(b, l + 1)) && r;
+    r = p && IfElseStep_4(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // Statement*
-  private static boolean IfElseStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_3")) return false;
+  // ('else' 'if' Expression Block)*
+  private static boolean IfElseStep_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStep_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "IfElseStatement_3", c)) break;
+      if (!IfElseStep_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "IfElseStep_3", c)) break;
     }
     return true;
   }
 
-  // ('else' 'if' Expression '{' Statement* '}')*
-  private static boolean IfElseStatement_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_5")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!IfElseStatement_5_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "IfElseStatement_5", c)) break;
-    }
-    return true;
-  }
-
-  // 'else' 'if' Expression '{' Statement* '}'
-  private static boolean IfElseStatement_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_5_0")) return false;
+  // 'else' 'if' Expression Block
+  private static boolean IfElseStep_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStep_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, ELSE, IF);
     r = r && Expression(b, l + 1);
-    r = r && consumeToken(b, LBRACE);
-    r = r && IfElseStatement_5_0_4(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
+    r = r && Block(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // Statement*
-  private static boolean IfElseStatement_5_0_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_5_0_4")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "IfElseStatement_5_0_4", c)) break;
-    }
+  // ('else' Block)?
+  private static boolean IfElseStep_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStep_4")) return false;
+    IfElseStep_4_0(b, l + 1);
     return true;
   }
 
-  // ('else' '{' Statement* '}')?
-  private static boolean IfElseStatement_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_6")) return false;
-    IfElseStatement_6_0(b, l + 1);
-    return true;
-  }
-
-  // 'else' '{' Statement* '}'
-  private static boolean IfElseStatement_6_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_6_0")) return false;
+  // 'else' Block
+  private static boolean IfElseStep_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IfElseStep_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, ELSE, LBRACE);
-    r = r && IfElseStatement_6_0_2(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
+    r = consumeToken(b, ELSE);
+    r = r && Block(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  // Statement*
-  private static boolean IfElseStatement_6_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IfElseStatement_6_0_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "IfElseStatement_6_0_2", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // '{' Statement* '}'
-  public static boolean JourneyBody(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JourneyBody")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACE);
-    r = r && JourneyBody_1(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, JOURNEY_BODY, r);
-    return r;
-  }
-
-  // Statement*
-  private static boolean JourneyBody_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "JourneyBody_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "JourneyBody_1", c)) break;
-    }
-    return true;
   }
 
   /* ********************************************************** */
@@ -1231,79 +1282,18 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'let' VariableReference '=' Assignable
-  public static boolean LetStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "LetStatement")) return false;
-    if (!nextTokenIs(b, LET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LET);
-    r = r && VariableReference(b, l + 1);
-    r = r && consumeToken(b, ASSIGN);
-    r = r && Assignable(b, l + 1);
-    exit_section_(b, m, LET_STATEMENT, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // 'listen' 'on' Expression 'with' '{' StubPart* '}'
+  // 'listen' 'on' Expression StubDefinitionBlock
   public static boolean ListenerStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ListenerStep")) return false;
     if (!nextTokenIs(b, LISTEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, LISTEN, ON);
-    r = r && Expression(b, l + 1);
-    r = r && consumeTokens(b, 0, WITH, LBRACE);
-    r = r && ListenerStep_5(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, LISTENER_STEP, r);
-    return r;
-  }
-
-  // StubPart*
-  private static boolean ListenerStep_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ListenerStep_5")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!StubPart(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ListenerStep_5", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // 'let' VariableReference '=' 'load' Expression ('from' 'sandbox' Expression)?
-  public static boolean LoadStep(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "LoadStep")) return false;
-    if (!nextTokenIs(b, LET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LET);
-    r = r && VariableReference(b, l + 1);
-    r = r && consumeTokens(b, 0, ASSIGN, LOAD);
-    r = r && Expression(b, l + 1);
-    r = r && LoadStep_5(b, l + 1);
-    exit_section_(b, m, LOAD_STEP, r);
-    return r;
-  }
-
-  // ('from' 'sandbox' Expression)?
-  private static boolean LoadStep_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "LoadStep_5")) return false;
-    LoadStep_5_0(b, l + 1);
-    return true;
-  }
-
-  // 'from' 'sandbox' Expression
-  private static boolean LoadStep_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "LoadStep_5_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FROM, SANDBOX);
-    r = r && Expression(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, LISTENER_STEP, null);
+    r = consumeTokens(b, 1, LISTEN, ON);
+    p = r; // pin = 1
+    r = r && report_error_(b, Expression(b, l + 1));
+    r = p && StubDefinitionBlock(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1455,41 +1445,6 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' (Statement)* '}'
-  public static boolean MultipleStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MultipleStatement")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LBRACE);
-    r = r && MultipleStatement_1(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, MULTIPLE_STATEMENT, r);
-    return r;
-  }
-
-  // (Statement)*
-  private static boolean MultipleStatement_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MultipleStatement_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!MultipleStatement_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "MultipleStatement_1", c)) break;
-    }
-    return true;
-  }
-
-  // (Statement)
-  private static boolean MultipleStatement_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MultipleStatement_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = Statement(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // ('uuid' |  'timestamp' | 'now' ) '('  ')'
   public static boolean NoArgFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "NoArgFunction")) return false;
@@ -1553,34 +1508,35 @@ public class JourneyParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // 'print' FillableTextTemplate
-  public static boolean PrintStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "PrintStatement")) return false;
+  public static boolean PrintStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PrintStep")) return false;
     if (!nextTokenIs(b, PRINT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PRINT_STEP, null);
     r = consumeToken(b, PRINT);
+    p = r; // pin = 1
     r = r && FillableTextTemplate(b, l + 1);
-    exit_section_(b, m, PRINT_STATEMENT, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
-  // VariableReference '.' 'push' ( Expression )
-  public static boolean PushStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "PushStatement")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = VariableReference(b, l + 1);
-    r = r && consumeTokens(b, 0, DOT, PUSH);
-    r = r && PushStatement_3(b, l + 1);
-    exit_section_(b, m, PUSH_STATEMENT, r);
-    return r;
+  // 'push' ( Expression )
+  public static boolean PushStepPart(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PushStepPart")) return false;
+    if (!nextTokenIs(b, PUSH)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PUSH_STEP_PART, null);
+    r = consumeToken(b, PUSH);
+    p = r; // pin = 1
+    r = r && PushStepPart_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( Expression )
-  private static boolean PushStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "PushStatement_3")) return false;
+  private static boolean PushStepPart_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "PushStepPart_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = Expression(b, l + 1);
@@ -1589,17 +1545,165 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData)
+  public static boolean RequestExtractor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestExtractor")) return false;
+    if (!nextTokenIs(b, MATCHING)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, REQUEST_EXTRACTOR, null);
+    r = consumeTokens(b, 1, MATCHING, REQUEST);
+    p = r; // pin = 1
+    r = r && RequestExtractor_2(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // HeadersStartingRestData | BodyStartingRestData
+  private static boolean RequestExtractor_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestExtractor_2")) return false;
+    boolean r;
+    r = HeadersStartingRestData(b, l + 1);
+    if (!r) r = BodyStartingRestData(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // 'with' 'url' ExtractableText
+  public static boolean RequestMatcher(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestMatcher")) return false;
+    if (!nextTokenIs(b, WITH)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, REQUEST_MATCHER, null);
+    r = consumeTokens(b, 1, WITH, URL);
+    p = r; // pin = 1
+    r = r && ExtractableText(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // 'url' ':' (Expression | FillableTextTemplate)
+  //                         ( ',' 'body' ':' FillableObjectTemplate)?
+  //                         ( ',' 'headers' ':' FillableHeaders)?
+  public static boolean RequestTemplatePart(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, REQUEST_TEMPLATE_PART, "<request template part>");
+    r = consumeTokens(b, 1, URL, COLON);
+    p = r; // pin = 1
+    r = r && report_error_(b, RequestTemplatePart_2(b, l + 1));
+    r = p && report_error_(b, RequestTemplatePart_3(b, l + 1)) && r;
+    r = p && RequestTemplatePart_4(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, JourneyParser::recoverRequestTemplatePart);
+    return r || p;
+  }
+
+  // Expression | FillableTextTemplate
+  private static boolean RequestTemplatePart_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart_2")) return false;
+    boolean r;
+    r = Expression(b, l + 1);
+    if (!r) r = FillableTextTemplate(b, l + 1);
+    return r;
+  }
+
+  // ( ',' 'body' ':' FillableObjectTemplate)?
+  private static boolean RequestTemplatePart_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart_3")) return false;
+    RequestTemplatePart_3_0(b, l + 1);
+    return true;
+  }
+
+  // ',' 'body' ':' FillableObjectTemplate
+  private static boolean RequestTemplatePart_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, BODY, COLON);
+    r = r && FillableObjectTemplate(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( ',' 'headers' ':' FillableHeaders)?
+  private static boolean RequestTemplatePart_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart_4")) return false;
+    RequestTemplatePart_4_0(b, l + 1);
+    return true;
+  }
+
+  // ',' 'headers' ':' FillableHeaders
+  private static boolean RequestTemplatePart_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RequestTemplatePart_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, HEADERS, COLON);
+    r = r && FillableHeaders(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '{' CalculationSteps ResponseLine '}'
+  public static boolean ResponseGenerator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ResponseGenerator")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, RESPONSE_GENERATOR, null);
+    r = consumeToken(b, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, CalculationSteps(b, l + 1));
+    r = p && report_error_(b, ResponseLine(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // 'respond' 'with' ('status' PositiveIntegerValue 'and')? 'body' Expression
+  public static boolean ResponseLine(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ResponseLine")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, RESPONSE_LINE, "<response line>");
+    r = consumeTokens(b, 1, RESPOND, WITH);
+    p = r; // pin = 1
+    r = r && report_error_(b, ResponseLine_2(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, BODY)) && r;
+    r = p && Expression(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, JourneyParser::recoverStep);
+    return r || p;
+  }
+
+  // ('status' PositiveIntegerValue 'and')?
+  private static boolean ResponseLine_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ResponseLine_2")) return false;
+    ResponseLine_2_0(b, l + 1);
+    return true;
+  }
+
+  // 'status' PositiveIntegerValue 'and'
+  private static boolean ResponseLine_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ResponseLine_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, STATUS, POSITIVEINTEGERVALUE, AND);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ('async')? RestVerb FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
   public static boolean RestStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RestStep")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, REST_STEP, "<rest step>");
     r = RestStep_0(b, l + 1);
     r = r && RestVerb(b, l + 1);
-    r = r && FillableRequestTemplate(b, l + 1);
-    r = r && RestStep_3(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    p = r; // pin = 2
+    r = r && report_error_(b, FillableRequestTemplate(b, l + 1));
+    r = p && RestStep_3(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ('async')?
@@ -1652,7 +1756,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // JourneyName '(' ')' JourneyBody
+  // JourneyName '(' ')' Block
   public static boolean RootFn(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RootFn")) return false;
     if (!nextTokenIs(b, "<root fn>", IDENTIFIER, NAME)) return false;
@@ -1660,7 +1764,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, ROOT_FN, "<root fn>");
     r = JourneyName(b, l + 1);
     r = r && consumeTokens(b, 0, LPAREN, RPAREN);
-    r = r && JourneyBody(b, l + 1);
+    r = r && Block(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1704,79 +1808,85 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PrintStatement | PushStatement| ForStatement | LoadStep | SyncStep | ListenerStep | IfElseStatement | LetStatement | RestStep
-  public static boolean Statement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Statement")) return false;
+  // PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep
+  public static boolean Step(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Step")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STATEMENT, "<statement>");
-    r = PrintStatement(b, l + 1);
-    if (!r) r = PushStatement(b, l + 1);
-    if (!r) r = ForStatement(b, l + 1);
-    if (!r) r = LoadStep(b, l + 1);
+    Marker m = enter_section_(b, l, _COLLAPSE_, STEP, "<step>");
+    r = PrintStep(b, l + 1);
+    if (!r) r = AssignmentStep(b, l + 1);
     if (!r) r = SyncStep(b, l + 1);
     if (!r) r = ListenerStep(b, l + 1);
-    if (!r) r = IfElseStatement(b, l + 1);
-    if (!r) r = LetStatement(b, l + 1);
+    if (!r) r = IfElseStep(b, l + 1);
     if (!r) r = RestStep(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    if (!r) r = VariableActionStep(b, l + 1);
+    exit_section_(b, l, m, r, false, JourneyParser::recoverStep);
     return r;
   }
 
   /* ********************************************************** */
-  // 'on' RestVerb 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
-  public static boolean StubPart(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StubPart")) return false;
-    if (!nextTokenIs(b, ON)) return false;
+  // 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | RestVerb | identifier
+  static boolean StepStart(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StepStart")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ON);
-    r = r && RestVerb(b, l + 1);
-    r = r && consumeTokens(b, 0, WITH, URL);
-    r = r && ExtractableText(b, l + 1);
-    r = r && StubPart_5(b, l + 1);
-    r = r && consumeToken(b, LBRACE);
-    r = r && StubPart_7(b, l + 1);
-    r = r && consumeTokens(b, 0, RESPOND, WITH, BODY);
-    r = r && Expression(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, STUB_PART, r);
+    r = consumeToken(b, LET);
+    if (!r) r = consumeToken(b, SYNC);
+    if (!r) r = consumeToken(b, LISTEN);
+    if (!r) r = consumeToken(b, IF);
+    if (!r) r = consumeToken(b, ASYNC);
+    if (!r) r = consumeToken(b, PRINT);
+    if (!r) r = consumeToken(b, RBRACE);
+    if (!r) r = consumeToken(b, RESPOND);
+    if (!r) r = RestVerb(b, l + 1);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
   }
 
-  // ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))?
-  private static boolean StubPart_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StubPart_5")) return false;
-    StubPart_5_0(b, l + 1);
+  /* ********************************************************** */
+  // 'on' RestVerb RequestMatcher RequestExtractor? ResponseGenerator
+  public static boolean StubDefinition(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StubDefinition")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, STUB_DEFINITION, "<stub definition>");
+    r = consumeToken(b, ON);
+    p = r; // pin = 1
+    r = r && report_error_(b, RestVerb(b, l + 1));
+    r = p && report_error_(b, RequestMatcher(b, l + 1)) && r;
+    r = p && report_error_(b, StubDefinition_3(b, l + 1)) && r;
+    r = p && ResponseGenerator(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, JourneyParser::recoverStubDefinition);
+    return r || p;
+  }
+
+  // RequestExtractor?
+  private static boolean StubDefinition_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StubDefinition_3")) return false;
+    RequestExtractor(b, l + 1);
     return true;
   }
 
-  // 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData)
-  private static boolean StubPart_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StubPart_5_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, MATCHING, REQUEST);
-    r = r && StubPart_5_0_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+  /* ********************************************************** */
+  // 'with' '{' StubDefinition* '}'
+  public static boolean StubDefinitionBlock(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StubDefinitionBlock")) return false;
+    if (!nextTokenIs(b, WITH)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, STUB_DEFINITION_BLOCK, null);
+    r = consumeTokens(b, 1, WITH, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, StubDefinitionBlock_2(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // HeadersStartingRestData | BodyStartingRestData
-  private static boolean StubPart_5_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StubPart_5_0_2")) return false;
-    boolean r;
-    r = HeadersStartingRestData(b, l + 1);
-    if (!r) r = BodyStartingRestData(b, l + 1);
-    return r;
-  }
-
-  // Statement*
-  private static boolean StubPart_7(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StubPart_7")) return false;
+  // StubDefinition*
+  private static boolean StubDefinitionBlock_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StubDefinitionBlock_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!Statement(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "StubPart_7", c)) break;
+      if (!StubDefinition(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "StubDefinitionBlock_2", c)) break;
     }
     return true;
   }
@@ -1786,13 +1896,14 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean SyncStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "SyncStep")) return false;
     if (!nextTokenIs(b, SYNC)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SYNC_STEP, null);
     r = consumeToken(b, SYNC);
-    r = r && VariableReference(b, l + 1);
-    r = r && SyncStep_2(b, l + 1);
-    exit_section_(b, m, SYNC_STEP, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, VariableReference(b, l + 1));
+    r = p && SyncStep_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ('to' 'sandbox' Expression)?
@@ -1879,13 +1990,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // Statement | MultipleStatement
+  // Step | Block
   public static boolean UnArgedFor(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnArgedFor")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, UN_ARGED_FOR, "<un arged for>");
-    r = Statement(b, l + 1);
-    if (!r) r = MultipleStatement(b, l + 1);
+    r = Step(b, l + 1);
+    if (!r) r = Block(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1989,6 +2100,29 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // VariableReference '.' (PushStepPart|ForStepPart)
+  public static boolean VariableActionStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableActionStep")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && consumeToken(b, DOT);
+    r = r && VariableActionStep_2(b, l + 1);
+    exit_section_(b, m, VARIABLE_ACTION_STEP, r);
+    return r;
+  }
+
+  // PushStepPart|ForStepPart
+  private static boolean VariableActionStep_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableActionStep_2")) return false;
+    boolean r;
+    r = PushStepPart(b, l + 1);
+    if (!r) r = ForStepPart(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // VariableReference (':' Type)?
   public static boolean VariableExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableExpression")) return false;
@@ -2024,12 +2158,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static boolean VariableReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableReference")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, VARIABLE_REFERENCE, null);
     r = consumeToken(b, IDENTIFIER);
+    p = r; // pin = 1
     r = r && VariableReference_1(b, l + 1);
-    exit_section_(b, m, VARIABLE_REFERENCE, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ('.' identifier)*
@@ -2057,6 +2192,120 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // RootFn
   static boolean journeyFile(PsiBuilder b, int l) {
     return RootFn(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // !('respond' | '}' )
+  static boolean recoverCalculationSteps(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverCalculationSteps")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recoverCalculationSteps_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // 'respond' | '}'
+  private static boolean recoverCalculationSteps_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverCalculationSteps_0")) return false;
+    boolean r;
+    r = consumeToken(b, RESPOND);
+    if (!r) r = consumeToken(b, RBRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(STRING_LITERAL | ',' | '}')
+  static boolean recoverExtractableField(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverExtractableField")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recoverExtractableField_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // STRING_LITERAL | ',' | '}'
+  private static boolean recoverExtractableField_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverExtractableField_0")) return false;
+    boolean r;
+    r = consumeToken(b, STRING_LITERAL);
+    if (!r) r = consumeToken(b, COMMA);
+    if (!r) r = consumeToken(b, RBRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(STRING_LITERAL|'}'|',')
+  static boolean recoverExtractablePair(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverExtractablePair")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recoverExtractablePair_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // STRING_LITERAL|'}'|','
+  private static boolean recoverExtractablePair_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverExtractablePair_0")) return false;
+    boolean r;
+    r = consumeToken(b, STRING_LITERAL);
+    if (!r) r = consumeToken(b, RBRACE);
+    if (!r) r = consumeToken(b, COMMA);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean recoverRequestTemplatePart(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverRequestTemplatePart")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ! (StepStart)
+  static boolean recoverStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverStep")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recoverStep_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (StepStart)
+  private static boolean recoverStep_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverStep_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = StepStart(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('on'|'}' )
+  static boolean recoverStubDefinition(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverStubDefinition")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !recoverStubDefinition_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // 'on'|'}'
+  private static boolean recoverStubDefinition_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recoverStubDefinition_0")) return false;
+    boolean r;
+    r = consumeToken(b, ON);
+    if (!r) r = consumeToken(b, RBRACE);
+    return r;
   }
 
 }

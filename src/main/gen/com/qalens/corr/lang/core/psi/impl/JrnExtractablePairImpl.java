@@ -28,9 +28,9 @@ public class JrnExtractablePairImpl extends ASTWrapperPsiElement implements JrnE
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnExtractableObjectTemplate getExtractableObjectTemplate() {
-    return findNotNullChildByClass(JrnExtractableObjectTemplate.class);
+    return findChildByClass(JrnExtractableObjectTemplate.class);
   }
 
 }

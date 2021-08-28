@@ -11,16 +11,23 @@ public interface JrnElementTypes {
   IElementType ARGED_FOR = new JrnElementType("ARGED_FOR");
   IElementType ARGED_FOR_IN_TEXT = new JrnElementType("ARGED_FOR_IN_TEXT");
   IElementType ASSIGNABLE = new JrnElementType("ASSIGNABLE");
+  IElementType ASSIGNMENT_STEP = new JrnElementType("ASSIGNMENT_STEP");
   IElementType BINARY_FUNCTION = new JrnElementType("BINARY_FUNCTION");
   IElementType BINARY_OPERATOR = new JrnElementType("BINARY_OPERATOR");
   IElementType BINARY_OPERATOR_EXPRESSION = new JrnElementType("BINARY_OPERATOR_EXPRESSION");
+  IElementType BLOCK = new JrnElementType("BLOCK");
+  IElementType BODY_DECLARATION = new JrnElementType("BODY_DECLARATION");
   IElementType BODY_STARTING_REST_DATA = new JrnElementType("BODY_STARTING_REST_DATA");
   IElementType BRACKETED_EXPRESSION = new JrnElementType("BRACKETED_EXPRESSION");
+  IElementType CALCULATION_STEPS = new JrnElementType("CALCULATION_STEPS");
   IElementType CONSTANT_EXPRESSION = new JrnElementType("CONSTANT_EXPRESSION");
   IElementType EXPRESSION = new JrnElementType("EXPRESSION");
+  IElementType EXTRACTABLE_FIELD = new JrnElementType("EXTRACTABLE_FIELD");
+  IElementType EXTRACTABLE_FORM = new JrnElementType("EXTRACTABLE_FORM");
   IElementType EXTRACTABLE_FORM_TEMPLATE = new JrnElementType("EXTRACTABLE_FORM_TEMPLATE");
   IElementType EXTRACTABLE_FOR_LOOP = new JrnElementType("EXTRACTABLE_FOR_LOOP");
   IElementType EXTRACTABLE_HEADERS = new JrnElementType("EXTRACTABLE_HEADERS");
+  IElementType EXTRACTABLE_OBJECT = new JrnElementType("EXTRACTABLE_OBJECT");
   IElementType EXTRACTABLE_OBJECT_MAP = new JrnElementType("EXTRACTABLE_OBJECT_MAP");
   IElementType EXTRACTABLE_OBJECT_TEMPLATE = new JrnElementType("EXTRACTABLE_OBJECT_TEMPLATE");
   IElementType EXTRACTABLE_PAIR = new JrnElementType("EXTRACTABLE_PAIR");
@@ -39,32 +46,35 @@ public interface JrnElementTypes {
   IElementType FILLBALE_OBJECT_PAIR = new JrnElementType("FILLBALE_OBJECT_PAIR");
   IElementType FOR_BLOCK_FOR_TEXT = new JrnElementType("FOR_BLOCK_FOR_TEXT");
   IElementType FOR_LOOP_IN_TEXT = new JrnElementType("FOR_LOOP_IN_TEXT");
-  IElementType FOR_STATEMENT = new JrnElementType("FOR_STATEMENT");
+  IElementType FOR_STEP_PART = new JrnElementType("FOR_STEP_PART");
   IElementType FUNCTION_EXPRESSION = new JrnElementType("FUNCTION_EXPRESSION");
+  IElementType HEADERS_DECLARATION = new JrnElementType("HEADERS_DECLARATION");
   IElementType HEADERS_STARTING_REST_DATA = new JrnElementType("HEADERS_STARTING_REST_DATA");
   IElementType HEADER_PAIR = new JrnElementType("HEADER_PAIR");
-  IElementType IF_ELSE_STATEMENT = new JrnElementType("IF_ELSE_STATEMENT");
-  IElementType JOURNEY_BODY = new JrnElementType("JOURNEY_BODY");
+  IElementType IF_ELSE_STEP = new JrnElementType("IF_ELSE_STEP");
   IElementType JOURNEY_NAME = new JrnElementType("JOURNEY_NAME");
-  IElementType LET_STATEMENT = new JrnElementType("LET_STATEMENT");
   IElementType LISTENER_STEP = new JrnElementType("LISTENER_STEP");
-  IElementType LOAD_STEP = new JrnElementType("LOAD_STEP");
-  IElementType MULTIPLE_STATEMENT = new JrnElementType("MULTIPLE_STATEMENT");
   IElementType MULTI_VALUED_FUNCTION = new JrnElementType("MULTI_VALUED_FUNCTION");
   IElementType MULTI_VARIABLE_TEXT = new JrnElementType("MULTI_VARIABLE_TEXT");
   IElementType NON_OPERATOR_EXPRESSION = new JrnElementType("NON_OPERATOR_EXPRESSION");
   IElementType NO_ARG_FUNCTION = new JrnElementType("NO_ARG_FUNCTION");
   IElementType OBJECT_VALUE_TEMPLATE = new JrnElementType("OBJECT_VALUE_TEMPLATE");
   IElementType OPERATOR_EXPRESSION = new JrnElementType("OPERATOR_EXPRESSION");
-  IElementType PRINT_STATEMENT = new JrnElementType("PRINT_STATEMENT");
-  IElementType PUSH_STATEMENT = new JrnElementType("PUSH_STATEMENT");
+  IElementType PRINT_STEP = new JrnElementType("PRINT_STEP");
+  IElementType PUSH_STEP_PART = new JrnElementType("PUSH_STEP_PART");
+  IElementType REQUEST_EXTRACTOR = new JrnElementType("REQUEST_EXTRACTOR");
+  IElementType REQUEST_MATCHER = new JrnElementType("REQUEST_MATCHER");
+  IElementType REQUEST_TEMPLATE_PART = new JrnElementType("REQUEST_TEMPLATE_PART");
+  IElementType RESPONSE_GENERATOR = new JrnElementType("RESPONSE_GENERATOR");
+  IElementType RESPONSE_LINE = new JrnElementType("RESPONSE_LINE");
   IElementType REST_STEP = new JrnElementType("REST_STEP");
   IElementType REST_VERB = new JrnElementType("REST_VERB");
   IElementType ROOT_FN = new JrnElementType("ROOT_FN");
   IElementType SCRIPLET = new JrnElementType("SCRIPLET");
   IElementType SINGLE_VARIABLE_TEXT = new JrnElementType("SINGLE_VARIABLE_TEXT");
-  IElementType STATEMENT = new JrnElementType("STATEMENT");
-  IElementType STUB_PART = new JrnElementType("STUB_PART");
+  IElementType STEP = new JrnElementType("STEP");
+  IElementType STUB_DEFINITION = new JrnElementType("STUB_DEFINITION");
+  IElementType STUB_DEFINITION_BLOCK = new JrnElementType("STUB_DEFINITION_BLOCK");
   IElementType SYNC_STEP = new JrnElementType("SYNC_STEP");
   IElementType TEXT_BLOCK = new JrnElementType("TEXT_BLOCK");
   IElementType TEXT_SCRIPT = new JrnElementType("TEXT_SCRIPT");
@@ -75,6 +85,7 @@ public interface JrnElementTypes {
   IElementType UNARY_OPERATOR_EXPRESSION = new JrnElementType("UNARY_OPERATOR_EXPRESSION");
   IElementType UN_ARGED_FOR = new JrnElementType("UN_ARGED_FOR");
   IElementType UN_ARGED_FOR_IN_TEXT = new JrnElementType("UN_ARGED_FOR_IN_TEXT");
+  IElementType VARIABLE_ACTION_STEP = new JrnElementType("VARIABLE_ACTION_STEP");
   IElementType VARIABLE_EXPRESSION = new JrnElementType("VARIABLE_EXPRESSION");
   IElementType VARIABLE_REFERENCE = new JrnElementType("VARIABLE_REFERENCE");
 
@@ -137,6 +148,7 @@ public interface JrnElementTypes {
   IElementType OP_MINUS = new JrnTokenType("-");
   IElementType OP_MOD = new JrnTokenType("%");
   IElementType OP_MULTIPLY = new JrnTokenType("*");
+  IElementType OP_NOTEQUAL = new JrnTokenType("!=");
   IElementType OP_PLUS = new JrnTokenType("+");
   IElementType PATCH = new JrnTokenType("patch");
   IElementType POSITIVEINTEGERVALUE = new JrnTokenType("PositiveIntegerValue");
@@ -160,6 +172,7 @@ public interface JrnElementTypes {
   IElementType SCRIPLET_END = new JrnTokenType("%>");
   IElementType SCRIPLET_START = new JrnTokenType("<%");
   IElementType SEMICOLON = new JrnTokenType(";");
+  IElementType STATUS = new JrnTokenType("status");
   IElementType STRING = new JrnTokenType("String");
   IElementType STRING_LITERAL = new JrnTokenType("STRING_LITERAL");
   IElementType SUB = new JrnTokenType("sub");
@@ -185,6 +198,9 @@ public interface JrnElementTypes {
       else if (type == ASSIGNABLE) {
         return new JrnAssignableImpl(node);
       }
+      else if (type == ASSIGNMENT_STEP) {
+        return new JrnAssignmentStepImpl(node);
+      }
       else if (type == BINARY_FUNCTION) {
         return new JrnBinaryFunctionImpl(node);
       }
@@ -194,17 +210,32 @@ public interface JrnElementTypes {
       else if (type == BINARY_OPERATOR_EXPRESSION) {
         return new JrnBinaryOperatorExpressionImpl(node);
       }
+      else if (type == BLOCK) {
+        return new JrnBlockImpl(node);
+      }
+      else if (type == BODY_DECLARATION) {
+        return new JrnBodyDeclarationImpl(node);
+      }
       else if (type == BODY_STARTING_REST_DATA) {
         return new JrnBodyStartingRestDataImpl(node);
       }
       else if (type == BRACKETED_EXPRESSION) {
         return new JrnBracketedExpressionImpl(node);
       }
+      else if (type == CALCULATION_STEPS) {
+        return new JrnCalculationStepsImpl(node);
+      }
       else if (type == CONSTANT_EXPRESSION) {
         return new JrnConstantExpressionImpl(node);
       }
       else if (type == EXPRESSION) {
         return new JrnExpressionImpl(node);
+      }
+      else if (type == EXTRACTABLE_FIELD) {
+        return new JrnExtractableFieldImpl(node);
+      }
+      else if (type == EXTRACTABLE_FORM) {
+        return new JrnExtractableFormImpl(node);
       }
       else if (type == EXTRACTABLE_FORM_TEMPLATE) {
         return new JrnExtractableFormTemplateImpl(node);
@@ -214,6 +245,9 @@ public interface JrnElementTypes {
       }
       else if (type == EXTRACTABLE_HEADERS) {
         return new JrnExtractableHeadersImpl(node);
+      }
+      else if (type == EXTRACTABLE_OBJECT) {
+        return new JrnExtractableObjectImpl(node);
       }
       else if (type == EXTRACTABLE_OBJECT_MAP) {
         return new JrnExtractableObjectMapImpl(node);
@@ -269,11 +303,14 @@ public interface JrnElementTypes {
       else if (type == FOR_LOOP_IN_TEXT) {
         return new JrnForLoopInTextImpl(node);
       }
-      else if (type == FOR_STATEMENT) {
-        return new JrnForStatementImpl(node);
+      else if (type == FOR_STEP_PART) {
+        return new JrnForStepPartImpl(node);
       }
       else if (type == FUNCTION_EXPRESSION) {
         return new JrnFunctionExpressionImpl(node);
+      }
+      else if (type == HEADERS_DECLARATION) {
+        return new JrnHeadersDeclarationImpl(node);
       }
       else if (type == HEADERS_STARTING_REST_DATA) {
         return new JrnHeadersStartingRestDataImpl(node);
@@ -281,26 +318,14 @@ public interface JrnElementTypes {
       else if (type == HEADER_PAIR) {
         return new JrnHeaderPairImpl(node);
       }
-      else if (type == IF_ELSE_STATEMENT) {
-        return new JrnIfElseStatementImpl(node);
-      }
-      else if (type == JOURNEY_BODY) {
-        return new JrnJourneyBodyImpl(node);
+      else if (type == IF_ELSE_STEP) {
+        return new JrnIfElseStepImpl(node);
       }
       else if (type == JOURNEY_NAME) {
         return new JrnJourneyNameImpl(node);
       }
-      else if (type == LET_STATEMENT) {
-        return new JrnLetStatementImpl(node);
-      }
       else if (type == LISTENER_STEP) {
         return new JrnListenerStepImpl(node);
-      }
-      else if (type == LOAD_STEP) {
-        return new JrnLoadStepImpl(node);
-      }
-      else if (type == MULTIPLE_STATEMENT) {
-        return new JrnMultipleStatementImpl(node);
       }
       else if (type == MULTI_VALUED_FUNCTION) {
         return new JrnMultiValuedFunctionImpl(node);
@@ -320,11 +345,26 @@ public interface JrnElementTypes {
       else if (type == OPERATOR_EXPRESSION) {
         return new JrnOperatorExpressionImpl(node);
       }
-      else if (type == PRINT_STATEMENT) {
-        return new JrnPrintStatementImpl(node);
+      else if (type == PRINT_STEP) {
+        return new JrnPrintStepImpl(node);
       }
-      else if (type == PUSH_STATEMENT) {
-        return new JrnPushStatementImpl(node);
+      else if (type == PUSH_STEP_PART) {
+        return new JrnPushStepPartImpl(node);
+      }
+      else if (type == REQUEST_EXTRACTOR) {
+        return new JrnRequestExtractorImpl(node);
+      }
+      else if (type == REQUEST_MATCHER) {
+        return new JrnRequestMatcherImpl(node);
+      }
+      else if (type == REQUEST_TEMPLATE_PART) {
+        return new JrnRequestTemplatePartImpl(node);
+      }
+      else if (type == RESPONSE_GENERATOR) {
+        return new JrnResponseGeneratorImpl(node);
+      }
+      else if (type == RESPONSE_LINE) {
+        return new JrnResponseLineImpl(node);
       }
       else if (type == REST_STEP) {
         return new JrnRestStepImpl(node);
@@ -341,11 +381,14 @@ public interface JrnElementTypes {
       else if (type == SINGLE_VARIABLE_TEXT) {
         return new JrnSingleVariableTextImpl(node);
       }
-      else if (type == STATEMENT) {
-        return new JrnStatementImpl(node);
+      else if (type == STEP) {
+        return new JrnStepImpl(node);
       }
-      else if (type == STUB_PART) {
-        return new JrnStubPartImpl(node);
+      else if (type == STUB_DEFINITION) {
+        return new JrnStubDefinitionImpl(node);
+      }
+      else if (type == STUB_DEFINITION_BLOCK) {
+        return new JrnStubDefinitionBlockImpl(node);
       }
       else if (type == SYNC_STEP) {
         return new JrnSyncStepImpl(node);
@@ -376,6 +419,9 @@ public interface JrnElementTypes {
       }
       else if (type == UN_ARGED_FOR_IN_TEXT) {
         return new JrnUnArgedForInTextImpl(node);
+      }
+      else if (type == VARIABLE_ACTION_STEP) {
+        return new JrnVariableActionStepImpl(node);
       }
       else if (type == VARIABLE_EXPRESSION) {
         return new JrnVariableExpressionImpl(node);

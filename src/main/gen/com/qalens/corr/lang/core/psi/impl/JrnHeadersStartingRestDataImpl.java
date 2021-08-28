@@ -28,15 +28,15 @@ public class JrnHeadersStartingRestDataImpl extends ASTWrapperPsiElement impleme
   }
 
   @Override
-  @NotNull
-  public JrnExtractableHeaders getExtractableHeaders() {
-    return findNotNullChildByClass(JrnExtractableHeaders.class);
+  @Nullable
+  public JrnBodyDeclaration getBodyDeclaration() {
+    return findChildByClass(JrnBodyDeclaration.class);
   }
 
   @Override
-  @Nullable
-  public JrnExtractableTemplate getExtractableTemplate() {
-    return findChildByClass(JrnExtractableTemplate.class);
+  @NotNull
+  public JrnHeadersDeclaration getHeadersDeclaration() {
+    return findNotNullChildByClass(JrnHeadersDeclaration.class);
   }
 
 }

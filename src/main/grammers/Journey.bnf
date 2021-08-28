@@ -48,6 +48,7 @@
           DIV = 'div'
           ADD = 'add'
           SUB = 'sub'
+          STATUS = 'status'
           FAKE = 'fake'
           CONTAINS = 'contains'
           ENCODE = 'encode'
@@ -90,6 +91,7 @@
           DELETE = 'delete'
           FATARROW = '=>'
           OP_EQUAL = '=='
+          OP_NOTEQUAL = '!='
           OP_PLUS = '+'
           OP_MINUS = '-'
           OP_DIVIDE = '/'
@@ -101,38 +103,63 @@
           BLOCK_COMMENT='regexp:/*..*/'
 
       ]
+      extends(".*Step")=Step
 }
 journeyFile ::= RootFn
-RootFn ::= JourneyName '(' ')' JourneyBody
+RootFn ::= JourneyName '(' ')' Block
 JourneyName ::= identifier | NAME
-JourneyBody ::= '{' Statement* '}'
-Statement ::= PrintStatement | PushStatement| ForStatement | LoadStep | SyncStep | ListenerStep | IfElseStatement | LetStatement | RestStep
-LetStatement ::= 'let' VariableReference '=' Assignable
-LoadStep ::= 'let' VariableReference '=' 'load' Expression ('from' 'sandbox' Expression)?
-SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)?
-ListenerStep ::= 'listen' 'on' Expression 'with' '{' StubPart* '}'
-StubPart ::=  'on' RestVerb 'with' 'url' ExtractableText ( 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData))? '{' Statement* 'respond' 'with' 'body' Expression '}'
-IfElseStatement ::= 'if' Expression '{' Statement* '}' ('else' 'if' Expression '{' Statement* '}')* ('else' '{' Statement* '}')?
+Block ::= '{' Step* '}' {pin=1}
+Step ::= PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep {recoverWhile="recoverStep"}
+PrintStep ::= 'print' FillableTextTemplate { pin = 1 }
+private recoverStep ::= ! (StepStart)
+private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | RestVerb | identifier )
+AssignmentStep::= 'let' VariableReference '=' (Assignable | ('load' Expression ('from' 'sandbox' Expression)?)) {pin=1}
+SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)? {pin=1}
+ListenerStep ::= 'listen' 'on' Expression StubDefinitionBlock {pin=1}
+StubDefinitionBlock ::= 'with' '{' StubDefinition* '}' { pin=1 }
+IfElseStep ::= 'if' Expression Block ('else' 'if' Expression Block)* ('else' Block)? {pin=1}
+RestStep ::= ('async')? RestVerb FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))? {pin=2}
+VariableActionStep ::= VariableReference '.' (PushStepPart|ForStepPart) {pin = 3}
+StubDefinition ::=  'on' RestVerb RequestMatcher RequestExtractor? ResponseGenerator {
+    pin = 1
+    recoverWhile="recoverStubDefinition"
+ }
+RequestMatcher ::= 'with' 'url' ExtractableText  {pin=1}
+RequestExtractor::= 'matching' 'request' (HeadersStartingRestData | BodyStartingRestData) {pin = 1}
+private recoverStubDefinition::= !('on'|'}' )
+ResponseGenerator ::= '{' CalculationSteps ResponseLine '}' { pin = 1 }
+CalculationSteps ::= Step* { recoverWhile="recoverCalculationSteps"}
+private recoverCalculationSteps ::= !('respond' | '}' )
+ResponseLine ::= 'respond' 'with' ('status' PositiveIntegerValue 'and')? 'body' Expression { pin =1 recoverWhile="recoverStep"}
 RestVerb ::= 'get' | 'put' | 'post' | 'patch' | 'delete'
-RestStep ::= ('async')? RestVerb FillableRequestTemplate ( 'matching' (HeadersStartingRestData | BodyStartingRestData))?
-HeadersStartingRestData ::= 'headers' ExtractableHeaders ('and' 'body' ExtractableTemplate)?
-BodyStartingRestData ::=   'body' ExtractableTemplate ('and' 'headers' ExtractableHeaders)?
-ExtractableTemplate ::= ('form' ExtractableFormTemplate) | ('object' ExtractableObjectTemplate)
-ExtractableObjectTemplate ::= ExtractableForLoop | VariableReference | ExtractableObjectMap | ExtractableStaticArray
-ExtractableObjectMap ::= '{' ExtractablePair ( ',' ExtractablePair)* '}'
-ExtractableStaticArray ::= '[' ExtractableObjectTemplate (',' ExtractableObjectTemplate)* ']'
-ExtractableForLoop ::= VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
-ExtractablePair ::= STRING_LITERAL ':' ExtractableObjectTemplate
-ExtractableFormTemplate ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
-ExtractableHeaders ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}'
+HeadersStartingRestData ::= HeadersDeclaration ('and' BodyDeclaration)? {pin=1}
+BodyStartingRestData ::=   BodyDeclaration ('and' HeadersDeclaration)? { pin=1 }
+HeadersDeclaration ::=  'headers' ExtractableHeaders {pin=1}
+BodyDeclaration ::= 'body' ExtractableTemplate {pin=1}
+ExtractableTemplate ::=   ExtractableObject | ExtractableForm
+ExtractableForm ::= 'form' ExtractableFormTemplate {pin = 1}
+ExtractableObject ::= 'object' ExtractableObjectTemplate {pin = 1}
+ExtractableObjectTemplate ::= ExtractableObjectMap | ExtractableStaticArray | ExtractableForLoop | VariableReference
+ExtractableObjectMap ::= '{' ExtractablePair ( ',' ExtractablePair)* '}' {pin=1}
+ExtractableStaticArray ::= '[' ExtractableObjectTemplate (',' ExtractableObjectTemplate)* ']' {pin=1}
+ExtractableForLoop ::= VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate {pin = 3}
+ExtractablePair ::= STRING_LITERAL ':' ExtractableObjectTemplate {pin=1 recoverWhile="recoverExtractablePair"}
+private recoverExtractablePair::=!(STRING_LITERAL|'}'|',')
+ExtractableFormTemplate ::= '{'  ExtractableField (',' ExtractableField )* '}' {pin=1}
+ExtractableField ::= STRING_LITERAL ':' VariableReference {pin = 1 recoverWhile="recoverExtractableField"}
+private recoverExtractableField::= !(STRING_LITERAL | ',' | '}')
+ExtractableHeaders ::= '{' STRING_LITERAL ':' VariableReference (',' STRING_LITERAL ':' VariableReference)* '}' {pin=1}
 FillableRequestTemplate ::= 'request' '{'
-  'url' ':' (Expression | FillableTextTemplate)
-  ( ',' 'body' ':' FillableObjectTemplate)?
-  ( ',' 'headers' ':' FillableHeaders)? '}'
-FillableHeaders ::= '{' HeaderPair (',' HeaderPair)* '}'
+        RequestTemplatePart
+   '}' {pin = 2}
+RequestTemplatePart::='url' ':' (Expression | FillableTextTemplate)
+                        ( ',' 'body' ':' FillableObjectTemplate)?
+                        ( ',' 'headers' ':' FillableHeaders)? {pin=1 recoverWhile=recoverRequestTemplatePart}
+private recoverRequestTemplatePart ::= !('}')
+FillableHeaders ::= '{' HeaderPair (',' HeaderPair)* '}' {pin=1}
 HeaderPair ::= STRING_LITERAL ':' (Expression | FillableTextTemplate)
 Assignable ::= Expression | FillableObjectTemplate | FillableTextTemplate
-FillableObjectTemplate ::= 'object' ObjectValueTemplate
+FillableObjectTemplate ::= 'object' ObjectValueTemplate {pin=1}
 ObjectValueTemplate ::= FillableForLoop | Expression | FillableMapTemplate | FillableArrayTemplate
 FillableMapTemplate ::= '{'  (FillbaleObjectPair (',' FillbaleObjectPair)*)? '}'
 FillbaleObjectPair ::= STRING_LITERAL ':' ObjectValueTemplate
@@ -140,12 +167,10 @@ FillableArrayTemplate ::= '[' (ObjectValueTemplate (',' ObjectValueTemplate)*)? 
 FillableForLoop ::= VariableReference '.' 'for' (FillableForLoopWithArguments | FillableForLoopWithoutArguments)
 FillableForLoopWithArguments ::= '(' VariableReference (',' VariableReference )? ')' '=>' ObjectValueTemplate
 FillableForLoopWithoutArguments ::= ObjectValueTemplate
-PrintStatement ::= 'print' FillableTextTemplate
-ForStatement ::= VariableReference '.' 'for' ( UnArgedFor | ArgedFor)
-PushStatement ::= VariableReference '.' 'push' ( Expression )
-UnArgedFor ::= Statement | MultipleStatement
-ArgedFor ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Statement | MultipleStatement)
-MultipleStatement ::= '{' (Statement)* '}'
+ForStepPart ::= 'for' ( ArgedFor | UnArgedFor ) {pin=1}
+PushStepPart ::=  'push' ( Expression ) {pin=1}
+UnArgedFor ::= Step | Block
+ArgedFor ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Block | Step) {pin = 1}
 FillableTextTemplate ::= 'text' TextTemplate
 ExtractableText ::= 'text' '`' (SingleVariableText | MultiVariableText) '`'
 SingleVariableText ::= '<%' VariableExpression '%>'
@@ -164,7 +189,7 @@ BracketedExpression ::= '(' Expression ')'
 OperatorExpression ::= BinaryOperatorExpression | UnaryOperatorExpression
 BinaryOperatorExpression ::= ((UnaryOperatorExpression | NonOperatorExpression) BinaryOperator)+ (UnaryOperatorExpression | NonOperatorExpression)
 UnaryOperatorExpression ::= NonOperatorExpression UnaryOperator
-BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '=='
+BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '==' | '!='
 UnaryOperator ::= '++' | '--'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
@@ -173,5 +198,5 @@ BinaryFunction ::= (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 
 UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
-VariableReference ::= identifier ('.' identifier)*
+VariableReference ::= identifier ('.' identifier)* {pin=1}
 Type ::= ('String' | 'Boolean' | 'PositiveInteger' | 'Integer' | 'Double')

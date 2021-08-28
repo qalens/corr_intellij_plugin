@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnListenerStep extends PsiElement {
+public interface JrnListenerStep extends JrnStep {
 
-  @NotNull
+  @Nullable
   JrnExpression getExpression();
 
-  @NotNull
-  List<JrnStubPart> getStubPartList();
+  @Nullable
+  JrnStubDefinitionBlock getStubDefinitionBlock();
 
 }

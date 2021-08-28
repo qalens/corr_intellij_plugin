@@ -16,8 +16,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <runConfigurationProducer implementation="com.qalens.corr.ide.JourneyRunConfigurationProducer"/>
-        <configurationType implementation="com.qalens.corr.ide.JourneyRunConfigurationType"/>
+        <runConfigurationProducer implementation="com.qalens.corr.ide.runconfig.JourneyRunConfigurationProducer"/>
+        <configurationType implementation="com.qalens.corr.ide.runconfig.JourneyRunConfigurationType"/>
         <fileType name="Journey"
                   language="Journey"
                   implementationClass="com.qalens.corr.lang.JrnFileType"
@@ -28,12 +28,12 @@
         <lang.parserDefinition language="Journey"
                                implementationClass="com.qalens.corr.lang.core.parser.JourneyParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Journey"
-                                       implementationClass="com.qalens.corr.ide.JourneySyntaxHighlighterFactory"
+                                       implementationClass="com.qalens.corr.ide.highlighter.JourneySyntaxHighlighterFactory"
 
         />
         <completion.contributor language="Journey"
-                                implementationClass="com.qalens.corr.ide.JourneyCompletionContributor"/>
-        <runLineMarkerContributor language="Journey" implementationClass="com.qalens.corr.ide.JourneyRunLineMarkerProvider"/>
+                                implementationClass="com.qalens.corr.ide.autocomplete.JourneyCompletionContributor"/>
+        <runLineMarkerContributor language="Journey" implementationClass="com.qalens.corr.ide.runconfig.JourneyRunLineMarkerProvider"/>
         <!-- Add your extensions here -->
         <moduleType id="Journey" implementationClass="com.qalens.corr.ide.module.JourneyModuleType"/>
         <lang.commenter language="Journey" implementationClass="com.qalens.corr.lang.core.JourneyCommenter"/>

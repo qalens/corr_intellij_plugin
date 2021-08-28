@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface JrnUnArgedFor extends PsiElement {
 
   @Nullable
-  JrnMultipleStatement getMultipleStatement();
+  JrnBlock getBlock();
 
   @Nullable
-  JrnStatement getStatement();
+  JrnStep getStep();
 
 }

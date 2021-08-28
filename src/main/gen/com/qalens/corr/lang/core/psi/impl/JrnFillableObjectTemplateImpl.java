@@ -28,9 +28,9 @@ public class JrnFillableObjectTemplateImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnObjectValueTemplate getObjectValueTemplate() {
-    return findNotNullChildByClass(JrnObjectValueTemplate.class);
+    return findChildByClass(JrnObjectValueTemplate.class);
   }
 
 }

@@ -29,14 +29,14 @@ public class JrnExtractableTemplateImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @Nullable
-  public JrnExtractableFormTemplate getExtractableFormTemplate() {
-    return findChildByClass(JrnExtractableFormTemplate.class);
+  public JrnExtractableForm getExtractableForm() {
+    return findChildByClass(JrnExtractableForm.class);
   }
 
   @Override
   @Nullable
-  public JrnExtractableObjectTemplate getExtractableObjectTemplate() {
-    return findChildByClass(JrnExtractableObjectTemplate.class);
+  public JrnExtractableObject getExtractableObject() {
+    return findChildByClass(JrnExtractableObject.class);
   }
 
 }

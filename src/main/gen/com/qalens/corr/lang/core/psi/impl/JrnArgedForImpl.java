@@ -29,14 +29,14 @@ public class JrnArgedForImpl extends ASTWrapperPsiElement implements JrnArgedFor
 
   @Override
   @Nullable
-  public JrnMultipleStatement getMultipleStatement() {
-    return findChildByClass(JrnMultipleStatement.class);
+  public JrnBlock getBlock() {
+    return findChildByClass(JrnBlock.class);
   }
 
   @Override
   @Nullable
-  public JrnStatement getStatement() {
-    return findChildByClass(JrnStatement.class);
+  public JrnStep getStep() {
+    return findChildByClass(JrnStep.class);
   }
 
   @Override

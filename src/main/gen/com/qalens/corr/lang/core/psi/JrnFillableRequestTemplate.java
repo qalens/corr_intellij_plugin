@@ -8,15 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface JrnFillableRequestTemplate extends PsiElement {
 
   @Nullable
-  JrnExpression getExpression();
-
-  @Nullable
-  JrnFillableHeaders getFillableHeaders();
-
-  @Nullable
-  JrnFillableObjectTemplate getFillableObjectTemplate();
-
-  @Nullable
-  JrnFillableTextTemplate getFillableTextTemplate();
+  JrnRequestTemplatePart getRequestTemplatePart();
 
 }

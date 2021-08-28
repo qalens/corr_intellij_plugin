@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnExtractableForLoop extends PsiElement {
 
-  @NotNull
+  @Nullable
   JrnExtractableObjectTemplate getExtractableObjectTemplate();
 
   @NotNull

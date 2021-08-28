@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnHeadersStartingRestData extends PsiElement {
 
-  @NotNull
-  JrnExtractableHeaders getExtractableHeaders();
-
   @Nullable
-  JrnExtractableTemplate getExtractableTemplate();
+  JrnBodyDeclaration getBodyDeclaration();
+
+  @NotNull
+  JrnHeadersDeclaration getHeadersDeclaration();
 
 }

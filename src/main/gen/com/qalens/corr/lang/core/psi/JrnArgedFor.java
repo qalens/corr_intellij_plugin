@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface JrnArgedFor extends PsiElement {
 
   @Nullable
-  JrnMultipleStatement getMultipleStatement();
+  JrnBlock getBlock();
 
   @Nullable
-  JrnStatement getStatement();
+  JrnStep getStep();
 
   @NotNull
   List<JrnVariableReference> getVariableReferenceList();

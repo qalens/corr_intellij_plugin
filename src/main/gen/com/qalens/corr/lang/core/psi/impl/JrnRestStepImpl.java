@@ -8,15 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep {
+public class JrnRestStepImpl extends JrnStepImpl implements JrnRestStep {
 
   public JrnRestStepImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull JrnVisitor visitor) {
     visitor.visitRestStep(this);
   }
@@ -34,9 +34,9 @@ public class JrnRestStepImpl extends ASTWrapperPsiElement implements JrnRestStep
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnFillableRequestTemplate getFillableRequestTemplate() {
-    return findNotNullChildByClass(JrnFillableRequestTemplate.class);
+    return findChildByClass(JrnFillableRequestTemplate.class);
   }
 
   @Override

@@ -76,6 +76,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "headers"                      { return HEADERS; }
     "request"                      { return REQUEST; }
     "respond"                      { return RESPOND; }
+    "status"                      { return STATUS; }
     "on"                      { return ON; }
     "push"                      { return PUSH; }
     "listen"                      { return LISTEN; }
@@ -122,6 +123,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "--"                            { return OP_DECREMENT;}
     "++"                            { return OP_INCREMENT;}
     "=="                            { return OP_EQUAL;}
+    "!="                            { return OP_NOTEQUAL;}
     "+"                             { return OP_PLUS; }
     "-"                             { return OP_MINUS;}
     "/"                             { return OP_DIVIDE;}

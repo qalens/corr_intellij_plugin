@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnSyncStep extends PsiElement {
+public interface JrnSyncStep extends JrnStep {
 
   @Nullable
   JrnExpression getExpression();
 
-  @NotNull
+  @Nullable
   JrnVariableReference getVariableReference();
 
 }

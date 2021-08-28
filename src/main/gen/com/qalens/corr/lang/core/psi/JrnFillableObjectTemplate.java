@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnFillableObjectTemplate extends PsiElement {
 
-  @NotNull
+  @Nullable
   JrnObjectValueTemplate getObjectValueTemplate();
 
 }

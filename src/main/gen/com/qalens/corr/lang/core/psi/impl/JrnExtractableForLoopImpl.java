@@ -28,9 +28,9 @@ public class JrnExtractableForLoopImpl extends ASTWrapperPsiElement implements J
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnExtractableObjectTemplate getExtractableObjectTemplate() {
-    return findNotNullChildByClass(JrnExtractableObjectTemplate.class);
+    return findChildByClass(JrnExtractableObjectTemplate.class);
   }
 
   @Override

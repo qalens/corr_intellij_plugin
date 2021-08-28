@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnRestStep extends PsiElement {
+public interface JrnRestStep extends JrnStep {
 
   @Nullable
   JrnBodyStartingRestData getBodyStartingRestData();
 
-  @NotNull
+  @Nullable
   JrnFillableRequestTemplate getFillableRequestTemplate();
 
   @Nullable

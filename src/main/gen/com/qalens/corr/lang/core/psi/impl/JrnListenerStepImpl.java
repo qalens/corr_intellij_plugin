@@ -8,15 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnListenerStepImpl extends ASTWrapperPsiElement implements JrnListenerStep {
+public class JrnListenerStepImpl extends JrnStepImpl implements JrnListenerStep {
 
   public JrnListenerStepImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull JrnVisitor visitor) {
     visitor.visitListenerStep(this);
   }
@@ -28,15 +28,15 @@ public class JrnListenerStepImpl extends ASTWrapperPsiElement implements JrnList
   }
 
   @Override
-  @NotNull
+  @Nullable
   public JrnExpression getExpression() {
-    return findNotNullChildByClass(JrnExpression.class);
+    return findChildByClass(JrnExpression.class);
   }
 
   @Override
-  @NotNull
-  public List<JrnStubPart> getStubPartList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnStubPart.class);
+  @Nullable
+  public JrnStubDefinitionBlock getStubDefinitionBlock() {
+    return findChildByClass(JrnStubDefinitionBlock.class);
   }
 
 }

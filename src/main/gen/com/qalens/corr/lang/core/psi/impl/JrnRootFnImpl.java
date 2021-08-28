@@ -29,8 +29,8 @@ public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
 
   @Override
   @NotNull
-  public JrnJourneyBody getJourneyBody() {
-    return findNotNullChildByClass(JrnJourneyBody.class);
+  public JrnBlock getBlock() {
+    return findNotNullChildByClass(JrnBlock.class);
   }
 
   @Override
