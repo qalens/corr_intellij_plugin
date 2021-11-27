@@ -213,7 +213,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')')
+  // (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')')
   public static boolean BinaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction")) return false;
     boolean r;
@@ -224,7 +224,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')'
+  // VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')'
   private static boolean BinaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0")) return false;
     boolean r;
@@ -239,21 +239,23 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right'
+  // 'round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array'
   private static boolean BinaryFunction_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0_2")) return false;
     boolean r;
     r = consumeToken(b, ROUND);
+    if (!r) r = consumeToken(b, UNIQUERANDOMELEMENTS);
     if (!r) r = consumeToken(b, RANDOM);
     if (!r) r = consumeToken(b, SUB);
     if (!r) r = consumeToken(b, DIV);
     if (!r) r = consumeToken(b, MOD);
     if (!r) r = consumeToken(b, LEFT);
     if (!r) r = consumeToken(b, RIGHT);
+    if (!r) r = consumeToken(b, ARRAY);
     return r;
   }
 
-  // ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')'
+  // ('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')'
   private static boolean BinaryFunction_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1")) return false;
     boolean r;
@@ -266,17 +268,19 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right'
+  // 'round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array'
   private static boolean BinaryFunction_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1_0")) return false;
     boolean r;
     r = consumeToken(b, ROUND);
     if (!r) r = consumeToken(b, RANDOM);
+    if (!r) r = consumeToken(b, UNIQUERANDOMELEMENTS);
     if (!r) r = consumeToken(b, SUB);
     if (!r) r = consumeToken(b, DIV);
     if (!r) r = consumeToken(b, MOD);
     if (!r) r = consumeToken(b, LEFT);
     if (!r) r = consumeToken(b, RIGHT);
+    if (!r) r = consumeToken(b, ARRAY);
     return r;
   }
 
@@ -293,7 +297,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '+' | '-' | '/' | '*' | '%' | '==' | '!='
+  // '+' | '-' | '/' | '*' | '%' | '==' | '!=' | '>=' | '<=' | '>' | '<'
   public static boolean BinaryOperator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryOperator")) return false;
     boolean r;
@@ -305,6 +309,10 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, OP_MOD);
     if (!r) r = consumeToken(b, OP_EQUAL);
     if (!r) r = consumeToken(b, OP_NOTEQUAL);
+    if (!r) r = consumeToken(b, OP_GE);
+    if (!r) r = consumeToken(b, OP_LE);
+    if (!r) r = consumeToken(b, OP_GT);
+    if (!r) r = consumeToken(b, OP_LT);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -510,9 +518,9 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // VariableReference '.' 'for' '(' VariableReference ')' '=>' ExtractableObjectTemplate
   public static boolean ExtractableForLoop(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExtractableForLoop")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<extractable for loop>", IDENTIFIER, NAME)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FOR_LOOP, null);
+    Marker m = enter_section_(b, l, _NONE_, EXTRACTABLE_FOR_LOOP, "<extractable for loop>");
     r = VariableReference(b, l + 1);
     r = r && consumeTokens(b, 2, DOT, FOR, LPAREN);
     p = r; // pin = 3
@@ -824,13 +832,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // VariableReference '.' 'for' (FillableForLoopWithArguments | FillableForLoopWithoutArguments)
   public static boolean FillableForLoop(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FillableForLoop")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<fillable for loop>", IDENTIFIER, NAME)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, FILLABLE_FOR_LOOP, "<fillable for loop>");
     r = VariableReference(b, l + 1);
     r = r && consumeTokens(b, 0, DOT, FOR);
     r = r && FillableForLoop_3(b, l + 1);
-    exit_section_(b, m, FILLABLE_FOR_LOOP, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1086,13 +1094,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // VariableReference '.' 'for' (UnArgedForInText | ArgedForInText )
   public static boolean ForLoopInText(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ForLoopInText")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<for loop in text>", IDENTIFIER, NAME)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, FOR_LOOP_IN_TEXT, "<for loop in text>");
     r = VariableReference(b, l + 1);
     r = r && consumeTokens(b, 0, DOT, FOR);
     r = r && ForLoopInText_3(b, l + 1);
-    exit_section_(b, m, FOR_LOOP_IN_TEXT, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1467,12 +1475,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BracketedExpression | ConstantExpression | FunctionExpression | VariableExpression
+  // BracketedExpression | FillableObjectTemplate | ConstantExpression | FunctionExpression | VariableExpression
   public static boolean NonOperatorExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "NonOperatorExpression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, NON_OPERATOR_EXPRESSION, "<non operator expression>");
     r = BracketedExpression(b, l + 1);
+    if (!r) r = FillableObjectTemplate(b, l + 1);
     if (!r) r = ConstantExpression(b, l + 1);
     if (!r) r = FunctionExpression(b, l + 1);
     if (!r) r = VariableExpression(b, l + 1);
@@ -1660,7 +1669,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'respond' 'with' ('status' PositiveIntegerValue 'and')? 'body' Expression
+  // 'respond' 'with' ('status' Expression 'and')? 'body' Expression
   public static boolean ResponseLine(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ResponseLine")) return false;
     boolean r, p;
@@ -1674,19 +1683,21 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ('status' PositiveIntegerValue 'and')?
+  // ('status' Expression 'and')?
   private static boolean ResponseLine_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ResponseLine_2")) return false;
     ResponseLine_2_0(b, l + 1);
     return true;
   }
 
-  // 'status' PositiveIntegerValue 'and'
+  // 'status' Expression 'and'
   private static boolean ResponseLine_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ResponseLine_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, STATUS, POSITIVEINTEGERVALUE, AND);
+    r = consumeToken(b, STATUS);
+    r = r && Expression(b, l + 1);
+    r = r && consumeToken(b, AND);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -2103,13 +2114,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // VariableReference '.' (PushStepPart|ForStepPart)
   public static boolean VariableActionStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableActionStep")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<variable action step>", IDENTIFIER, NAME)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, VARIABLE_ACTION_STEP, "<variable action step>");
     r = VariableReference(b, l + 1);
     r = r && consumeToken(b, DOT);
     r = r && VariableActionStep_2(b, l + 1);
-    exit_section_(b, m, VARIABLE_ACTION_STEP, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -2126,12 +2137,12 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   // VariableReference (':' Type)?
   public static boolean VariableExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableExpression")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<variable expression>", IDENTIFIER, NAME)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, VARIABLE_EXPRESSION, "<variable expression>");
     r = VariableReference(b, l + 1);
     r = r && VariableExpression_1(b, l + 1);
-    exit_section_(b, m, VARIABLE_EXPRESSION, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -2154,20 +2165,29 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier ('.' identifier)*
+  // ( NAME  |  identifier) ('.' ( NAME | identifier) )*
   public static boolean VariableReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableReference")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<variable reference>", IDENTIFIER, NAME)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, VARIABLE_REFERENCE, null);
-    r = consumeToken(b, IDENTIFIER);
+    Marker m = enter_section_(b, l, _NONE_, VARIABLE_REFERENCE, "<variable reference>");
+    r = VariableReference_0(b, l + 1);
     p = r; // pin = 1
     r = r && VariableReference_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // ('.' identifier)*
+  // NAME  |  identifier
+  private static boolean VariableReference_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableReference_0")) return false;
+    boolean r;
+    r = consumeToken(b, NAME);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    return r;
+  }
+
+  // ('.' ( NAME | identifier) )*
   private static boolean VariableReference_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableReference_1")) return false;
     while (true) {
@@ -2178,13 +2198,23 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // '.' identifier
+  // '.' ( NAME | identifier)
   private static boolean VariableReference_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableReference_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, DOT, IDENTIFIER);
+    r = consumeToken(b, DOT);
+    r = r && VariableReference_1_0_1(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NAME | identifier
+  private static boolean VariableReference_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VariableReference_1_0_1")) return false;
+    boolean r;
+    r = consumeToken(b, NAME);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
   }
 

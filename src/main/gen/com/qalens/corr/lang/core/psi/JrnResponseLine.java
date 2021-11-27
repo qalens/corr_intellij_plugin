@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnResponseLine extends PsiElement {
 
-  @Nullable
-  JrnExpression getExpression();
+  @NotNull
+  List<JrnExpression> getExpressionList();
 
 }

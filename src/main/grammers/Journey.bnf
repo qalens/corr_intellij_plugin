@@ -64,6 +64,7 @@
           LISTEN = 'listen'
           RANDOM = 'random'
           RANDOMELEMENT = 'random_element'
+          UNIQUERANDOMELEMENTS = 'unique_random_elements'
           ROUND = 'round'
           PRINT  = 'print'
           TEXT = 'text'
@@ -78,6 +79,7 @@
           ELSE = 'else'
           LET = 'let'
           MATCHING = 'matching'
+          ARRAY = 'array'
           BODY = 'body'
           HEADERS = 'headers'
           REQUEST = 'request'
@@ -91,6 +93,13 @@
           DELETE = 'delete'
           FATARROW = '=>'
           OP_EQUAL = '=='
+          OP_NOT = '!'
+          OP_AND = '&&'
+          OP_OR = '||'
+          OP_GE = '>='
+          OP_LE = '<='
+          OP_GT = '>'
+          OP_LT = '<'
           OP_NOTEQUAL = '!='
           OP_PLUS = '+'
           OP_MINUS = '-'
@@ -130,7 +139,7 @@ private recoverStubDefinition::= !('on'|'}' )
 ResponseGenerator ::= '{' CalculationSteps ResponseLine '}' { pin = 1 }
 CalculationSteps ::= Step* { recoverWhile="recoverCalculationSteps"}
 private recoverCalculationSteps ::= !('respond' | '}' )
-ResponseLine ::= 'respond' 'with' ('status' PositiveIntegerValue 'and')? 'body' Expression { pin =1 recoverWhile="recoverStep"}
+ResponseLine ::= 'respond' 'with' ('status' Expression 'and')? 'body' Expression { pin =1 recoverWhile="recoverStep"}
 RestVerb ::= 'get' | 'put' | 'post' | 'patch' | 'delete'
 HeadersStartingRestData ::= HeadersDeclaration ('and' BodyDeclaration)? {pin=1}
 BodyStartingRestData ::=   BodyDeclaration ('and' HeadersDeclaration)? { pin=1 }
@@ -184,19 +193,19 @@ UnArgedForInText ::= ForBlockForText
 ForBlockForText ::= TextScript | ( '%>' (TextBlock)* '<%' )
 ArgedForInText ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' ForBlockForText
 Expression ::=  OperatorExpression | NonOperatorExpression
-NonOperatorExpression  ::= BracketedExpression | ConstantExpression | FunctionExpression | VariableExpression
+NonOperatorExpression  ::= BracketedExpression | FillableObjectTemplate | ConstantExpression | FunctionExpression | VariableExpression
 BracketedExpression ::= '(' Expression ')'
 OperatorExpression ::= BinaryOperatorExpression | UnaryOperatorExpression
 BinaryOperatorExpression ::= ((UnaryOperatorExpression | NonOperatorExpression) BinaryOperator)+ (UnaryOperatorExpression | NonOperatorExpression)
 UnaryOperatorExpression ::= NonOperatorExpression UnaryOperator
-BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '==' | '!='
+BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '==' | '!=' | '>=' | '<=' | '>' | '<'
 UnaryOperator ::= '++' | '--'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= (VariableReference '.' ('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' Expression ')') | (('round' | 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right') '(' (Expression ',' Expression)  ')')
+BinaryFunction ::= (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')')
 UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
-VariableReference ::= identifier ('.' identifier)* {pin=1}
+VariableReference ::= ( NAME  |  identifier) ('.' ( NAME | identifier) )* {pin=1}
 Type ::= ('String' | 'Boolean' | 'PositiveInteger' | 'Integer' | 'Double')

@@ -14,6 +14,9 @@ public interface JrnNonOperatorExpression extends PsiElement {
   JrnConstantExpression getConstantExpression();
 
   @Nullable
+  JrnFillableObjectTemplate getFillableObjectTemplate();
+
+  @Nullable
   JrnFunctionExpression getFunctionExpression();
 
   @Nullable

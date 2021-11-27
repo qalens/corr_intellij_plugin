@@ -17,6 +17,8 @@ private fun other_functions(with:String?):List<String> {
         "contains(${withComma}\"Hello\")",
         "round(${withComma}2)",
         "random(${withComma}10000)",
+        "unique_random_elements(${withComma}array)",
+        "array(${withComma}eachElement)",
     )
 }
 fun zero_arg_functions():List<String>{

@@ -28,9 +28,9 @@ public class JrnResponseLineImpl extends ASTWrapperPsiElement implements JrnResp
   }
 
   @Override
-  @Nullable
-  public JrnExpression getExpression() {
-    return findChildByClass(JrnExpression.class);
+  @NotNull
+  public List<JrnExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
   }
 
 }

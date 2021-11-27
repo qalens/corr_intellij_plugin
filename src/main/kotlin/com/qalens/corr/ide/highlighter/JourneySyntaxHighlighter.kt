@@ -103,6 +103,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
                 || tokenType.equals(JrnElementTypes.SUB)
                 || tokenType.equals(JrnElementTypes.DIV)
                 || tokenType.equals(JrnElementTypes.RANDOMELEMENT)
+                || tokenType.equals(JrnElementTypes.UNIQUERANDOMELEMENTS)
+                || tokenType.equals(JrnElementTypes.ARRAY)
                 || tokenType.equals(JrnElementTypes.CONTAINS)
                 || tokenType.equals(JrnElementTypes.TIMESTAMP)
                 || tokenType.equals(JrnElementTypes.LEFT)

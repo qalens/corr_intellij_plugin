@@ -46,16 +46,7 @@ def getLocalProperties() {
     }
     return props
 }
-
-//task copyPsiViewerPluginToSandBox(type: Copy) {
-//    from "${buildDir}/tmp/plugins/PsiViewer.jar"
-//    into "${buildDir}/idea-sandbox/plugins/"
-//}
 runIde {
     jbrVersion '11_0_2b159'
     jvmArgs '-Xmx1G'
 }
-
-//copyPsiViewerPluginToSandBox.dependsOn downloadPsiViewerPlugin
-//copyPsiViewerPluginToSandBox.mustRunAfter prepareSandbox
-//runIde.dependsOn copyPsiViewerPluginToSandBox,check

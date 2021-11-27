@@ -91,6 +91,7 @@ public interface JrnElementTypes {
 
   IElementType ADD = new JrnTokenType("add");
   IElementType AND = new JrnTokenType("and");
+  IElementType ARRAY = new JrnTokenType("array");
   IElementType ASSIGN = new JrnTokenType("=");
   IElementType ASYNC = new JrnTokenType("async");
   IElementType BACKTICK = new JrnTokenType("`");
@@ -141,14 +142,21 @@ public interface JrnElementTypes {
   IElementType OBJECT = new JrnTokenType("Object");
   IElementType OBJECT_TEMPLATE = new JrnTokenType("object");
   IElementType ON = new JrnTokenType("on");
+  IElementType OP_AND = new JrnTokenType("&&");
   IElementType OP_DECREMENT = new JrnTokenType("--");
   IElementType OP_DIVIDE = new JrnTokenType("/");
   IElementType OP_EQUAL = new JrnTokenType("==");
+  IElementType OP_GE = new JrnTokenType(">=");
+  IElementType OP_GT = new JrnTokenType(">");
   IElementType OP_INCREMENT = new JrnTokenType("++");
+  IElementType OP_LE = new JrnTokenType("<=");
+  IElementType OP_LT = new JrnTokenType("<");
   IElementType OP_MINUS = new JrnTokenType("-");
   IElementType OP_MOD = new JrnTokenType("%");
   IElementType OP_MULTIPLY = new JrnTokenType("*");
+  IElementType OP_NOT = new JrnTokenType("!");
   IElementType OP_NOTEQUAL = new JrnTokenType("!=");
+  IElementType OP_OR = new JrnTokenType("||");
   IElementType OP_PLUS = new JrnTokenType("+");
   IElementType PATCH = new JrnTokenType("patch");
   IElementType POSITIVEINTEGERVALUE = new JrnTokenType("PositiveIntegerValue");
@@ -182,6 +190,7 @@ public interface JrnElementTypes {
   IElementType TIMESTAMP = new JrnTokenType("timestamp");
   IElementType TO = new JrnTokenType("to");
   IElementType UNDERSCORE = new JrnTokenType("_");
+  IElementType UNIQUERANDOMELEMENTS = new JrnTokenType("unique_random_elements");
   IElementType URL = new JrnTokenType("url");
   IElementType UUID = new JrnTokenType("uuid");
   IElementType WITH = new JrnTokenType("with");

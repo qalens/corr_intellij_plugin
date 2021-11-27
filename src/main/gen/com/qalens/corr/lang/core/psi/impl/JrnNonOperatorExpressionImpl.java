@@ -41,6 +41,12 @@ public class JrnNonOperatorExpressionImpl extends ASTWrapperPsiElement implement
 
   @Override
   @Nullable
+  public JrnFillableObjectTemplate getFillableObjectTemplate() {
+    return findChildByClass(JrnFillableObjectTemplate.class);
+  }
+
+  @Override
+  @Nullable
   public JrnFunctionExpression getFunctionExpression() {
     return findChildByClass(JrnFunctionExpression.class);
   }

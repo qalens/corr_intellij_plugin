@@ -76,7 +76,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "headers"                      { return HEADERS; }
     "request"                      { return REQUEST; }
     "respond"                      { return RESPOND; }
-    "status"                      { return STATUS; }
+    "status"                   { return STATUS; }
     "on"                      { return ON; }
     "push"                      { return PUSH; }
     "listen"                      { return LISTEN; }
@@ -123,7 +123,14 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "--"                            { return OP_DECREMENT;}
     "++"                            { return OP_INCREMENT;}
     "=="                            { return OP_EQUAL;}
+    "&&"                            { return OP_AND;}
+    "||"                            { return OP_OR;}
+    ">="                            { return OP_GE;}
+    "<="                            { return OP_LE;}
+    ">"                             { return OP_GT;}
+    "<"                             { return OP_LT;}
     "!="                            { return OP_NOTEQUAL;}
+    "!"                             { return OP_NOT;}
     "+"                             { return OP_PLUS; }
     "-"                             { return OP_MINUS;}
     "/"                             { return OP_DIVIDE;}
@@ -155,6 +162,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "right" / [(]                        { return RIGHT;}
     "mid" / [(]                        { return MID;}
     "contains" / [(]                        { return CONTAINS;}
+    "array" / [(]                        { return ARRAY;}
     "from_json"  / [(]                   { return FROMJSON;}
     "mul"  / [(]                         { return MUL;}
     "add"  / [(]                         { return ADD;}
@@ -168,6 +176,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "mod"  / [(]                         { return MOD; }
     "random"  / [(]                      { return RANDOM;}
     "random_element"  / [(]                      { return RANDOMELEMENT;}
+    "unique_random_elements"  / [(]                      { return UNIQUERANDOMELEMENTS;}
     "round"  / [(]                       { return ROUND;}
     {STRING_LITERAL}                             { return STRING_LITERAL; }
     {POSITIVE_INTEGER_LITERAL} / [^\.]          { return POSITIVEINTEGERVALUE;}
