@@ -307,11 +307,15 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUnaryOperator(@NotNull JrnUnaryOperator o) {
+  public void visitUnaryOperatorExpression(@NotNull JrnUnaryOperatorExpression o) {
     visitPsiElement(o);
   }
 
-  public void visitUnaryOperatorExpression(@NotNull JrnUnaryOperatorExpression o) {
+  public void visitUnaryPostOperator(@NotNull JrnUnaryPostOperator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUnaryPreOperator(@NotNull JrnUnaryPreOperator o) {
     visitPsiElement(o);
   }
 

@@ -11,14 +11,14 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnUnaryOperatorImpl extends ASTWrapperPsiElement implements JrnUnaryOperator {
+public class JrnUnaryPreOperatorImpl extends ASTWrapperPsiElement implements JrnUnaryPreOperator {
 
-  public JrnUnaryOperatorImpl(@NotNull ASTNode node) {
+  public JrnUnaryPreOperatorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitUnaryOperator(this);
+    visitor.visitUnaryPreOperator(this);
   }
 
   @Override

@@ -17,6 +17,8 @@
           DOT = '.'
           SCRIPLET_START = '<%'
           SCRIPLET_END = '%>'
+          SCRIPLET_ALT_START = '${'
+          SCRIPLET_ALT_END = '}$'
           LBRACE      = '{'
           RBRACE      = '}'
           LBRACK      =  '['
@@ -182,24 +184,25 @@ UnArgedFor ::= Step | Block
 ArgedFor ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' (Block | Step) {pin = 1}
 FillableTextTemplate ::= 'text' TextTemplate
 ExtractableText ::= 'text' '`' (SingleVariableText | MultiVariableText) '`'
-SingleVariableText ::= '<%' VariableExpression '%>'
-MultiVariableText ::= (TEXT_LITERAL)? ('<%' VariableExpression '%>' TEXT_LITERAL)* ('<%' VariableExpression '%>')?
+SingleVariableText ::= ('<%' VariableExpression '%>') | ('${' VariableExpression '}$')
+MultiVariableText ::= (TEXT_LITERAL)? ((('<%' VariableExpression '%>') | ('${' VariableExpression '}$')) TEXT_LITERAL)* (('<%' VariableExpression '%>') | ('${' VariableExpression '}$'))?
 TextTemplate ::= '`' TextBlock* '`'
 TextBlock ::= Scriplet | TEXT_LITERAL
-Scriplet ::= '<%' (TextScript) '%>'
+Scriplet ::= ('<%' (TextScript) '%>') | ('${' (TextScript) '}$')
 TextScript ::= ForLoopInText | Expression
 ForLoopInText ::= VariableReference '.' 'for' (UnArgedForInText | ArgedForInText )
 UnArgedForInText ::= ForBlockForText
-ForBlockForText ::= TextScript | ( '%>' (TextBlock)* '<%' )
+ForBlockForText ::= TextScript | ( '%>' (TextBlock)* '<%' ) | ( '}$' (TextBlock)* '${' )
 ArgedForInText ::= '(' ( (VariableReference ',' VariableReference) | VariableReference?) ')' '=>' ForBlockForText
 Expression ::=  OperatorExpression | NonOperatorExpression
 NonOperatorExpression  ::= BracketedExpression | FillableObjectTemplate | ConstantExpression | FunctionExpression | VariableExpression
 BracketedExpression ::= '(' Expression ')'
 OperatorExpression ::= BinaryOperatorExpression | UnaryOperatorExpression
 BinaryOperatorExpression ::= ((UnaryOperatorExpression | NonOperatorExpression) BinaryOperator)+ (UnaryOperatorExpression | NonOperatorExpression)
-UnaryOperatorExpression ::= NonOperatorExpression UnaryOperator
-BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '==' | '!=' | '>=' | '<=' | '>' | '<'
-UnaryOperator ::= '++' | '--'
+UnaryOperatorExpression ::= (NonOperatorExpression UnaryPostOperator) | (UnaryPreOperator | NonOperatorExpression)
+BinaryOperator ::= '+' | '-' | '/' | '*' | '%' | '==' | '!=' | '>=' | '<=' | '>' | '<' | '&&' | '||'
+UnaryPostOperator ::= '++' | '--'
+UnaryPreOperator ::= '!'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'

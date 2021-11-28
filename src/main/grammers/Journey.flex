@@ -48,7 +48,7 @@ WHITE_SPACE      = {WHITE_SPACE_CHAR}+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Identifier
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-TEXT_LITERAL = ( [^\\<`] | \\[\\<`] )+
+TEXT_LITERAL = ([^\\<`$] | \\[\\<$`])+
 IDENTIFIER = [_\p{xidstart}][\p{xidcontinue}]*
 NAME = [`] [^`]* [`]
 
@@ -65,134 +65,136 @@ InputCharacter = [^\r\n]
 BLOCK_COMMENT   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
 
-%s IN_TEXT_TEMPLATE,IN_SCRIPLET,IN_STRING,IN_TEXT
+%s IN_TEXT_TEMPLATE,IN_SCRIPLET,IN_STRING,IN_TEXT,IN_ALT_SCRIPLET
 %%
 <YYINITIAL> {
-    "print"                         { return PRINT; }
-    "matching"                      { return MATCHING; }
-    "and"                      { return AND; }
-    "url"                      { return URL; }
-    "body"                      { return BODY; }
-    "headers"                      { return HEADERS; }
-    "request"                      { return REQUEST; }
-    "respond"                      { return RESPOND; }
-    "status"                   { return STATUS; }
-    "on"                      { return ON; }
-    "push"                      { return PUSH; }
-    "listen"                      { return LISTEN; }
-    "with"                      { return WITH; }
-    "sync"                      { return SYNC; }
-    "async"                      { return ASYNC; }
-    "get"                      { return GET; }
-    "put"                      { return PUT; }
-    "post"                      { return POST; }
-    "form"                      { return FORM; }
-    "patch"                      { return PATCH; }
-    "delete"                      { return DELETE; }
-    "text"                          { pushState(IN_TEXT);return TEXT;}
-    "object"                        { return OBJECT_TEMPLATE;}
-    "let"                           { return LET;}
-    "sandbox"                           { return SANDBOX;}
-    "load"                           { return LOAD;}
-    "from"                           { return FROM;}
-    "to"                           { return TO;}
-    "="                             { return ASSIGN;}
-    {NAME}                          { return NAME; }
+    "print"                                         { return PRINT; }
+    "matching"                                      { return MATCHING; }
+    "and"                                           { return AND; }
+    "url"                                           { return URL; }
+    "body"                                          { return BODY; }
+    "headers"                                       { return HEADERS; }
+    "request"                                       { return REQUEST; }
+    "respond"                                       { return RESPOND; }
+    "status"                                        { return STATUS; }
+    "on"                                            { return ON; }
+    "push"                                          { return PUSH; }
+    "listen"                                        { return LISTEN; }
+    "with"                                          { return WITH; }
+    "sync"                                          { return SYNC; }
+    "async"                                         { return ASYNC; }
+    "get"                                           { return GET; }
+    "put"                                           { return PUT; }
+    "post"                                          { return POST; }
+    "form"                                          { return FORM; }
+    "patch"                                         { return PATCH; }
+    "delete"                                        { return DELETE; }
+    "text"                                          { pushState(IN_TEXT);return TEXT;}
+    "let"                                           { return LET;}
+    "sandbox"                                       { return SANDBOX;}
+    "load"                                          { return LOAD;}
+    "from"                                          { return FROM;}
+    "to"                                            { return TO;}
+    "="                                             { return ASSIGN;}
+    {NAME}                                          { return NAME; }
 
 }
 <IN_TEXT>{
-    "`"                             { pushState(IN_TEXT_TEMPLATE); return BACKTICK;}
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
+    "`"                                             { pushState(IN_TEXT_TEMPLATE); return BACKTICK;}
+    {WHITE_SPACE}                                   { return WHITE_SPACE; }
 }
 <IN_TEXT_TEMPLATE>{
-    "`"                             { popState();
-                                        popState();
-                                        return BACKTICK; }
-    "<%"                            { pushState(IN_SCRIPLET);return SCRIPLET_START; }
-    {TEXT_LITERAL}                  { return TEXT_LITERAL; }
+    "`"                                             { popState(); popState(); return BACKTICK; }
+    "<%"                                            { pushState(IN_SCRIPLET);return SCRIPLET_START; }
+    "${"                                            { pushState(IN_ALT_SCRIPLET);return SCRIPLET_ALT_START; }
+    {TEXT_LITERAL}                                  { return TEXT_LITERAL; }
 }
 
-<YYINITIAL,IN_SCRIPLET> {
-    "."                             {return DOT;}
-    "{"                             { return LBRACE; }
-    "}"                             { return RBRACE; }
-    "["                             { return LBRACK; }
-    "]"                             { return RBRACK; }
-    "("                             { return LPAREN; }
-    ")"                             { return RPAREN; }
-    "--"                            { return OP_DECREMENT;}
-    "++"                            { return OP_INCREMENT;}
-    "=="                            { return OP_EQUAL;}
-    "&&"                            { return OP_AND;}
-    "||"                            { return OP_OR;}
-    ">="                            { return OP_GE;}
-    "<="                            { return OP_LE;}
-    ">"                             { return OP_GT;}
-    "<"                             { return OP_LT;}
-    "!="                            { return OP_NOTEQUAL;}
-    "!"                             { return OP_NOT;}
-    "+"                             { return OP_PLUS; }
-    "-"                             { return OP_MINUS;}
-    "/"                             { return OP_DIVIDE;}
-    "*"                             { return OP_MULTIPLY;}
-    "%"                             { return OP_MOD;}
-    ":"                             { return COLON; }
-    ";"                             { return SEMICOLON; }
-    "for"                           { return FOR;}
-    "if"                            { return IF;}
-    "else"                          { return ELSE;}
-    "=>"                            { return FATARROW;}
-    "null"                          { return NULLVALUE;}
-    "true"                          { return BOOLEANVALUE;}
-    "false"                         { return BOOLEANVALUE;}
-    "True"                          { return BOOLEANVALUE;}
-    "False"                         { return BOOLEANVALUE;}
-    "TRUE"                          { return BOOLEANVALUE;}
-    "FALSE"                         { return BOOLEANVALUE;}
-    "String"                        { return STRING;}
-    "PositiveInteger"               { return POSITIVE_INTEGER;}
-    "Double"                        { return DOUBLE;}
-    "Integer"                       { return INTEGER;}
-    "Boolean"                       { return BOOL;}
-    ","                             { return COMMA; }
-    "concat" / [(]                        { return CONCAT;}
-    "lpad" / [(]                        { return LPAD;}
-    "rpad" / [(]                        { return RPAD;}
-    "left" / [(]                        { return LEFT;}
-    "right" / [(]                        { return RIGHT;}
-    "mid" / [(]                        { return MID;}
-    "contains" / [(]                        { return CONTAINS;}
-    "array" / [(]                        { return ARRAY;}
-    "from_json"  / [(]                   { return FROMJSON;}
-    "mul"  / [(]                         { return MUL;}
-    "add"  / [(]                         { return ADD;}
-    "now"  / [(]                         { return NOW;}
-    "timestamp"  / [(]                   { return TIMESTAMP;}
-    "sub"  / [(]                         { return SUB;}
-    "div"  / [(]                         { return DIV;}
-    "uuid" / [(]                         { return UUID;}
-    "fake" / [(]                         { return FAKE; }
-    "encode"  / [(]                      { return ENCODE; }
-    "mod"  / [(]                         { return MOD; }
-    "random"  / [(]                      { return RANDOM;}
-    "random_element"  / [(]                      { return RANDOMELEMENT;}
-    "unique_random_elements"  / [(]                      { return UNIQUERANDOMELEMENTS;}
-    "round"  / [(]                       { return ROUND;}
-    {STRING_LITERAL}                             { return STRING_LITERAL; }
-    {POSITIVE_INTEGER_LITERAL} / [^\.]          { return POSITIVEINTEGERVALUE;}
-    {INTEGER_LITERAL} / [^\.]                   { return INETEGERVALUE;}
-    {DOUBLE_LITERAL}                            { return DOUBLEVALUE ;}
-    {IDENTIFIER}                    { return IDENTIFIER; }
-    {LINE_COMMENT}                       { return LINE_COMMENT; }
-    {BLOCK_COMMENT}                       { return BLOCK_COMMENT; }
-    {WHITE_SPACE}                   { return WHITE_SPACE; }
+<YYINITIAL,IN_SCRIPLET,IN_ALT_SCRIPLET> {
+    "."                                             {return DOT;}
+    "{"                                             { return LBRACE; }
+    "}"                                             { return RBRACE; }
+    "["                                             { return LBRACK; }
+    "]"                                             { return RBRACK; }
+    "("                                             { return LPAREN; }
+    ")"                                             { return RPAREN; }
+    "--"                                            { return OP_DECREMENT;}
+    "++"                                            { return OP_INCREMENT;}
+    "=="                                            { return OP_EQUAL;}
+    "&&"                                            { return OP_AND;}
+    "||"                                            { return OP_OR;}
+    ">="                                            { return OP_GE;}
+    "<="                                            { return OP_LE;}
+    ">"                                             { return OP_GT;}
+    "<"                                             { return OP_LT;}
+    "!="                                            { return OP_NOTEQUAL;}
+    "!"                                             { return OP_NOT;}
+    "+"                                             { return OP_PLUS; }
+    "-"                                             { return OP_MINUS;}
+    "/"                                             { return OP_DIVIDE;}
+    "*"                                             { return OP_MULTIPLY;}
+    "%"                                             { return OP_MOD;}
+    ":"                                             { return COLON; }
+    ";"                                             { return SEMICOLON; }
+    "object"                                        { return OBJECT_TEMPLATE;}
+    "for"                                           { return FOR;}
+    "if"                                            { return IF;}
+    "else"                                          { return ELSE;}
+    "=>"                                            { return FATARROW;}
+    "null"                                          { return NULLVALUE;}
+    "true"                                          { return BOOLEANVALUE;}
+    "false"                                         { return BOOLEANVALUE;}
+    "True"                                          { return BOOLEANVALUE;}
+    "False"                                         { return BOOLEANVALUE;}
+    "TRUE"                                          { return BOOLEANVALUE;}
+    "FALSE"                                         { return BOOLEANVALUE;}
+    "String"                                        { return STRING;}
+    "PositiveInteger"                               { return POSITIVE_INTEGER;}
+    "Double"                                        { return DOUBLE;}
+    "Integer"                                       { return INTEGER;}
+    "Boolean"                                       { return BOOL;}
+    ","                                             { return COMMA; }
+    "concat" / [(]                                  { return CONCAT;}
+    "lpad" / [(]                                    { return LPAD;}
+    "rpad" / [(]                                    { return RPAD;}
+    "left" / [(]                                    { return LEFT;}
+    "right" / [(]                                   { return RIGHT;}
+    "mid" / [(]                                     { return MID;}
+    "contains" / [(]                                { return CONTAINS;}
+    "array" / [(]                                   { return ARRAY;}
+    "from_json"  / [(]                              { return FROMJSON;}
+    "mul"  / [(]                                    { return MUL;}
+    "add"  / [(]                                    { return ADD;}
+    "now"  / [(]                                    { return NOW;}
+    "timestamp"  / [(]                              { return TIMESTAMP;}
+    "sub"  / [(]                                    { return SUB;}
+    "div"  / [(]                                    { return DIV;}
+    "uuid" / [(]                                    { return UUID;}
+    "fake" / [(]                                    { return FAKE; }
+    "encode"  / [(]                                 { return ENCODE; }
+    "mod"  / [(]                                    { return MOD; }
+    "random"  / [(]                                 { return RANDOM;}
+    "random_element"  / [(]                         { return RANDOMELEMENT;}
+    "unique_random_elements"  / [(]                 { return UNIQUERANDOMELEMENTS;}
+    "round"  / [(]                                  { return ROUND;}
+    {STRING_LITERAL}                                { return STRING_LITERAL; }
+    {POSITIVE_INTEGER_LITERAL} / [^\.]              { return POSITIVEINTEGERVALUE;}
+    {INTEGER_LITERAL} / [^\.]                       { return INETEGERVALUE;}
+    {DOUBLE_LITERAL}                                { return DOUBLEVALUE ;}
+    {IDENTIFIER}                                    { return IDENTIFIER; }
+    {LINE_COMMENT}                                  { return LINE_COMMENT; }
+    {BLOCK_COMMENT}                                 { return BLOCK_COMMENT; }
+    {WHITE_SPACE}                                   { return WHITE_SPACE; }
 
 
 }
 <IN_SCRIPLET>{
-    "%>"                            { popState(); return SCRIPLET_END; }
+    "%>"                                            { popState(); return SCRIPLET_END; }
+}
+<IN_ALT_SCRIPLET>{
+    "}$"                                            { popState(); return SCRIPLET_ALT_END; }
 }
 
 
 
-[^] { return BAD_CHARACTER; }
+[^]                                                { return BAD_CHARACTER; }

@@ -7,6 +7,7 @@ import com.qalens.corr.lang.core.psi.JrnElementTypes
 class TextTemplateHighlighterLexer:LayeredLexer(TextTemplateLayer()){
     init {
         registerLayer(ScriptletHighlighterLexer(),JrnElementTypes.SCRIPLET_START,JrnElementTypes.SCRIPLET_END);
+        registerLayer(ScriptletHighlighterLexer(),JrnElementTypes.SCRIPLET_ALT_START,JrnElementTypes.SCRIPLET_ALT_END);
     }
 }
 class TextTemplateLayer:FlexAdapter(JourneyLexer()) {

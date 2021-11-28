@@ -7,10 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnUnaryOperatorExpression extends PsiElement {
 
-  @NotNull
+  @Nullable
   JrnNonOperatorExpression getNonOperatorExpression();
 
-  @NotNull
-  JrnUnaryOperator getUnaryOperator();
+  @Nullable
+  JrnUnaryPostOperator getUnaryPostOperator();
+
+  @Nullable
+  JrnUnaryPreOperator getUnaryPreOperator();
 
 }

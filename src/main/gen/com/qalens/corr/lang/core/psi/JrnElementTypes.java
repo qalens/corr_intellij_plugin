@@ -81,8 +81,9 @@ public interface JrnElementTypes {
   IElementType TEXT_TEMPLATE = new JrnElementType("TEXT_TEMPLATE");
   IElementType TYPE = new JrnElementType("TYPE");
   IElementType UNARY_FUNCTION = new JrnElementType("UNARY_FUNCTION");
-  IElementType UNARY_OPERATOR = new JrnElementType("UNARY_OPERATOR");
   IElementType UNARY_OPERATOR_EXPRESSION = new JrnElementType("UNARY_OPERATOR_EXPRESSION");
+  IElementType UNARY_POST_OPERATOR = new JrnElementType("UNARY_POST_OPERATOR");
+  IElementType UNARY_PRE_OPERATOR = new JrnElementType("UNARY_PRE_OPERATOR");
   IElementType UN_ARGED_FOR = new JrnElementType("UN_ARGED_FOR");
   IElementType UN_ARGED_FOR_IN_TEXT = new JrnElementType("UN_ARGED_FOR_IN_TEXT");
   IElementType VARIABLE_ACTION_STEP = new JrnElementType("VARIABLE_ACTION_STEP");
@@ -177,6 +178,8 @@ public interface JrnElementTypes {
   IElementType RPAD = new JrnTokenType("rpad");
   IElementType RPAREN = new JrnTokenType(")");
   IElementType SANDBOX = new JrnTokenType("sandbox");
+  IElementType SCRIPLET_ALT_END = new JrnTokenType("}$");
+  IElementType SCRIPLET_ALT_START = new JrnTokenType("${");
   IElementType SCRIPLET_END = new JrnTokenType("%>");
   IElementType SCRIPLET_START = new JrnTokenType("<%");
   IElementType SEMICOLON = new JrnTokenType(";");
@@ -417,11 +420,14 @@ public interface JrnElementTypes {
       else if (type == UNARY_FUNCTION) {
         return new JrnUnaryFunctionImpl(node);
       }
-      else if (type == UNARY_OPERATOR) {
-        return new JrnUnaryOperatorImpl(node);
-      }
       else if (type == UNARY_OPERATOR_EXPRESSION) {
         return new JrnUnaryOperatorExpressionImpl(node);
+      }
+      else if (type == UNARY_POST_OPERATOR) {
+        return new JrnUnaryPostOperatorImpl(node);
+      }
+      else if (type == UNARY_PRE_OPERATOR) {
+        return new JrnUnaryPreOperatorImpl(node);
       }
       else if (type == UN_ARGED_FOR) {
         return new JrnUnArgedForImpl(node);

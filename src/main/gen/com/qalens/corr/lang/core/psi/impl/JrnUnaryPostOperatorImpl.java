@@ -11,38 +11,20 @@ import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnUnaryOperatorExpressionImpl extends ASTWrapperPsiElement implements JrnUnaryOperatorExpression {
+public class JrnUnaryPostOperatorImpl extends ASTWrapperPsiElement implements JrnUnaryPostOperator {
 
-  public JrnUnaryOperatorExpressionImpl(@NotNull ASTNode node) {
+  public JrnUnaryPostOperatorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitUnaryOperatorExpression(this);
+    visitor.visitUnaryPostOperator(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JrnVisitor) accept((JrnVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public JrnNonOperatorExpression getNonOperatorExpression() {
-    return findChildByClass(JrnNonOperatorExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnUnaryPostOperator getUnaryPostOperator() {
-    return findChildByClass(JrnUnaryPostOperator.class);
-  }
-
-  @Override
-  @Nullable
-  public JrnUnaryPreOperator getUnaryPreOperator() {
-    return findChildByClass(JrnUnaryPreOperator.class);
   }
 
 }

@@ -141,6 +141,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
         }
         else if(tokenType.equals(JrnElementTypes.SCRIPLET_START)
             || tokenType.equals(JrnElementTypes.SCRIPLET_END)
+            || tokenType.equals(JrnElementTypes.SCRIPLET_ALT_START)
+            || tokenType.equals(JrnElementTypes.SCRIPLET_ALT_END)
         )
             return MarkupTag
         else if(tokenType.equals(JrnElementTypes.IDENTIFIER) || tokenType.equals(
