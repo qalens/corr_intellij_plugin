@@ -2234,7 +2234,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (NonOperatorExpression UnaryPostOperator) | (UnaryPreOperator | NonOperatorExpression)
+  // (NonOperatorExpression UnaryPostOperator) | (UnaryPreOperator NonOperatorExpression)
   public static boolean UnaryOperatorExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryOperatorExpression")) return false;
     boolean r;
@@ -2256,12 +2256,14 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // UnaryPreOperator | NonOperatorExpression
+  // UnaryPreOperator NonOperatorExpression
   private static boolean UnaryOperatorExpression_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryOperatorExpression_1")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = UnaryPreOperator(b, l + 1);
-    if (!r) r = NonOperatorExpression(b, l + 1);
+    r = r && NonOperatorExpression(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

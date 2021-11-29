@@ -28,9 +28,9 @@ public class JrnUnaryOperatorExpressionImpl extends ASTWrapperPsiElement impleme
   }
 
   @Override
-  @Nullable
+  @NotNull
   public JrnNonOperatorExpression getNonOperatorExpression() {
-    return findChildByClass(JrnNonOperatorExpression.class);
+    return findNotNullChildByClass(JrnNonOperatorExpression.class);
   }
 
   @Override

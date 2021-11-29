@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface JrnUnaryOperatorExpression extends PsiElement {
 
-  @Nullable
+  @NotNull
   JrnNonOperatorExpression getNonOperatorExpression();
 
   @Nullable
