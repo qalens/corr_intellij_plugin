@@ -53,6 +53,7 @@ public interface JrnElementTypes {
   IElementType HEADER_PAIR = new JrnElementType("HEADER_PAIR");
   IElementType IF_ELSE_STEP = new JrnElementType("IF_ELSE_STEP");
   IElementType JOURNEY_NAME = new JrnElementType("JOURNEY_NAME");
+  IElementType JOURNEY_STEP = new JrnElementType("JOURNEY_STEP");
   IElementType LISTENER_STEP = new JrnElementType("LISTENER_STEP");
   IElementType MULTI_VALUED_FUNCTION = new JrnElementType("MULTI_VALUED_FUNCTION");
   IElementType MULTI_VARIABLE_TEXT = new JrnElementType("MULTI_VARIABLE_TEXT");
@@ -100,6 +101,7 @@ public interface JrnElementTypes {
   IElementType BODY = new JrnTokenType("body");
   IElementType BOOL = new JrnTokenType("Boolean");
   IElementType BOOLEANVALUE = new JrnTokenType("BooleanValue");
+  IElementType CALL = new JrnTokenType("call");
   IElementType COLON = new JrnTokenType(":");
   IElementType COMMA = new JrnTokenType(",");
   IElementType CONCAT = new JrnTokenType("concat");
@@ -335,6 +337,9 @@ public interface JrnElementTypes {
       }
       else if (type == JOURNEY_NAME) {
         return new JrnJourneyNameImpl(node);
+      }
+      else if (type == JOURNEY_STEP) {
+        return new JrnJourneyStepImpl(node);
       }
       else if (type == LISTENER_STEP) {
         return new JrnListenerStepImpl(node);

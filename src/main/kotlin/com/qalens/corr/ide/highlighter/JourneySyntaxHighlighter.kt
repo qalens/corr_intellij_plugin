@@ -81,6 +81,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.ASYNC)
             || tokenType.equals(JrnElementTypes.SYNC)
             || tokenType.equals(JrnElementTypes.LOAD)
+            || tokenType.equals(JrnElementTypes.CALL)
             || tokenType.equals(JrnElementTypes.PUSH)
             || tokenType.equals(JrnElementTypes.LISTEN)
             || tokenType.equals(JrnElementTypes.FROM)

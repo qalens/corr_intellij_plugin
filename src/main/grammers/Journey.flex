@@ -2,7 +2,7 @@ package com.qalens.corr.lang.core.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;import com.intellij.psi.tree.IElementType;
-import com.qalens.corr.lang.core.psi.JrnTokenType;import kotlin.reflect.jvm.internal.impl.resolve.constants.LongValue;
+import com.qalens.corr.lang.core.psi.JrnTokenType;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
 import static com.intellij.psi.TokenType.*;
 import java.net.URL;import java.util.*;
@@ -91,6 +91,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "delete"                                        { return DELETE; }
     "text"                                          { pushState(IN_TEXT);return TEXT;}
     "let"                                           { return LET;}
+    "call"                                          { return CALL;}
     "sandbox"                                       { return SANDBOX;}
     "load"                                          { return LOAD;}
     "from"                                          { return FROM;}

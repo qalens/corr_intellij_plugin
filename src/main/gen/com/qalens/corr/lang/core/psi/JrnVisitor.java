@@ -187,6 +187,10 @@ public class JrnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitJourneyStep(@NotNull JrnJourneyStep o) {
+    visitStep(o);
+  }
+
   public void visitListenerStep(@NotNull JrnListenerStep o) {
     visitStep(o);
   }

@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.qalens.corr.lang.core.psi.*;
 
-public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
+public class JrnJourneyStepImpl extends JrnStepImpl implements JrnJourneyStep {
 
-  public JrnRootFnImpl(@NotNull ASTNode node) {
+  public JrnJourneyStepImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull JrnVisitor visitor) {
-    visitor.visitRootFn(this);
+    visitor.visitJourneyStep(this);
   }
 
   @Override
@@ -29,20 +29,8 @@ public class JrnRootFnImpl extends ASTWrapperPsiElement implements JrnRootFn {
 
   @Override
   @NotNull
-  public JrnBlock getBlock() {
-    return findNotNullChildByClass(JrnBlock.class);
-  }
-
-  @Override
-  @NotNull
-  public JrnJourneyName getJourneyName() {
-    return findNotNullChildByClass(JrnJourneyName.class);
-  }
-
-  @Override
-  @NotNull
-  public List<JrnVariableReference> getVariableReferenceList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnVariableReference.class);
+  public List<JrnExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, JrnExpression.class);
   }
 
 }

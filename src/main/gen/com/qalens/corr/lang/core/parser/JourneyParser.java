@@ -36,8 +36,9 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(ASSIGNMENT_STEP, IF_ELSE_STEP, LISTENER_STEP, PRINT_STEP,
-      REST_STEP, STEP, SYNC_STEP, VARIABLE_ACTION_STEP),
+    create_token_set_(ASSIGNMENT_STEP, IF_ELSE_STEP, JOURNEY_STEP, LISTENER_STEP,
+      PRINT_STEP, REST_STEP, STEP, SYNC_STEP,
+      VARIABLE_ACTION_STEP),
   };
 
   /* ********************************************************** */
@@ -1326,6 +1327,115 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // 'call' ( NAME  |  identifier) ('.' ( NAME | identifier) )* '(' ((Expression  (',' Expression)*) | Expression?) ')'
+  public static boolean JourneyStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep")) return false;
+    if (!nextTokenIs(b, CALL)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, JOURNEY_STEP, null);
+    r = consumeToken(b, CALL);
+    p = r; // pin = 1
+    r = r && report_error_(b, JourneyStep_1(b, l + 1));
+    r = p && report_error_(b, JourneyStep_2(b, l + 1)) && r;
+    r = p && report_error_(b, consumeToken(b, LPAREN)) && r;
+    r = p && report_error_(b, JourneyStep_4(b, l + 1)) && r;
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // NAME  |  identifier
+  private static boolean JourneyStep_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_1")) return false;
+    boolean r;
+    r = consumeToken(b, NAME);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    return r;
+  }
+
+  // ('.' ( NAME | identifier) )*
+  private static boolean JourneyStep_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!JourneyStep_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "JourneyStep_2", c)) break;
+    }
+    return true;
+  }
+
+  // '.' ( NAME | identifier)
+  private static boolean JourneyStep_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && JourneyStep_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NAME | identifier
+  private static boolean JourneyStep_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_2_0_1")) return false;
+    boolean r;
+    r = consumeToken(b, NAME);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    return r;
+  }
+
+  // (Expression  (',' Expression)*) | Expression?
+  private static boolean JourneyStep_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = JourneyStep_4_0(b, l + 1);
+    if (!r) r = JourneyStep_4_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // Expression  (',' Expression)*
+  private static boolean JourneyStep_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Expression(b, l + 1);
+    r = r && JourneyStep_4_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (',' Expression)*
+  private static boolean JourneyStep_4_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_4_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!JourneyStep_4_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "JourneyStep_4_0_1", c)) break;
+    }
+    return true;
+  }
+
+  // ',' Expression
+  private static boolean JourneyStep_4_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_4_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && Expression(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // Expression?
+  private static boolean JourneyStep_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JourneyStep_4_1")) return false;
+    Expression(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // 'listen' 'on' Expression StubDefinitionBlock
   public static boolean ListenerStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ListenerStep")) return false;
@@ -1860,17 +1970,70 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // JourneyName '(' ')' Block
+  // JourneyName '(' ((VariableReference  (',' VariableReference)*) | VariableReference?)')' Block
   public static boolean RootFn(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "RootFn")) return false;
     if (!nextTokenIs(b, "<root fn>", IDENTIFIER, NAME)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROOT_FN, "<root fn>");
     r = JourneyName(b, l + 1);
-    r = r && consumeTokens(b, 0, LPAREN, RPAREN);
+    r = r && consumeToken(b, LPAREN);
+    r = r && RootFn_2(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
     r = r && Block(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  // (VariableReference  (',' VariableReference)*) | VariableReference?
+  private static boolean RootFn_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = RootFn_2_0(b, l + 1);
+    if (!r) r = RootFn_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // VariableReference  (',' VariableReference)*
+  private static boolean RootFn_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VariableReference(b, l + 1);
+    r = r && RootFn_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (',' VariableReference)*
+  private static boolean RootFn_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_2_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!RootFn_2_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "RootFn_2_0_1", c)) break;
+    }
+    return true;
+  }
+
+  // ',' VariableReference
+  private static boolean RootFn_2_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_2_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && VariableReference(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // VariableReference?
+  private static boolean RootFn_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "RootFn_2_1")) return false;
+    VariableReference(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -1968,7 +2131,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep
+  // PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep | JourneyStep
   public static boolean Step(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Step")) return false;
     boolean r;
@@ -1980,12 +2143,13 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = IfElseStep(b, l + 1);
     if (!r) r = RestStep(b, l + 1);
     if (!r) r = VariableActionStep(b, l + 1);
+    if (!r) r = JourneyStep(b, l + 1);
     exit_section_(b, l, m, r, false, JourneyParser::recoverStep);
     return r;
   }
 
   /* ********************************************************** */
-  // 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | RestVerb | identifier
+  // 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | RestVerb | identifier
   static boolean StepStart(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StepStart")) return false;
     boolean r;
@@ -1997,6 +2161,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, PRINT);
     if (!r) r = consumeToken(b, RBRACE);
     if (!r) r = consumeToken(b, RESPOND);
+    if (!r) r = consumeToken(b, CALL);
     if (!r) r = RestVerb(b, l + 1);
     if (!r) r = consumeToken(b, IDENTIFIER);
     return r;

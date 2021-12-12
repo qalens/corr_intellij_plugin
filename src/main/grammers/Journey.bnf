@@ -71,6 +71,7 @@
           PRINT  = 'print'
           TEXT = 'text'
           FOR = 'for'
+          CALL = 'call'
           PUSH = 'push'
           FORM = 'form'
           IF = 'if'
@@ -117,13 +118,14 @@
       extends(".*Step")=Step
 }
 journeyFile ::= RootFn
-RootFn ::= JourneyName '(' ')' Block
+RootFn ::= JourneyName '(' ((VariableReference  (',' VariableReference)*) | VariableReference?)')' Block
 JourneyName ::= identifier | NAME
 Block ::= '{' Step* '}' {pin=1}
-Step ::= PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep {recoverWhile="recoverStep"}
+Step ::= PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep | JourneyStep {recoverWhile="recoverStep"}
+JourneyStep ::= 'call' ( NAME  |  identifier) ('.' ( NAME | identifier) )* '(' ((Expression  (',' Expression)*) | Expression?) ')' { pin = 1 }
 PrintStep ::= 'print' FillableTextTemplate { pin = 1 }
 private recoverStep ::= ! (StepStart)
-private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | RestVerb | identifier )
+private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | RestVerb | identifier )
 AssignmentStep::= 'let' VariableReference '=' (Assignable | ('load' Expression ('from' 'sandbox' Expression)?)) {pin=1}
 SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)? {pin=1}
 ListenerStep ::= 'listen' 'on' Expression StubDefinitionBlock {pin=1}

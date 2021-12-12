@@ -22,7 +22,7 @@ sourceSets {
 }
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2021.2'
+    version '2021.3'
     plugins = ["PsiViewer:${psiViewerPluginVersion}"]
 }
 publishPlugin {

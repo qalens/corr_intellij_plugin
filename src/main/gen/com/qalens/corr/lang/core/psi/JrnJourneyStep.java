@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface JrnRootFn extends PsiElement {
+public interface JrnJourneyStep extends JrnStep {
 
   @NotNull
-  JrnBlock getBlock();
-
-  @NotNull
-  JrnJourneyName getJourneyName();
-
-  @NotNull
-  List<JrnVariableReference> getVariableReferenceList();
+  List<JrnExpression> getExpressionList();
 
 }
