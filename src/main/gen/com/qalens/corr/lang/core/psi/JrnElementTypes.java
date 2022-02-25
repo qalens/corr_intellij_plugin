@@ -90,6 +90,7 @@ public interface JrnElementTypes {
   IElementType VARIABLE_ACTION_STEP = new JrnElementType("VARIABLE_ACTION_STEP");
   IElementType VARIABLE_EXPRESSION = new JrnElementType("VARIABLE_EXPRESSION");
   IElementType VARIABLE_REFERENCE = new JrnElementType("VARIABLE_REFERENCE");
+  IElementType WAIT_STEP = new JrnElementType("WAIT_STEP");
 
   IElementType ADD = new JrnTokenType("add");
   IElementType AND = new JrnTokenType("and");
@@ -123,11 +124,13 @@ public interface JrnElementTypes {
   IElementType HEADERS = new JrnTokenType("headers");
   IElementType IDENTIFIER = new JrnTokenType("identifier");
   IElementType IF = new JrnTokenType("if");
+  IElementType INDEXOF = new JrnTokenType("indexOf");
   IElementType INETEGERVALUE = new JrnTokenType("InetegerValue");
   IElementType INTEGER = new JrnTokenType("Integer");
   IElementType LBRACE = new JrnTokenType("{");
   IElementType LBRACK = new JrnTokenType("[");
   IElementType LEFT = new JrnTokenType("left");
+  IElementType LEN = new JrnTokenType("len");
   IElementType LET = new JrnTokenType("let");
   IElementType LINE_COMMENT = new JrnTokenType("LINE_COMMENT");
   IElementType LIST = new JrnTokenType("List");
@@ -198,6 +201,7 @@ public interface JrnElementTypes {
   IElementType UNIQUERANDOMELEMENTS = new JrnTokenType("unique_random_elements");
   IElementType URL = new JrnTokenType("url");
   IElementType UUID = new JrnTokenType("uuid");
+  IElementType WAIT = new JrnTokenType("wait");
   IElementType WITH = new JrnTokenType("with");
 
   class Factory {
@@ -448,6 +452,9 @@ public interface JrnElementTypes {
       }
       else if (type == VARIABLE_REFERENCE) {
         return new JrnVariableReferenceImpl(node);
+      }
+      else if (type == WAIT_STEP) {
+        return new JrnWaitStepImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

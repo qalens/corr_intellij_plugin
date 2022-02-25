@@ -44,6 +44,9 @@
           RPAD = 'rpad'
           LEFT = 'left'
           RIGHT = 'right'
+          LEN = 'len'
+          INDEXOF = 'indexOf'
+          WAIT = 'wait'
           MID = 'mid'
           FROMJSON = 'from_json'
           MUL = 'mul'
@@ -124,8 +127,9 @@ Block ::= '{' Step* '}' {pin=1}
 Step ::= PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep | JourneyStep {recoverWhile="recoverStep"}
 JourneyStep ::= 'call' ( NAME  |  identifier) ('.' ( NAME | identifier) )* '(' ((Expression  (',' Expression)*) | Expression?) ')' { pin = 1 }
 PrintStep ::= 'print' FillableTextTemplate { pin = 1 }
+WaitStep ::= 'wait' Expression { pin = 1 }
 private recoverStep ::= ! (StepStart)
-private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | RestVerb | identifier )
+private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | 'wait' | RestVerb | identifier )
 AssignmentStep::= 'let' VariableReference '=' (Assignable | ('load' Expression ('from' 'sandbox' Expression)?)) {pin=1}
 SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)? {pin=1}
 ListenerStep ::= 'listen' 'on' Expression StubDefinitionBlock {pin=1}
@@ -208,8 +212,8 @@ UnaryPreOperator ::= '!'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')')
-UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
+BinaryFunction ::= (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' (Expression ',' Expression)  ')')
+UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
 VariableReference ::= ( NAME  |  identifier) ('.' ( NAME | identifier) )* {pin=1}

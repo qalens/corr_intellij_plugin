@@ -1,5 +1,10 @@
 package com.qalens.corr.lang.core
-
+//private fun all_functions_syntax():Map<String,List<String>>{
+//    return mapOf(
+//        "concat" to listOf("\"First\"","\"Second\"","..."),
+//        "lpad" to listOf("\"123\"","0","10"),
+//    )
+//}
 private fun other_functions(with:String?):List<String> {
     val withComma= if (with!=null) "$with," else ""
     val withP = if (with!=null) "$with" else ""
@@ -15,6 +20,8 @@ private fun other_functions(with:String?):List<String> {
         "encode(${withP})",
         "now(${withP})",
         "contains(${withComma}\"Hello\")",
+        "indexOf(${withComma}\"Hello\")",
+        "len(${withP})",
         "round(${withComma}2)",
         "random(${withComma}10000)",
         "unique_random_elements(${withComma}array)",
@@ -25,7 +32,7 @@ fun zero_arg_functions():List<String>{
     return listOf(
         "timestamp()",
         "uuid()",
-        "now()",
+        "now()"
     )
 }
 fun variable_scope_functions():List<String>{

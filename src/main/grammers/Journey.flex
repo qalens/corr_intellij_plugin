@@ -69,6 +69,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
 %%
 <YYINITIAL> {
     "print"                                         { return PRINT; }
+    "wait"                                          { return WAIT; }
     "matching"                                      { return MATCHING; }
     "and"                                           { return AND; }
     "url"                                           { return URL; }
@@ -162,6 +163,8 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "right" / [(]                                   { return RIGHT;}
     "mid" / [(]                                     { return MID;}
     "contains" / [(]                                { return CONTAINS;}
+    "len" / [(]                                     { return LEN;}
+    "indexOf" / [(]                                 { return INDEXOF;}
     "array" / [(]                                   { return ARRAY;}
     "from_json"  / [(]                              { return FROMJSON;}
     "mul"  / [(]                                    { return MUL;}

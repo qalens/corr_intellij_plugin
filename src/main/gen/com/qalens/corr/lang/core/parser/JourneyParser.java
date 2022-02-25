@@ -38,7 +38,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(ASSIGNMENT_STEP, IF_ELSE_STEP, JOURNEY_STEP, LISTENER_STEP,
       PRINT_STEP, REST_STEP, STEP, SYNC_STEP,
-      VARIABLE_ACTION_STEP),
+      VARIABLE_ACTION_STEP, WAIT_STEP),
   };
 
   /* ********************************************************** */
@@ -214,7 +214,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')')
+  // (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' (Expression ',' Expression)  ')')
   public static boolean BinaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction")) return false;
     boolean r;
@@ -225,7 +225,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' Expression ')'
+  // VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' Expression ')'
   private static boolean BinaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0")) return false;
     boolean r;
@@ -240,7 +240,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array'
+  // 'round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf'
   private static boolean BinaryFunction_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_0_2")) return false;
     boolean r;
@@ -253,10 +253,12 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LEFT);
     if (!r) r = consumeToken(b, RIGHT);
     if (!r) r = consumeToken(b, ARRAY);
+    if (!r) r = consumeToken(b, CONTAINS);
+    if (!r) r = consumeToken(b, INDEXOF);
     return r;
   }
 
-  // ('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array') '(' (Expression ',' Expression)  ')'
+  // ('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' (Expression ',' Expression)  ')'
   private static boolean BinaryFunction_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1")) return false;
     boolean r;
@@ -269,7 +271,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array'
+  // 'round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf'
   private static boolean BinaryFunction_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "BinaryFunction_1_0")) return false;
     boolean r;
@@ -282,6 +284,8 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LEFT);
     if (!r) r = consumeToken(b, RIGHT);
     if (!r) r = consumeToken(b, ARRAY);
+    if (!r) r = consumeToken(b, CONTAINS);
+    if (!r) r = consumeToken(b, INDEXOF);
     return r;
   }
 
@@ -2149,7 +2153,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | RestVerb | identifier
+  // 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | 'wait' | RestVerb | identifier
   static boolean StepStart(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StepStart")) return false;
     boolean r;
@@ -2162,6 +2166,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RBRACE);
     if (!r) r = consumeToken(b, RESPOND);
     if (!r) r = consumeToken(b, CALL);
+    if (!r) r = consumeToken(b, WAIT);
     if (!r) r = RestVerb(b, l + 1);
     if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
@@ -2337,7 +2342,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')')
+  // (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '(' Expression  ')')
   public static boolean UnaryFunction(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction")) return false;
     boolean r;
@@ -2348,7 +2353,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '('')'
+  // VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '('')'
   private static boolean UnaryFunction_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_0")) return false;
     boolean r;
@@ -2361,7 +2366,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'fake' | 'from_json' | 'random_element' | 'encode' | 'now'
+  // 'fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len'
   private static boolean UnaryFunction_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_0_2")) return false;
     boolean r;
@@ -2370,10 +2375,11 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RANDOMELEMENT);
     if (!r) r = consumeToken(b, ENCODE);
     if (!r) r = consumeToken(b, NOW);
+    if (!r) r = consumeToken(b, LEN);
     return r;
   }
 
-  // ('fake' | 'from_json' | 'random_element' | 'encode' | 'now'  ) '(' Expression  ')'
+  // ('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '(' Expression  ')'
   private static boolean UnaryFunction_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_1")) return false;
     boolean r;
@@ -2386,7 +2392,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // 'fake' | 'from_json' | 'random_element' | 'encode' | 'now'
+  // 'fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len'
   private static boolean UnaryFunction_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "UnaryFunction_1_0")) return false;
     boolean r;
@@ -2395,6 +2401,7 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RANDOMELEMENT);
     if (!r) r = consumeToken(b, ENCODE);
     if (!r) r = consumeToken(b, NOW);
+    if (!r) r = consumeToken(b, LEN);
     return r;
   }
 
@@ -2563,6 +2570,20 @@ public class JourneyParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, NAME);
     if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
+  }
+
+  /* ********************************************************** */
+  // 'wait' Expression
+  public static boolean WaitStep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "WaitStep")) return false;
+    if (!nextTokenIs(b, WAIT)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, WAIT_STEP, null);
+    r = consumeToken(b, WAIT);
+    p = r; // pin = 1
+    r = r && Expression(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

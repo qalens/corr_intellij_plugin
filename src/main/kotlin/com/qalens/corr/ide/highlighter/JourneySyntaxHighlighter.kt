@@ -60,6 +60,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
         if(
             tokenType.equals(JrnElementTypes.PRINT)
             || tokenType.equals(JrnElementTypes.TEXT)
+            || tokenType.equals(JrnElementTypes.WAIT)
             || tokenType.equals(JrnElementTypes.FOR)
             || tokenType.equals(JrnElementTypes.OBJECT_TEMPLATE)
             || tokenType.equals(JrnElementTypes.LET)
@@ -96,6 +97,8 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
         else if (
                 tokenType.equals(JrnElementTypes.CONCAT)
                 || tokenType.equals(JrnElementTypes.MUL)
+                || tokenType.equals(JrnElementTypes.LEN)
+                || tokenType.equals(JrnElementTypes.INDEXOF)
                 || tokenType.equals(JrnElementTypes.ADD)
                 || tokenType.equals(JrnElementTypes.UUID)
                 || tokenType.equals(JrnElementTypes.RANDOM)

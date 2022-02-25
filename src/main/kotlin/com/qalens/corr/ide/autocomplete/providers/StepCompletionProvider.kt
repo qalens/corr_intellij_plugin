@@ -37,6 +37,7 @@ object StepCompletionProvider: CompletionProviderBase() {
         "let a = \"Hello\"",
         "listen on 8088 with {}",
         "print text `Hello`",
+        "wait 10",
         "get " + request_without_body,
         "delete " + request_without_body,
         "put " + request_with_body,
