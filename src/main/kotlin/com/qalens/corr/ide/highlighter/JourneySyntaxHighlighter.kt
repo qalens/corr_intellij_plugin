@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import com.qalens.corr.lang.core.lexer.JrnSyntaxHighLighterLexer
-import com.qalens.corr.lang.core.psi.JrnElementTypes
+import com.qalens.corr.lang.core.jrn.lexer.JrnSyntaxHighLighterLexer
+import com.qalens.corr.lang.core.jrn.psi.JrnElementTypes
 
 object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
     val TEXT_TEMPLATE_MARKER = createTextAttributesKey("TEXT_TEMPLATE_MARKER",DefaultLanguageHighlighterColors.KEYWORD)
@@ -62,6 +62,7 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.TEXT)
             || tokenType.equals(JrnElementTypes.WAIT)
             || tokenType.equals(JrnElementTypes.FOR)
+            || tokenType.equals(JrnElementTypes.UNDEF)
             || tokenType.equals(JrnElementTypes.OBJECT_TEMPLATE)
             || tokenType.equals(JrnElementTypes.LET)
             || tokenType.equals(JrnElementTypes.GET)
@@ -91,6 +92,15 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
             || tokenType.equals(JrnElementTypes.IF)
             || tokenType.equals(JrnElementTypes.ELSE)
             || tokenType.equals(JrnElementTypes.FORM)
+            || tokenType.equals(JrnElementTypes.CONNECT)
+            || tokenType.equals(JrnElementTypes.WEBSOCKET)
+            || tokenType.equals(JrnElementTypes.NAMED)
+            || tokenType.equals(JrnElementTypes.LISTENER)
+            || tokenType.equals(JrnElementTypes.SEND)
+            || tokenType.equals(JrnElementTypes.BINARY)
+            || tokenType.equals(JrnElementTypes.CLIENT)
+            || tokenType.equals(JrnElementTypes.SERVER)
+            || tokenType.equals(JrnElementTypes.MEASURE)
 
         )
             return Keywords;
@@ -116,6 +126,9 @@ object JourneySyntaxHighlighter:SyntaxHighlighterBase() {
                 || tokenType.equals(JrnElementTypes.LPAD)
                 || tokenType.equals(JrnElementTypes.RPAD)
                 || tokenType.equals(JrnElementTypes.MID)
+                || tokenType.equals(JrnElementTypes.FROMJSON)
+                || tokenType.equals(JrnElementTypes.READWAV)
+                || tokenType.equals(JrnElementTypes.CHUNKED)
                 )
             return FunctionCall;
         else if(tokenType.equals(JrnElementTypes.LBRACE) || tokenType.equals(

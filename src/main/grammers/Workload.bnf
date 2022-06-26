@@ -1,0 +1,50 @@
+{
+  parserClass="com.qalens.corr.lang.core.wl.parser.WorkloadParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Wl"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.qalens.corr.lang.core.wl.psi"
+  psiImplPackage="com.qalens.corr.lang.core.wl.psi.impl"
+
+  elementTypeHolderClass="com.qalens.corr.lang.core.wl.psi.WlElementTypes"
+  elementTypeClass="com.qalens.corr.lang.core.wl.psi.WlElementType"
+  tokenTypeClass="com.qalens.corr.lang.core.wl.psi.WlTokenType"
+
+  psiImplUtilClass="com.qalens.corr.lang.core.wl.psi.impl.WorkloadPsiImplUtil"
+  tokens = [
+          LBRACE      = '{'
+          RBRACE      = '}'
+          LBRACK      =  '['
+          RBRACK      =  ']'
+          LPAREN      =  '('
+          RPAREN      =  ')'
+          COLON       =  ':'
+          COMMA       =  ','
+          BACKTICK    =  '`'
+          QUOTE       =  '"'
+          JOURNEY     ='journey'
+          SCENARIOS   = 'scenarios'
+          EXECUTOR    = 'executor'
+          STARTUP    = 'startup'
+          STAGES    = 'stages'
+          LINE_COMMENT='regexp://..'
+          BLOCK_COMMENT='regexp:/*..*/'
+
+      ]
+}
+workloadFile ::= RootFn
+RootFn ::= NAME '(' ((VariableReference  (',' VariableReference)*) | VariableReference?)')' Block
+Block ::= '{' StartupLine? ScenariosDefinition '}'
+StartupLine ::= 'startup' ':' STRING_LITERAL ','
+ScenariosDefinition ::= 'scenarios' ':' '[' ScenarioDefinition* ']'
+ScenarioDefinition ::= '{' ExecutorLine JourneyLine StagesLine'}'
+ExecutorLine ::= 'executor' ':' STRING_LITERAL ','
+JourneyLine ::= 'journey' ':' STRING_LITERAL ','
+StagesLine ::= 'stages' ':' '[' Stage (',' Stage)*']'
+Stage ::= '{' PositiveIntegerValue ',' PositiveIntegerValue '}'
+//UsersLine ::= 'users' ':' PositiveIntegerValue ','
+//RampUpLine ::= 'perUserRampUp' ':' PositiveIntegerValue ','
+//DurationLine ::= 'duration' ':' PositiveIntegerValue
+//VariableReference ::= ( NAME  |  identifier) ('.' ( NAME | identifier) )* {pin=1}

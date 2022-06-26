@@ -5,7 +5,7 @@ import com.intellij.ide.fileTemplates.FileTemplate
 import com.intellij.ide.fileTemplates.FileTemplate.ATTRIBUTE_NAME
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
 import com.qalens.corr.ide.file.JrnFileTemplateGroup
-import com.qalens.corr.lang.JrnFileType
+import com.qalens.corr.lang.core.jrn.JrnFileType
 
 class JourneyCreateFromTemplateHandler : DefaultCreateFromTemplateHandler() {
     override fun handlesTemplate(template: FileTemplate): Boolean {

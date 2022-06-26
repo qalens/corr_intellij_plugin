@@ -9,8 +9,7 @@ import com.intellij.patterns.PlatformPatterns.not
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import com.qalens.corr.lang.core.psi.JrnElementTypes
-
+import com.qalens.corr.lang.core.jrn.psi.JrnElementTypes
 object StepCompletionProvider: CompletionProviderBase() {
     override val elementPattern: ElementPattern<out PsiElement>
         get() = psiElement()
@@ -36,8 +35,13 @@ object StepCompletionProvider: CompletionProviderBase() {
     val completions = listOf(
         "let a = \"Hello\"",
         "listen on 8088 with {}",
+        "connect websocket named \"WebsocketClient\" with url \"ws://localhost:8000\" and listener msg=>{ print text `<%msg%>`}",
+        "send \"Hello\" on websocket named \"WebsocketClient\"",
+        "send binary data on websocket named \"WebsocketClient\"",
+        "measure \"Transaction1\"{  }",
         "print text `Hello`",
         "wait 10",
+        "undef VariableName",
         "get " + request_without_body,
         "delete " + request_without_body,
         "put " + request_with_body,

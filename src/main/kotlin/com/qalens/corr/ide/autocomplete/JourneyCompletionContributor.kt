@@ -2,13 +2,12 @@ package com.qalens.corr.ide.autocomplete
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.PsiElement
 import com.qalens.corr.ide.autocomplete.providers.*
 import com.qalens.corr.lang.core.no_variable_scope_functions
-import com.qalens.corr.lang.core.psi.JrnElementTypes
-import com.qalens.corr.lang.core.psi.JrnFile
+import com.qalens.corr.lang.core.jrn.psi.JrnElementTypes
+import com.qalens.corr.lang.core.jrn.psi.JrnFile
 import com.qalens.corr.lang.core.variable_scope_functions
 
 class JourneyCompletionContributor() : CompletionContributor() {

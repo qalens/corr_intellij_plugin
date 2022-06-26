@@ -2,8 +2,8 @@ package com.qalens.corr.ide.formatter
 
 import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.qalens.corr.lang.JrnLanguage
-import com.qalens.corr.lang.core.psi.JrnElementTypes
+import com.qalens.corr.lang.core.jrn.JrnLanguage
+import com.qalens.corr.lang.core.jrn.psi.JrnElementTypes
 
 
 class JrnFormattingModelBuilder : FormattingModelBuilder {

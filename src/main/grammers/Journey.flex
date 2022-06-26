@@ -1,9 +1,9 @@
-package com.qalens.corr.lang.core.lexer;
+package com.qalens.corr.lang.core.jrn.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;import com.intellij.psi.tree.IElementType;
-import com.qalens.corr.lang.core.psi.JrnTokenType;
-import static com.qalens.corr.lang.core.psi.JrnElementTypes.*;
+import com.qalens.corr.lang.core.jrn.psi.JrnTokenType;
+import static com.qalens.corr.lang.core.jrn.psi.JrnElementTypes.*;
 import static com.intellij.psi.TokenType.*;
 import java.net.URL;import java.util.*;
 
@@ -90,6 +90,15 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "form"                                          { return FORM; }
     "patch"                                         { return PATCH; }
     "delete"                                        { return DELETE; }
+    "connect"                                       { return CONNECT; }
+    "websocket"                                     { return WEBSOCKET; }
+    "named"                                         { return NAMED; }
+    "listener"                                      { return LISTENER; }
+    "measure"                                   { return MEASURE; }
+    "send"                                          { return SEND; }
+    "binary"                                        { return BINARY; }
+    "client"                                        { return CLIENT; }
+    "server"                                        { return SERVER; }
     "text"                                          { pushState(IN_TEXT);return TEXT;}
     "let"                                           { return LET;}
     "call"                                          { return CALL;}
@@ -141,6 +150,7 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "object"                                        { return OBJECT_TEMPLATE;}
     "for"                                           { return FOR;}
     "if"                                            { return IF;}
+    "undef"                                         { return UNDEF;}
     "else"                                          { return ELSE;}
     "=>"                                            { return FATARROW;}
     "null"                                          { return NULLVALUE;}
@@ -167,6 +177,8 @@ LINE_COMMENT     = "//" {InputCharacter}* {EOL_WS}?
     "indexOf" / [(]                                 { return INDEXOF;}
     "array" / [(]                                   { return ARRAY;}
     "from_json"  / [(]                              { return FROMJSON;}
+    "read_wav"  / [(]                               { return READWAV;}
+    "chunked"  / [(]                                { return CHUNKED;}
     "mul"  / [(]                                    { return MUL;}
     "add"  / [(]                                    { return ADD;}
     "now"  / [(]                                    { return NOW;}

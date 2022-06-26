@@ -1,0 +1,10 @@
+`${WORKLOAD_NAME}`(){
+    startup: "TestStartupJourney"
+    scenarios:[
+        {
+            executor: "closed",
+            journey: "TestJourney",
+            stages:[{50,120},{50,600},{0,120}]
+        }
+    ]
+}

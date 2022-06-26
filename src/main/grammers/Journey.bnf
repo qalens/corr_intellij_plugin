@@ -1,18 +1,18 @@
 {
-  parserClass="com.qalens.corr.lang.core.parser.JourneyParser"
+  parserClass="com.qalens.corr.lang.core.jrn.parser.JourneyParser"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="Jrn"
   psiImplClassSuffix="Impl"
-  psiPackage="com.qalens.corr.lang.core.psi"
-  psiImplPackage="com.qalens.corr.lang.core.psi.impl"
+  psiPackage="com.qalens.corr.lang.core.jrn.psi"
+  psiImplPackage="com.qalens.corr.lang.core.jrn.psi.impl"
 
-  elementTypeHolderClass="com.qalens.corr.lang.core.psi.JrnElementTypes"
-  elementTypeClass="com.qalens.corr.lang.core.psi.JrnElementType"
-  tokenTypeClass="com.qalens.corr.lang.core.psi.JrnTokenType"
+  elementTypeHolderClass="com.qalens.corr.lang.core.jrn.psi.JrnElementTypes"
+  elementTypeClass="com.qalens.corr.lang.core.jrn.psi.JrnElementType"
+  tokenTypeClass="com.qalens.corr.lang.core.jrn.psi.JrnTokenType"
 
-  psiImplUtilClass="com.qalens.corr.lang.core.psi.impl.JourneyPsiImplUtil"
+  psiImplUtilClass="com.qalens.corr.lang.core.jrn.psi.impl.JourneyPsiImplUtil"
   tokens = [
           DOT = '.'
           SCRIPLET_START = '<%'
@@ -39,6 +39,7 @@
           INTEGER = 'Integer'
           LIST      = 'List'
           OBJECT      = 'Object'
+          UNDEF      = 'undef'
           CONCAT = 'concat'
           LPAD = 'lpad'
           RPAD = 'rpad'
@@ -49,6 +50,8 @@
           WAIT = 'wait'
           MID = 'mid'
           FROMJSON = 'from_json'
+          READWAV = 'read_wav'
+          CHUNKED = 'chunked'
           MUL = 'mul'
           DIV = 'div'
           ADD = 'add'
@@ -97,6 +100,15 @@
           POST = 'post'
           PATCH = 'patch'
           DELETE = 'delete'
+          CONNECT = 'connect'
+          WEBSOCKET = 'websocket'
+          NAMED = 'named'
+          LISTENER = 'listener'
+          MEASURE = 'measure'
+          SEND = 'send'
+          BINARY = 'binary'
+          CLIENT = 'client'
+          SERVER = 'server'
           FATARROW = '=>'
           OP_EQUAL = '=='
           OP_NOT = '!'
@@ -124,12 +136,16 @@ journeyFile ::= RootFn
 RootFn ::= JourneyName '(' ((VariableReference  (',' VariableReference)*) | VariableReference?)')' Block
 JourneyName ::= identifier | NAME
 Block ::= '{' Step* '}' {pin=1}
-Step ::= PrintStep | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep | JourneyStep {recoverWhile="recoverStep"}
+Step ::= UndefStep | PrintStep | TransactionStep | WaitStep | WebsocketClientConnectStep |SendDataOverWebSocketClientStep  | AssignmentStep | SyncStep | ListenerStep | IfElseStep  | RestStep | VariableActionStep | JourneyStep {recoverWhile="recoverStep"}
+UndefStep ::= 'undef' VariableReference { pin = 1 }
 JourneyStep ::= 'call' ( NAME  |  identifier) ('.' ( NAME | identifier) )* '(' ((Expression  (',' Expression)*) | Expression?) ')' { pin = 1 }
+WebsocketClientConnectStep ::= 'connect' 'websocket' 'named' Expression 'with' 'url' Expression 'and' 'listener' VariableReference '=>' Block { pin = 1 }
+SendDataOverWebSocketClientStep ::= 'send' ('binary')? Expression  'on' 'websocket' 'named' Expression    { pin = 1 }
 PrintStep ::= 'print' FillableTextTemplate { pin = 1 }
 WaitStep ::= 'wait' Expression { pin = 1 }
-private recoverStep ::= ! (StepStart)
-private StepStart ::= ('let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | 'wait' | RestVerb | identifier )
+TransactionStep ::= 'measure' Expression Block {pin=1}
+private recoverStep ::= !(StepStart)
+private StepStart ::= ('undef' | 'measure'| 'send' | 'connect' |'websocket'| 'let' | 'sync' | 'listen' | 'if' | 'async' | 'print' | '}' | 'respond' | 'call' | 'wait' | RestVerb | identifier )
 AssignmentStep::= 'let' VariableReference '=' (Assignable | ('load' Expression ('from' 'sandbox' Expression)?)) {pin=1}
 SyncStep ::= 'sync' VariableReference ('to' 'sandbox' Expression)? {pin=1}
 ListenerStep ::= 'listen' 'on' Expression StubDefinitionBlock {pin=1}
@@ -212,8 +228,8 @@ UnaryPreOperator ::= '!'
 ConstantExpression ::= STRING_LITERAL | DoubleValue | PositiveIntegerValue | InetegerValue | NullValue | BooleanValue
 FunctionExpression ::= MultiValuedFunction | BinaryFunction | UnaryFunction | NoArgFunction
 MultiValuedFunction ::=  (VariableReference '.')? ('concat' | 'mul' | 'add' | 'lpad' | 'rpad' | 'mid') '(' (Expression (',' Expression)*)? ')'
-BinaryFunction ::= (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' (Expression ',' Expression)  ')')
-UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '('')')|(('fake' | 'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '(' Expression  ')')
+BinaryFunction ::= (VariableReference '.' ('round' |'unique_random_elements'| 'random' | 'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf' | 'chunked') '(' Expression ')') | (('round' | 'random'|'unique_random_elements' | 'chunked' |'sub' | 'div' | 'mod' | 'left' | 'right' | 'array' | 'contains' | 'indexOf') '(' (Expression ',' Expression)  ')')
+UnaryFunction ::= (VariableReference '.' ('fake' | 'from_json' | 'read_wav' | 'random_element' | 'encode' | 'now' | 'len' ) '('')')|(('fake' | 'read_wav'|'from_json' | 'random_element' | 'encode' | 'now' | 'len' ) '(' Expression  ')')
 NoArgFunction ::= ('uuid' |  'timestamp' | 'now' ) '('  ')'
 VariableExpression ::= VariableReference (':' Type)?
 VariableReference ::= ( NAME  |  identifier) ('.' ( NAME | identifier) )* {pin=1}

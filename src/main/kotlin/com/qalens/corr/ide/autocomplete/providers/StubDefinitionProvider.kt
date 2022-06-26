@@ -8,7 +8,7 @@ import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import com.qalens.corr.lang.core.psi.JrnElementTypes
+import com.qalens.corr.lang.core.jrn.psi.JrnElementTypes
 
 object StubDefinitionProvider: CompletionProviderBase() {
     override val elementPattern: ElementPattern<out PsiElement>

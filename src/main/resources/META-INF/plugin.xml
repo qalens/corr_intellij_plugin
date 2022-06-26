@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.qalens.corr</id>
-    <name>Journey Prgramming</name>
+    <name>Journey Programming</name>
     <vendor email="atmnk@yahoo.com" url="http://www.qalens.com">qalens</vendor>
 
     <description><![CDATA[
@@ -14,41 +14,65 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
-
     <extensions defaultExtensionNs="com.intellij">
-        <runConfigurationProducer implementation="com.qalens.corr.ide.runconfig.JourneyRunConfigurationProducer"/>
-        <configurationType implementation="com.qalens.corr.ide.runconfig.JourneyRunConfigurationType"/>
+        <runConfigurationProducer implementation="com.qalens.corr.ide.runconfig.jrn.JourneyRunConfigurationProducer"/>
+        <configurationType implementation="com.qalens.corr.ide.runconfig.jrn.JourneyRunConfigurationType"/>
+        <runConfigurationProducer implementation="com.qalens.corr.ide.runconfig.wl.WorkloadRunConfigurationProducer"/>
+        <configurationType implementation="com.qalens.corr.ide.runconfig.wl.WorkloadRunConfigurationType"/>
         <fileType name="Journey"
                   language="Journey"
-                  implementationClass="com.qalens.corr.lang.JrnFileType"
+                  implementationClass="com.qalens.corr.lang.core.jrn.JrnFileType"
                   extensions="journey"
                   fieldName="INSTANCE"/>
+        <fileType name="Workload"
+                  language="Workload"
+                  implementationClass="com.qalens.corr.lang.core.wl.WlFileType"
+                  extensions="workload"
+                  fieldName="INSTANCE"/>
         <fileTemplateGroup implementation="com.qalens.corr.ide.file.JrnFileTemplateGroup"/>
+        <fileTemplateGroup implementation="com.qalens.corr.ide.file.WlFileTemplateGroup"/>
 
         <lang.parserDefinition language="Journey"
-                               implementationClass="com.qalens.corr.lang.core.parser.JourneyParserDefinition"/>
+                               implementationClass="com.qalens.corr.lang.core.jrn.parser.JourneyParserDefinition"/>
+        <lang.parserDefinition language="Workload"
+                               implementationClass="com.qalens.corr.lang.core.wl.parser.WorkloadParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Workload"
+                                       implementationClass="com.qalens.corr.ide.highlighter.WorkloadSyntaxHighlighterFactory"
+
+        />
         <lang.syntaxHighlighterFactory language="Journey"
                                        implementationClass="com.qalens.corr.ide.highlighter.JourneySyntaxHighlighterFactory"
 
         />
         <completion.contributor language="Journey"
                                 implementationClass="com.qalens.corr.ide.autocomplete.JourneyCompletionContributor"/>
-        <runLineMarkerContributor language="Journey" implementationClass="com.qalens.corr.ide.runconfig.JourneyRunLineMarkerProvider"/>
+        <runLineMarkerContributor language="Journey" implementationClass="com.qalens.corr.ide.runconfig.jrn.JourneyRunLineMarkerProvider"/>
+        <runLineMarkerContributor language="Workload" implementationClass="com.qalens.corr.ide.runconfig.wl.WorkloadRunLineMarkerProvider"/>
         <!-- Add your extensions here -->
         <moduleType id="Journey" implementationClass="com.qalens.corr.ide.module.JourneyModuleType"/>
-        <lang.commenter language="Journey" implementationClass="com.qalens.corr.lang.core.JourneyCommenter"/>
+        <lang.commenter language="Journey" implementationClass="com.qalens.corr.lang.core.jrn.JourneyCommenter"/>
+        <lang.commenter language="Workload" implementationClass="com.qalens.corr.lang.core.wl.WorkloadCommenter"/>
         <internalFileTemplate id="journey"
                               name="Journey File"/>
+        <internalFileTemplate id="workload"
+                              name="Workload File"/>
         <createFromTemplateHandler implementation="com.qalens.corr.ide.action.JourneyCreateFromTemplateHandler"/>
+        <createFromTemplateHandler implementation="com.qalens.corr.ide.action.WorkloadCreateFromTemplateHandler"/>
 <!--        <lang.formatter language="Journey"-->
 <!--                        implementationClass="com.qalens.corr.ide.formatter.JrnFormattingModelBuilder"/>-->
 
     </extensions>
 
     <actions>
-        <action class="com.qalens.corr.ide.action.CreateNewFileAction"
+        <action class="com.qalens.corr.ide.action.CreateNewJourneyFileAction"
                 text="Journey File"
                 description="Create New Journey">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl J"/>
+        </action>
+        <action class="com.qalens.corr.ide.action.CreateNewWorkloadFileAction"
+                text="Workload File"
+                description="Create New Workload">
             <add-to-group group-id="NewGroup" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl W"/>
         </action>
