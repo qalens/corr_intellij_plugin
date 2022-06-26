@@ -28,7 +28,7 @@ object JourneyRunConfigurationProducer:RunConfigurationProducer<JourneyRunConfig
         }
         try {
                 val text = (sourceElement.get() as LeafPsiElement).text;
-                configuration.name = toName(text)
+                configuration.name = "Journey " + toName(text)
                 configuration.journeyName = toName(text)
             return true
         } catch (ex: Exception) {

@@ -13,7 +13,7 @@ class JourneyRunLineMarkerProvider : RunLineMarkerContributor(){
     override fun getInfo(psiElement: PsiElement): Info? {
         val types: List<IElementType> = Arrays.asList(JrnElementTypes.NAME)
             if (psiElement is LeafPsiElement && types.contains((psiElement).elementType)) {
-                return Info(AllIcons.RunConfigurations.TestState.Run, ExecutorAction.getActions(0), { "Run Element" })
+                return Info(AllIcons.RunConfigurations.TestState.Run, ExecutorAction.getActions(1), { "Run Element" })
             }
             else
                 return null

@@ -28,7 +28,7 @@ object WorkloadRunConfigurationProducer:RunConfigurationProducer<WorkloadRunConf
         }
         try {
                 val text = (sourceElement.get() as LeafPsiElement).text;
-                configuration.name = toName(text)
+                configuration.name = "Workload "+toName(text)
                 configuration.workloadName = toName(text)
             return true
         } catch (ex: Exception) {

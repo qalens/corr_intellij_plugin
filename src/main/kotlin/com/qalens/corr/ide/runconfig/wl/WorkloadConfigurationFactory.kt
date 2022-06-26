@@ -6,8 +6,8 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
 
 class WorkloadConfigurationFactory(type:ConfigurationType): ConfigurationFactory(type) {
-    private val FACTORY_NAME = "Journey configuration factory"
-    private val FACTORY_ID = "JOURNEY_FACTORY"
+    private val FACTORY_NAME = "Workload configuration factory"
+    private val FACTORY_ID = "WORKLOAD_FACTORY"
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
         return WorkloadRunConfiguration(project, this, "Demo", "console",mutableMapOf())
     }
